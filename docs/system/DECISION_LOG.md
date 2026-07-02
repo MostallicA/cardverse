@@ -409,6 +409,26 @@ ARCHITECTURE.md
 
 ---
 
+## 2026-07-02
+
+### Repository Bootstrap
+
+Status: Accepted
+
+Decisions
+
+- Git repository initialized before any source code was written.
+- Monorepo workspace configured manually.
+- Root package.json created manually (no pnpm init).
+- pnpm selected as the official package manager.
+- Repository structure committed before implementation begins.
+
+Notes
+
+This repository is now considered the Single Source of Truth for all future development.
+
+---
+
 # Version History
 
 | Version | Date       | Description                      |

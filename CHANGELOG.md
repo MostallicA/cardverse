@@ -1,5 +1,20 @@
 # Changelog
 
+---
+
+## [Unreleased]
+
+### Added
+
+- Initialized Git repository.
+- Added root package.json.
+- Added pnpm workspace.
+- Imported Frozen documentation.
+- Created initial repository structure.
+- Created initial Git commit.
+
+---
+
 All notable changes to the CardVerse project will be documented in this file.
 
 The format is inspired by **Keep a Changelog** and follows **Semantic Versioning** principles.
