@@ -1,0 +1,14 @@
+{
+  "name": "@cardverse/root",
+  "version": "0.1.0",
+  "private": true,
+  "description": "CardVerse Monorepo",
+  "license": "UNLICENSED",
+  "packageManager": "pnpm@11.9.0",
+  "engines": {
+    "node": ">=24.18.0",
+    "pnpm": ">=11.9.0"
+  },
+  "scripts": {},
+  "devDependencies": {}
+}
