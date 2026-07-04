@@ -1,16 +1,31 @@
 # CardVerse System Start Here
 
 **Document ID:** CV-SYS-006
-**Version:** 0.1.0
+**Version:** 0.2.0
 **Status:** Frozen
 **Classification:** System
 **Owner:** Mostafa & ChatGPT
 **Created:** 2026-06-30
-**Last Updated:** 2026-07-01
+**Last Updated:** 2026-07-04
 
 ---
 
-# Purpose
+## Table of Contents
+
+1. Purpose
+2. Project Status Snapshot
+3. Start Checklist
+4. Project Workflow
+5. Document Priority
+6. Before Asking Questions
+7. Before Modifying Anything
+8. Definition of Ready
+9. References
+10. Version History
+
+---
+
+## 1. Purpose
 
 This document is the official entry point for every new development session.
 
@@ -20,177 +35,187 @@ Its purpose is to provide the shortest possible path toward understanding the cu
 
 ---
 
-# Project Status
+## 2. Project Status Snapshot
 
-Current Phase
+### Current Phase
 
-Documentation Standardization
+Repository Foundation
 
-Project State
+### Current Sprint
 
-Project State
+Sprint 0
 
-Documentation In Progress
+### Current Task
 
-Implementation Started
+Task 0.5 - Repository Standards
+
+### Current Status
+
+In Progress
+
+### Latest Commit
+
+48e81b8
+
+### Latest Commit Message
+
+chore(repo): bootstrap project repository
+
+### Next Task
+
+Task 0.6 - Root Development Configuration
+
+### Implementation Started
 
 No
 
-Repository Status
+### Repository Status
 
 Pre-Development
 
-Current Version
+### Current Version
 
 0.1.0
 
 ---
 
-# Start Checklist
+## 3. Start Checklist
 
-Before beginning any work, complete the following steps.
+Before beginning any work, complete the following steps in order.
 
-## Step 1
+### Step 1
+
+Read README.md
+
+Understand the project overview, vision and mission.
+
+### Step 2
 
 Read PROJECT_DNA.md
 
 Understand the project's philosophy and long-term goals.
 
----
-
-## Step 2
+### Step 3
 
 Read PROJECT_RULES.md
 
 Understand all mandatory engineering rules.
 
----
-
-## Step 3
+### Step 4
 
 Read PROJECT_STATUS.md
 
 Understand the current project status, documentation registry and project roadmap.
 
----
-
-## Step 4
+### Step 5
 
 Read CARDVERSE_INDEX.md
 
 Locate the documents related to the requested task.
 
----
+### Step 6
 
-## Step 5
+Read REPOSITORY_SNAPSHOT.md
+
+Understand exactly what files exist in the repository.
+
+### Step 7
+
+Read SETUP_GUIDE.md
+
+Understand the development environment and required tools.
+
+### Step 8
+
+Read IMPLEMENTATION_STATUS.md
+
+Understand what has been implemented and what remains pending.
+
+### Step 9
 
 Read DECISION_LOG.md
 
 Review architectural decisions that may affect the current task.
 
----
+### Step 10
 
-## Step 6
+Read GLOSSARY.md
+
+Familiarize yourself with project terminology.
+
+### Step 11
 
 Identify which documents are relevant to the requested feature.
 
 Examples:
 
-Gameplay
+Gameplay -> PRODUCT_BIBLE.md and RULEBOOK.md
 
-→ PRODUCT_BIBLE.md
+Architecture -> ARCHITECTURE.md
 
-Architecture
+Database -> DATABASE.md
 
-→ ARCHITECTURE.md
+API -> API.md
 
-Database
-
-→ DATABASE.md
-
-API
-
-→ API.md
-
-Game Rules
-
-→ RULEBOOK.md
-
----
-
-## Step 7
+### Step 12
 
 Only after completing the previous steps should implementation or design discussions begin.
 
 ---
 
-# Project Workflow
+## 4. Project Workflow
 
 Every task follows the same lifecycle.
 
-Understand Request
+1. Understand Request
 
-↓
+2. Identify Related Documents
 
-Identify Related Documents
+3. Review Documentation
 
-↓
+4. Design Solution
 
-Review Documentation
+5. Validate Architecture
 
-↓
+6. Implement
 
-Design Solution
+7. Update Documentation
 
-↓
+8. Final Review
 
-Validate Architecture
-
-↓
-
-Implement
-
-↓
-
-Update Documentation
-
-↓
-
-Final Review
-
-↓
-
-Complete Task
+9. Complete Task
 
 Skipping steps is discouraged.
 
 ---
 
-# Document Priority
+## 5. Document Priority
 
 When multiple documents discuss related concepts, use the following priority.
 
-1 PROJECT_DNA.md
+1. PROJECT_DNA.md
 
-2 PROJECT_RULES.md
+2. PROJECT_RULES.md
 
-3 PROJECT_STATUS.md
+3. PROJECT_STATUS.md
 
-4 PRODUCT_BIBLE.md
+4. PRODUCT_BIBLE.md
 
-5 ARCHITECTURE.md
+5. ARCHITECTURE.md
 
-6 DATABASE.md
+6. DATABASE.md
 
-7 API.md
+7. API.md
 
-8 RULEBOOK.md
+8. RULEBOOK.md
+
+9. DECISION_LOG.md
 
 Higher-priority documents always override lower-priority documents.
 
 ---
 
-# Before Asking Questions
+## 6. Before Asking Questions
 
 Before requesting clarification, verify that the answer is not already documented.
 
@@ -200,62 +225,67 @@ Avoid unnecessary duplication.
 
 ---
 
-# Before Modifying Anything
+## 7. Before Modifying Anything
 
 Determine:
 
-* Which modules are affected?
-* Which documents require updates?
-* Does the change affect architecture?
-* Does it affect the database?
-* Does it affect public APIs?
-* Does it require a new engineering decision?
-* Does it require updating PROJECT_STATUS.md?
+- Which modules are affected?
+- Which documents require updates?
+- Does the change affect architecture?
+- Does it affect the database?
+- Does it affect public APIs?
+- Does it require a new engineering decision?
+- Does it require updating PROJECT_STATUS.md?
 
 If the answer is yes, update the appropriate documentation.
 
 ---
 
-# Definition of Ready
+## 8. Definition of Ready
 
 A task is considered ready when:
 
-* The requirements are understood.
-* Relevant documentation has been reviewed.
-* The architectural impact is known.
-* The implementation scope is clear.
+- The requirements are understood.
+- Relevant documentation has been reviewed.
+- The architectural impact is known.
+- The implementation scope is clear.
 
 Only then should development begin.
 
 ---
 
-# References
+## 9. References
 
-* README.md
-* PROJECT_DNA.md
-* PROJECT_RULES.md
-* PROJECT_STATUS.md
-* CARDVERSE_INDEX.md
-* AI_DEVELOPER_GUIDE.md
-* PRODUCT_BIBLE.md
-* ARCHITECTURE.md
-* DATABASE.md
-* API.md
-* RULEBOOK.md
-* DECISION_LOG.md
-
----
-
-# Version History
-
-| Version | Date       | Description                                    |
-| ------- | ---------- | ---------------------------------------------- |
-| 0.1.0   | 2026-06-30 | Initial System Start Here document established |
-| 0.1.0   | 2026-07-01 | Documentation Freeze completed                 |
+- README.md
+- PROJECT_DNA.md
+- PROJECT_RULES.md
+- PROJECT_STATUS.md
+- CARDVERSE_INDEX.md
+- REPOSITORY_SNAPSHOT.md
+- SETUP_GUIDE.md
+- IMPLEMENTATION_STATUS.md
+- GLOSSARY.md
+- AI_DEVELOPER_GUIDE.md
+- PRODUCT_BIBLE.md
+- ARCHITECTURE.md
+- DATABASE.md
+- API.md
+- RULEBOOK.md
+- DECISION_LOG.md
 
 ---
 
-**Document Status:** Review
+## 10. Version History
+
+| Version | Date       | Description                                     |
+|---------|------------|-------------------------------------------------|
+| 0.1.0   | 2026-06-30 | Initial System Start Here document established  |
+| 0.1.0   | 2026-07-01 | Documentation Freeze completed                  |
+| 0.2.0   | 2026-07-04 | Updated with new system documents and checklist |
+
+---
+
+**Document Status:** Frozen
 
 This document is the mandatory starting point for every CardVerse development session.
 
