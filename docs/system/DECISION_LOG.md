@@ -1,4 +1,4 @@
-# CardVerse Decision Log
+﻿# CardVerse Decision Log
 
 **Document ID:** CV-SYS-008
 **Version:** 0.2.0
@@ -288,6 +288,7 @@ List the authoritative project documents that define or are affected by this dec
 **Context:** During early development, it became clear that AI assistants starting new chat sessions needed complete visibility into the repository state without requiring file uploads.
 
 **Decision:** Four new system documents were created:
+
 - REPOSITORY_SNAPSHOT.md: Complete file inventory and contents
 - SETUP_GUIDE.md: Development environment setup
 - IMPLEMENTATION_STATUS.md: Progress tracking
@@ -320,7 +321,7 @@ List the authoritative project documents that define or are affected by this dec
 ## 7. Version History
 
 | Version | Date       | Description                                |
-|---------|------------|--------------------------------------------|
+| ------- | ---------- | ------------------------------------------ |
 | 0.1.0   | 2026-06-30 | Initial Decision Log established           |
 | 0.1.0   | 2026-07-01 | Documentation Freeze completed             |
 | 0.2.0   | 2026-07-04 | Added CV-DEC-0009 for new system documents |
@@ -334,3 +335,48 @@ This document is the authoritative history of architectural and engineering deci
 Only significant long-term decisions should be recorded here.
 
 Changes to this document require updating the Version History.
+
+## Decision: Repository Standards Implementation
+
+**Date**: 2026-07-05
+**Category**: Development Infrastructure
+**Status**: Implemented
+**Task**: Task 0.5
+
+**Context**:
+Task 0.5 required establishing repository standards including code quality tools,
+commit conventions, and GitHub templates for the CardVerse monorepo.
+
+**Decision**:
+
+- ESLint 9.39.4 + Prettier 3.9.4 for code quality and formatting
+- Husky 9.1.7 + lint-staged 15.5.2 for pre-commit checks
+- Commitlint 18.6.1 for commit message validation (Conventional Commits)
+- TypeScript 5.9.3 base configuration for monorepo
+- GitHub templates for Pull Requests and Issues
+- .editorconfig for consistent editor settings
+
+**Implemented Files**:
+
+- .editorconfig
+- .prettierrc
+- .eslintrc.json
+- tsconfig.base.json
+- lint-staged.config.js
+- commitlint.config.js
+- .github/PULL_REQUEST_TEMPLATE.md
+- .github/ISSUE_TEMPLATE.md
+
+**Consequences**:
+
+- Consistent code quality across all packages
+- Automated validation before commits
+- Standardized commit messages for better history
+- Clear PR and Issue guidelines for contributors
+- TypeScript foundation ready for backend/frontend development
+
+**References**:
+
+- PROJECT_RULES.md Section 10 (Git Workflow Rules)
+- PROJECT_RULES.md Section 6 (Development Rules)
+- IMPLEMENTATION_STATUS.md (Task 0.5 - Completed)
