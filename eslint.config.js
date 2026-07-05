@@ -7,11 +7,23 @@ export default [
   js.configs.recommended,
   {
     files: ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx'],
-    ignores: ['dist', 'node_modules', '*.config.js'],
+    ignores: ['dist', 'node_modules', '*.config.js', '**/dist/**'],
     languageOptions: {
       parser: tsParser,
       ecmaVersion: 2022,
       sourceType: 'module',
+      globals: {
+        process: 'readonly',
+        setTimeout: 'readonly',
+        clearTimeout: 'readonly',
+        setInterval: 'readonly',
+        clearInterval: 'readonly',
+        console: 'readonly',
+        module: 'readonly',
+        require: 'readonly',
+        __dirname: 'readonly',
+        __filename: 'readonly',
+      },
     },
     plugins: {
       '@typescript-eslint': tsPlugin,
@@ -28,6 +40,7 @@ export default [
           'newlines-between': 'always',
         },
       ],
+      'no-undef': 'off', // غیرفعال کردن no-undef چون TypeScript این کار را انجام می‌دهد
     },
   },
 ];
