@@ -11,9 +11,19 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@cardverse/shared": "workspace:*"
+    "@cardverse/shared": "workspace:*",
+    "compression": "^1.8.1",
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
+    "helmet": "^8.2.0",
+    "morgan": "^1.11.0"
   },
   "devDependencies": {
+    "@types/compression": "^1.8.1",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/helmet": "^4.0.0",
+    "@types/morgan": "^1.9.10",
     "@types/node": "^20.0.0",
     "typescript": "^5.3.3"
   }
