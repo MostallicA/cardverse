@@ -221,3 +221,11 @@ Changes to this document require updating the Version History.### Task 0.5 - Rep
 - commitlint.config.js - Commit message validation
 - .github/PULL_REQUEST_TEMPLATE.md - PR template
 - .github/ISSUE_TEMPLATE.md - Issue template
+
+### Task 0.6 - Root Development Configuration - In Progress
+
+- .env.example - Environment variables template
+- .env.development - Development environment
+- .env.production - Production environment
+- .env.test - Test environment
+- Updated package.json scripts - Development commands

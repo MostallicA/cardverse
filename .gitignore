@@ -109,3 +109,6 @@ coverage/
 
 backups/*
 !backups/.gitkeep
+.env 
+.env.* 
+!.env.example 
