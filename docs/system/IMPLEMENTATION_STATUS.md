@@ -260,3 +260,12 @@ Changes to this document require updating the Version History.### Task 0.5 - Rep
 - Root endpoint (/) with API information
 - Server running successfully on port 3000
 - CORS, Helmet, Compression, Morgan configured
+
+### Task 1.1 - Backend Core Configuration - Completed
+
+- Config module created with environment variables
+- Logger middleware (Morgan + custom) added
+- Error handler and 404 handler implemented
+- CORS configured with origin settings
+- Health check extended with environment info
+- Server running successfully with all middleware
