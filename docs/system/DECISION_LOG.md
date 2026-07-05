@@ -380,3 +380,73 @@ commit conventions, and GitHub templates for the CardVerse monorepo.
 - PROJECT_RULES.md Section 10 (Git Workflow Rules)
 - PROJECT_RULES.md Section 6 (Development Rules)
 - IMPLEMENTATION_STATUS.md (Task 0.5 - Completed)
+
+## Decision: Backend Express Server Implementation
+
+**Date**: 2026-07-05
+**Category**: Backend Development
+**Status**: Implemented
+**Task**: Task 1.0
+
+**Context**:
+Task 1.0 required implementing the Express server foundation with proper middleware.
+
+**Decision**:
+
+- Express 5.2.1 as web framework
+- CORS 2.8.6 with configurable origin
+- Helmet 8.2.0 for security headers
+- Compression 1.8.1 for response compression
+- Morgan 1.11.0 for request logging
+- Health check endpoint at /health
+- Root endpoint with API information
+
+**Consequences**:
+
+- Server running successfully on port 3000
+- All middleware configured and functional
+- TypeScript build successful
+- Server ready for development
+
+**References**:
+
+- PROJECT_RULES.md Section 6 (Development Rules)
+- ARCHITECTURE.md Section 2 (System Layers)
+
+---
+
+## Decision: Backend Core Configuration
+
+**Date**: 2026-07-05
+**Category**: Backend Development
+**Status**: Implemented
+**Task**: Task 1.1
+
+**Context**:
+Task 1.1 required adding configuration management and middleware.
+
+**Decision**:
+
+- Config module with environment variables support
+- Custom request logger middleware
+- Error handler with structured responses
+- 404 handler for unmatched routes
+- CORS configured with origin settings
+
+**Implemented Files**:
+
+- backend/src/config/index.ts
+- backend/src/middleware/logger.ts
+- backend/src/middleware/errorHandler.ts
+
+**Consequences**:
+
+- Environment-based configuration ready
+- Structured error responses
+- Proper logging for all requests
+- CORS security configured
+
+**References**:
+
+- API.md Section 7 (Error Handling)
+- PROJECT_RULES.md Section 8 (API Rules)
