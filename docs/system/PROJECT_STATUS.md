@@ -1,4 +1,4 @@
-﻿# CardVerse Project Status
+# CardVerse Project Status
 
 **Document ID:** CV-SYS-005
 **Version:** 0.3.0
@@ -265,26 +265,26 @@ Possible module states are:
 
 ### Platform Modules
 
-| Module               | Status  |
-| -------------------- | ------- |
-| Authentication       | Planned |
-| User Profiles        | Planned |
-| Friends System       | Planned |
-| Presence System      | Planned |
-| Matchmaking          | Planned |
-| Game Engine          | Planned |
-| Hokm Classic         | Frozen  |
-| AI Players           | Planned |
-| Statistics           | Planned |
-| Rankings             | Planned |
-| Seasons              | Planned |
-| Economy              | Planned |
-| Wallet               | Planned |
-| Shop                 | Planned |
-| Achievements         | Planned |
-| Inventory            | Planned |
-| Notifications        | Planned |
-| Administration Panel | Planned |
+| Module               | Status    |
+| -------------------- | --------- |
+| Authentication       | Planned   |
+| User Profiles        | Planned   |
+| Friends System       | Completed |
+| Presence System      | Planned   |
+| Matchmaking          | Planned   |
+| Game Engine          | Planned   |
+| Hokm Classic         | Frozen    |
+| AI Players           | Planned   |
+| Statistics           | Planned   |
+| Rankings             | Planned   |
+| Seasons              | Planned   |
+| Economy              | Planned   |
+| Wallet               | Planned   |
+| Shop                 | Planned   |
+| Achievements         | Planned   |
+| Inventory            | Planned   |
+| Notifications        | Planned   |
+| Administration Panel | Planned   |
 
 ---
 
@@ -758,6 +758,7 @@ Related documents:
 | 0.4.0   | 2026-07-05 | Task 2.0 completed - Backend development structure established      |
 | 0.5.0   | 2026-07-06 | Task 2.1 completed - Authentication module (guest, google, upgrade) |
 | 0.6.0   | 2026-07-06 | Task 2.2 completed - User management module                         |
+| 0.7.0   | 2026-07-06 | Task 2.3 completed - Friends System module implemented              |
 
 ---
 
@@ -773,7 +774,7 @@ Sprint 1
 
 ### Current Task
 
-Task 2.2 - User Management
+Task 2.3 - Friends System
 
 ### Current Status
 
@@ -789,7 +790,7 @@ Latest Commit Message: feat(user): add user management module
 
 ### Next Task
 
-Task 2.3 - Friends System
+Task 2.4 - Presence System
 
 ### Repository Health
 
@@ -816,8 +817,8 @@ Development Environment: Ready
 
 - Task 2.0: Backend Development - Completed
 - Task 2.1: Authentication Implementation - Completed
-- Task 2.2: User Management - Pending
-- Task 2.3: Friends System - Pending
+- Task 2.2: User Management - Completed
+- Task 2.3: Friends System - Completed
 
 ### Notes
 
@@ -831,7 +832,7 @@ Authentication module implemented with guest login, Google login, and account up
 
 User management module implemented with profile creation, retrieval, update, and search.
 
-Architecture follows Hexagonal pattern (Controllers → Services) with request validation and async error handling.
+Architecture follows Hexagonal pattern (Controllers ? Services) with request validation and async error handling.
 
 All future work must follow the frozen project documentation.
 

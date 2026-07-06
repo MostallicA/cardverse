@@ -5,6 +5,7 @@
 import { Router, Request, Response } from 'express';
 import { APP_NAME, APP_VERSION } from '@cardverse/shared';
 
+import friendsRoutes from '../../modules/friends/friends.routes.js';
 import { ResponseHelper } from '../../utils/response.js';
 import authRoutes from '../../modules/auth/auth.routes.js';
 import userRoutes from '../../modules/user/user.routes.js';
@@ -61,3 +62,6 @@ router.use('/users', userRoutes);
 // router.use('/matches', matchRoutes);
 
 export default router;
+
+// Friends routes
+router.use('/friends', friendsRoutes);

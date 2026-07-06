@@ -44,12 +44,12 @@ This document is updated whenever a file is added, modified or completed.
 | ------------- | --------- | ------- | ------ |
 | Root Files    | 7         | 0       | 7      |
 | Documentation | 12        | 0       | 12     |
-| Backend       | 19        | 0       | 19     |
+| Backend       | 24        | 0       | 24     |
 | Frontend      | 0         | 2       | 2      |
 | Shared        | 1         | 0       | 1      |
 | Tests         | 0         | 1       | 1      |
 | Tools         | 0         | 1       | 1      |
-| **Total**     | **39**    | **4**   | **43** |
+| **Total**     | **44**    | **4**   | **48** |
 
 ---
 
@@ -69,6 +69,12 @@ This document is updated whenever a file is added, modified or completed.
 ### Documentation Files
 
 ### Backend Files
+
+| backend/src/modules/friends/friends.types.ts | Friend type definitions | Complete | 2026-07-06 |
+| backend/src/modules/friends/friends.service.ts | Friend business logic | Complete | 2026-07-06 |
+| backend/src/modules/friends/friends.validator.ts | Friend validation | Complete | 2026-07-06 |
+| backend/src/modules/friends/friends.controller.ts | Friend route handlers | Complete | 2026-07-06 |
+| backend/src/modules/friends/friends.routes.ts | Friend routes | Complete | 2026-07-06 |
 
 | File                                        | Purpose               | Status   | Last Modified |
 | ------------------------------------------- | --------------------- | -------- | ------------- |
@@ -153,7 +159,7 @@ This document is updated whenever a file is added, modified or completed.
 | -------------- | ----------- | -------------------------------------------- |
 | Authentication | In Progress | Task 2.1 - Guest and Google auth implemented |
 | User Profiles  | In Progress | Task 2.2 - Profile management implemented    |
-| Friends System | Planned     | Will be implemented in Phase 3               |
+| Friends System | Completed   | Will be implemented in Phase 3               |
 | Matchmaking    | Planned     | Will be implemented in Phase 4               |
 | Game Engine    | Planned     | Will be implemented in Phase 4               |
 | Hokm Classic   | Frozen      | Documentation complete                       |
@@ -209,6 +215,7 @@ This document is updated whenever a file is added, modified or completed.
 | Task 2.0 | Backend Development           | Completed |
 | Task 2.1 | Authentication Implementation | Completed |
 | Task 2.2 | User Management               | Completed |
+| Task 2.3 | Friends System                | Completed |
 
 ---
 
@@ -231,6 +238,7 @@ Related documents:
 | 1.1.0   | 2026-07-05 | Task 2.0 completed - Backend structure, response helper, validation    |
 | 1.2.0   | 2026-07-06 | Task 2.1 completed - Authentication module with guest and google login |
 | 1.3.0   | 2026-07-06 | Task 2.2 completed - User management with profiles and search          |
+| 1.4.0   | 2026-07-06 | Task 2.3 completed - Friends System module implemented                 |
 
 ---
 

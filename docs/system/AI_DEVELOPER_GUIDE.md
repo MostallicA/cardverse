@@ -1,12 +1,12 @@
 # CardVerse AI Developer Guide
 
 **Document ID:** CV-SYS-007
-**Version:** 0.2.0
+**Version:** 0.6.0
 **Status:** Frozen
 **Classification:** System
 **Owner:** Mostafa & ChatGPT
 **Created:** 2026-06-30
-**Last Updated:** 2026-07-04
+**Last Updated:** 2026-07-07
 
 ---
 
@@ -388,60 +388,324 @@ All commands follow this protocol:
 
 Example:
 
-\`\`\`cmd
+```cmd
 :: Step 1: Create directory structure
 mkdir backend\src\controllers
 
 :: Step 2: Verify directory was created
 dir backend\src /b
-\`\`\`
 
 This pattern ensures:
 
-- No commands are executed without user awareness
-- Each step is validated before proceeding
-- Errors are caught immediately
-- Development remains incremental and reviewable
+**No commands are executed without user awareness**
 
-### Session End Protocol
+**Each step is validated before proceeding**
 
-1. **Review Changes**: Verify all changes are committed.
+**Errors are caught immediately**
 
-2. **Update Status**: Update PROJECT_STATUS.md and IMPLEMENTATION_STATUS.md.
+**Development remains incremental and reviewable**
 
-3. **Record Decisions**: Document decisions in DECISION_LOG.md.
+Session End Protocol
 
-4. **Final Commit**: Create a commit with the completed task.
+**1. Review Changes: Verify all changes are committed.**
 
-### Rules for Step-by-Step Development
+**2. Update Status: Update PROJECT_STATUS.md and IMPLEMENTATION_STATUS.md.**
 
-1. **Read Before Modify**: Always review existing code before making changes.
+**3. Record Decisions: Document decisions in DECISION_LOG.md.**
 
-2. **Small Incremental Changes**: Prefer small, reviewable changes over large rewrites.
+**4. Final Commit: Create a commit with the completed task.**
 
-3. **Verify After Each Step**: After executing commands, verify output before continuing.
+Rules for Step-by-Step Development
 
-4. **Document Decisions**: Record important decisions in DECISION_LOG.md.
+**1. Read Before Modify: Always review existing code before making changes.**
 
-5. **Update Status**: Always update project status after completing tasks.
+**2. Small Incremental Changes: Prefer small, reviewable changes over large rewrites.**
 
-6. **No Assumptions**: When documentation is incomplete, identify uncertainty rather than inventing behavior.
+**3. Verify After Each Step: After executing commands, verify output before continuing.**
 
----
+**4. Document Decisions: Record important decisions in DECISION_LOG.md.**
 
-## 17. Version History
+**5. Update Status: Always update project status after completing tasks.**
 
-| Version | Date       | Description                                                   |
-| ------- | ---------- | ------------------------------------------------------------- |
-| 0.1.0   | 2026-06-30 | Initial AI Developer Guide established                        |
-| 0.1.0   | 2026-07-01 | Documentation Freeze completed                                |
-| 0.2.0   | 2026-07-04 | Added Session Recovery Workflow and updated references        |
-| 0.3.0   | 2026-07-05 | Added Step-by-Step Development Workflow and Session protocols |
-| 0.4.0   | 2026-07-05 | Updated Command Execution Pattern with step-by-step protocol  |
+**6. No Assumptions: When documentation is incomplete, identify uncertainty rather than inventing behavior.**
 
 ---
 
-**Document Status:** Frozen
+16.6 AI Session Behavior Rules
+
+Rule 1: Never Provide Multiple Files in One Response
+
+The AI MUST NOT provide complete code for multiple files in a single response.
+
+Violation Example:
+
+Providing friends.types.ts, friends.service.ts, friends.validator.ts, friends.controller.ts, and friends.routes.ts all at once.
+
+Correct Behavior:
+
+Provide ONE file at a time, following the Step-by-Step workflow.
+
+---
+
+Rule 2: One Command Per Interaction
+
+The AI MUST suggest exactly ONE CMD command per response.
+
+After the user executes and verifies the output, the AI suggests the next command.
+
+Violation Example:
+
+Step 1: Create directory
+Step 2: Create files
+Step 3: Update routes
+
+Correct Behavior:
+
+:: Step 1: Create directory
+mkdir backend\src\modules\friends
+
+Wait for user confirmation, then proceed.
+
+---
+
+Rule 3: File Creation = One File Per Step
+When creating multiple files, each file must be created as a separate step.
+
+Workflow:
+
+1. AI suggests: Create friends.types.ts
+
+2. User executes and verifies
+
+3. AI suggests: Create friends.service.ts
+
+4. User executes and verifies
+
+5. Continue for remaining files
+
+---
+
+Rule 4: Always Reference Session Status
+The AI must explicitly state which step of the workflow is currently active.
+
+Example:
+
+?? Step 1 of 8: Creating friends module directory
+?? Step 2 of 8: Creating friends.types.ts
+?? Step 3 of 8: Creating friends.service.ts
+
+---
+
+Rule 5: Read Before Modify
+Before suggesting any changes, the AI must:
+
+1. Verify the current state from the user's output
+
+2. Confirm the previous step was completed successfully
+
+3. Only then suggest the next step
+
+---
+
+Rule 6: No Assumptions
+The AI must never assume:
+
+**That the user has already executed a command**
+
+**That a file already exists**
+
+**That a previous step was completed**
+
+Every step must be explicitly verified before proceeding.
+
+---
+
+Rule 7: Session Continuity
+When starting a new chat session:
+
+1. Read all provided documentation
+
+2. Identify current task from PROJECT_STATUS.md
+
+3. Resume from the LAST VERIFIED STEP
+
+4. Do NOT skip to the end of the task
+
+---
+
+Rule 8: Documentation Update at End
+Only after ALL steps of a task are completed and verified, the AI should propose updating:
+
+**IMPLEMENTATION_STATUS.md**
+
+**PROJECT_STATUS.md**
+
+**DECISION_LOG.md (if needed)**
+
+---
+
+Rule 9: Always Include CD Command with Explicit Path
+Before ANY file operation, the AI MUST include a cd command that explicitly sets the correct working directory.
+
+When to use which path:
+
+| Scenario          | Command                                      | When to use                             |
+| ----------------- | -------------------------------------------- | --------------------------------------- |
+| Root project      | cd /d C:\Dev\CardVerse                       | Most operations (reading/writing files) |
+| Modules directory | cd /d C:\Dev\CardVerse\backend\src\modules   | Checking module folders                 |
+| Routes directory  | cd /d C:\Dev\CardVerse\backend\src\routes\v1 | Working with routes                     |
+| Specific file     | cd /d C:\Dev\CardVerse + relative path       | Reading/writing specific files          |
+
+---
+
+Pattern:
+
+:: Step X: Description of what we're doing
+:: ???: ????? ????? ??? ?? ??? ???? ???????
+:: ????: C:\Dev\CardVerse\... (???? ????)
+
+cd /d C:\Dev\CardVerse\[subfolder if needed]
+[actual command]
+
+Example 1 - Working at project root:
+
+:: Step 3: Reading index.ts from routes
+:: ???: ????? ?????? ???? index.ts
+:: ????: C:\Dev\CardVerse\backend\src\routes\v1
+
+cd /d C:\Dev\CardVerse
+type backend\src\routes\v1\index.ts
+
+Example 2 - Working in modules folder:
+
+:: Step 2: Checking existing modules
+:: ???: ????? ????????? ?????
+:: ????: C:\Dev\CardVerse\backend\src\modules
+
+cd /d C:\Dev\CardVerse\backend\src\modules
+dir /b
+
+Example 3 - Reading a file with full path:
+
+:: Step 4: Reading index.ts
+:: ???: ?????? ?????? ???? index.ts
+:: ????: C:\Dev\CardVerse\backend\src\routes\v1
+
+cd /d C:\Dev\CardVerse
+type backend\src\routes\v1\index.ts
+
+Rationale:
+
+**User may be in any directory (e.g., C:\Windows\system32)**
+
+**cd /d ensures the correct drive and path**
+
+**Explicit path prevents "file not found" errors**
+
+**/d flag ensures drive change (C:\ to D:\ if needed)**
+
+**Makes commands reproducible**
+
+**AI clearly communicates the target directory**
+
+Important Note:
+The AI MUST ALWAYS include cd /d C:\Dev\CardVerse at the beginning of every command block, even if the previous command was in the same directory. This ensures the command works correctly if the user starts a new CMD session or changes directory.
+
+---
+
+Rule 10: Manual Documentation Update Protocol
+IMPORTANT: This rule REPLACES the PowerShell-based file modification approach. PowerShell automation caused file corruption and encoding issues. This manual protocol is now the STANDARD for all documentation updates.
+
+When updating documentation files, the AI MUST follow this protocol:
+
+Step 1: Read Current Content
+The AI suggests the type command to display the full file content:
+
+cd /d C:\Dev\CardVerse
+type docs\system\[filename].md
+
+Step 2: User Provides Content
+The user executes the command and sends the complete output to the AI.
+
+Step 3: AI Analyzes and Identifies Changes
+The AI reviews the content and provides:
+
+**Exact location of each change (section name, line position)**
+
+**Old content (exact text to be replaced)**
+
+**New content (exact text to replace with)**
+
+Step 4: User Applies Changes Manually
+The user applies the changes using Notepad++ or VS Code (NOT PowerShell automation).
+
+Step 5: AI Verifies
+The AI requests the type command again to verify the changes were applied correctly:
+
+cd /d C:\Dev\CardVerse
+type docs\system\[filename].md
+
+Example Workflow:
+
+?? Step 1: Reading IMPLEMENTATION_STATUS.md
+
+cd /d C:\Dev\CardVerse
+type docs\system\IMPLEMENTATION_STATUS.md
+
+?? User sends the output
+
+?? Step 2: AI analyzes and identifies changes
+
+**Change 1 - Section: 2. Implementation Status Summary**
+- Old: `| Backend       | 19        | 0       | 19     |`
+- New: `| Backend       | 24        | 0       | 24     |`
+
+**Change 2 - Section: 9. Version History**
+- Old: `| 1.3.0   | 2026-07-06 | Task 2.2 completed |`
+- New: `| 1.4.0   | 2026-07-06 | Task 2.3 completed |`
+
+?? Step 3: User applies changes with Notepad++
+
+?? Step 4: AI verifies
+
+cd /d C:\Dev\CardVerse
+type docs\system\IMPLEMENTATION_STATUS.md
+
+?? User sends the output for verification
+
+Rationale:
+
+**Eliminates risk of corrupted files from automated PowerShell commands**
+
+**User has full control over the changes**
+
+**Changes are reviewable and auditable**
+
+**Prevents unintended modifications**
+
+**Works correctly with UTF-8 and Persian characters**
+
+**PowerShell automation is FORBIDDEN for documentation updates**
+
+This rule REPLACES the PowerShell-based approach. The AI MUST NOT suggest PowerShell commands for modifying documentation files.
+
+---
+
+17. Version History
+
+| Version | Date       | Description                                                                    |
+| ------- | ---------- | ------------------------------------------------------------------------------ |
+| 0.1.0   | 2026-06-30 | Initial AI Developer Guide established                                         |
+| 0.1.0   | 2026-07-01 | Documentation Freeze completed                                                 |
+| 0.2.0   | 2026-07-04 | Added Session Recovery Workflow and updated references                         |
+| 0.3.0   | 2026-07-05 | Added Step-by-Step Development Workflow and Session protocols                  |
+| 0.4.0   | 2026-07-05 | Updated Command Execution Pattern with step-by-step protocol                   |
+| 0.5.0   | 2026-07-06 | Added Rules 9-10 for PowerShell and CD command protocols                       |
+| 0.6.0   | 2026-07-07 | Replaced PowerShell method with Manual Documentation Update Protocol (Rule 10) |
+
+---
+
+Document Status: Frozen
 
 This document defines the standard operating procedure for AI assistants contributing to the CardVerse project.
 
@@ -452,7 +716,4 @@ Changes to this document require updating the Version History.
 This document defines the standard operating procedure for AI collaboration within CardVerse.
 
 All AI-assisted development sessions should follow this guide unless explicitly instructed otherwise by the project owner.
-
-```
-
 ```

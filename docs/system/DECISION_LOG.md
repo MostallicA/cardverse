@@ -342,6 +342,82 @@ List the authoritative project documents that define or are affected by this dec
 
 ---
 
+### CV-DEC-0012
+
+**Title:** Step-by-Step AI Session Behavior Rules
+
+**Date:** 2026-07-06
+
+**Status:** Accepted
+
+**Context:** AI assistants in new chat sessions were providing multiple files and commands in a single response, violating the Step-by-Step workflow defined in AI_DEVELOPER_GUIDE.md Section 16.
+
+**Decision:** Add explicit rules to AI_DEVELOPER_GUIDE.md that enforce:
+
+- One command per interaction
+- One file per step
+- Explicit verification before proceeding
+- Session status tracking
+- No assumptions about previous steps
+
+**Rationale:** This ensures all AI sessions follow the same incremental, reviewable development pattern regardless of chat history.
+
+**Consequences:** Development becomes slower but more controlled, auditable, and consistent with the documented workflow.
+
+**Related Documents:** AI_DEVELOPER_GUIDE.md (Section 16)
+
+---
+
+### CV-DEC-0013
+
+**Title:** PowerShell with Absolute Paths for File Modifications
+
+**Date:** 2026-07-06
+
+**Status:** Accepted
+
+**Context:** Manual file editing with Notepad was error-prone and path-dependency caused confusion when starting new sessions.
+
+**Decision:** All file modifications will use PowerShell commands with absolute paths. Each modification follows a 4-step pattern:
+
+1. Read current content
+2. Create backup
+3. Apply modification
+4. Verify changes
+
+**Rationale:** This approach eliminates path errors, provides rollback capability, ensures precision, and creates reproducible steps.
+
+**Consequences:** Slightly more verbose commands but significantly more reliable and auditable.
+
+**Related Documents:** AI_DEVELOPER_GUIDE.md (Section 16.6)
+
+---
+
+### CV-DEC-0014
+
+**Title:** Always Include CD Command Before File Operations
+
+**Date:** 2026-07-06
+
+**Status:** Accepted
+
+**Context:** Users may open CMD in any directory (e.g., C:\Windows\system32). Commands that rely on relative paths fail with "file not found" errors.
+
+**Decision:** Every command block MUST start with `cd /d C:\Dev\CardVerse` before any file operation.
+
+**Rationale:**
+
+- Eliminates path-dependency errors
+- Makes commands reproducible
+- Works regardless of starting directory
+- `/d` flag ensures drive change
+
+**Consequences:** Commands are slightly longer but significantly more reliable.
+
+**Related Documents:** AI_DEVELOPER_GUIDE.md (Section 16.6)
+
+---
+
 ## 6. References
 
 - PROJECT_DNA.md
@@ -366,6 +442,7 @@ List the authoritative project documents that define or are affected by this dec
 | 0.1.0   | 2026-07-01 | Documentation Freeze completed                                            |
 | 0.2.0   | 2026-07-04 | Added CV-DEC-0009 for new system documents                                |
 | 0.3.0   | 2026-07-06 | Added CV-DEC-0010 and CV-DEC-0011 for session protocol and module pattern |
+| 0.4.0   | 2026-07-06 | Added CV-DEC-0013 and CV-DEC-0014 for PowerShell and CD command protocols |
 
 ---
 
