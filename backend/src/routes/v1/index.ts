@@ -6,6 +6,7 @@ import { Router, Request, Response } from 'express';
 import { APP_NAME, APP_VERSION } from '@cardverse/shared';
 
 import { ResponseHelper } from '../../utils/response.js';
+import authRoutes from '../../modules/auth/auth.routes.js';
 
 const router: Router = Router();
 
@@ -32,14 +33,21 @@ router.get('/', (_req: Request, res: Response) => {
       documentation: '/api/v1',
       endpoints: {
         health: '/api/v1/health',
-        // Future endpoints will be added here
+        auth: {
+          guest: 'POST /api/v1/auth/guest',
+          google: 'POST /api/v1/auth/google',
+          upgrade: 'POST /api/v1/auth/upgrade',
+          me: 'GET /api/v1/auth/me',
+        },
       },
     })
   );
 });
 
+// Auth routes
+router.use('/auth', authRoutes);
+
 // Placeholder for future route groups
-// router.use('/auth', authRoutes);
 // router.use('/users', userRoutes);
 // router.use('/matches', matchRoutes);
 

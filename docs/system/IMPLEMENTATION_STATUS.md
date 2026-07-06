@@ -44,12 +44,12 @@ This document is updated whenever a file is added, modified or completed.
 | ------------- | --------- | ------- | ------ |
 | Root Files    | 7         | 0       | 7      |
 | Documentation | 12        | 0       | 12     |
-| Backend       | 11        | 0       | 11     |
+| Backend       | 15        | 0       | 15     |
 | Frontend      | 0         | 2       | 2      |
 | Shared        | 1         | 0       | 1      |
 | Tests         | 0         | 1       | 1      |
 | Tools         | 0         | 1       | 1      |
-| **Total**     | **31**    | **4**   | **35** |
+| **Total**     | **35**    | **4**   | **39** |
 
 ---
 
@@ -70,13 +70,18 @@ This document is updated whenever a file is added, modified or completed.
 
 ### Backend Files
 
-| File                                   | Purpose             | Status   | Last Modified |
-| -------------------------------------- | ------------------- | -------- | ------------- |
-| backend/src/utils/response.ts          | API response helper | Complete | 2026-07-05    |
-| backend/src/middleware/asyncHandler.ts | Async error wrapper | Complete | 2026-07-05    |
-| backend/src/middleware/validate.ts     | Request validation  | Complete | 2026-07-05    |
-| backend/src/routes/v1/index.ts         | API v1 routes       | Complete | 2026-07-05    |
-| backend/src/index.ts                   | Updated entry point | Complete | 2026-07-05    |
+| File                                        | Purpose               | Status   | Last Modified |
+| ------------------------------------------- | --------------------- | -------- | ------------- |
+| backend/src/utils/response.ts               | API response helper   | Complete | 2026-07-05    |
+| backend/src/middleware/asyncHandler.ts      | Async error wrapper   | Complete | 2026-07-05    |
+| backend/src/middleware/validate.ts          | Request validation    | Complete | 2026-07-05    |
+| backend/src/routes/v1/index.ts              | API v1 routes         | Complete | 2026-07-05    |
+| backend/src/index.ts                        | Updated entry point   | Complete | 2026-07-05    |
+| backend/src/modules/auth/auth.types.ts      | Auth type definitions | Complete | 2026-07-06    |
+| backend/src/modules/auth/auth.service.ts    | Auth business logic   | Complete | 2026-07-06    |
+| backend/src/modules/auth/auth.validator.ts  | Auth validation       | Complete | 2026-07-06    |
+| backend/src/modules/auth/auth.controller.ts | Auth route handlers   | Complete | 2026-07-06    |
+| backend/src/modules/auth/auth.routes.ts     | Auth routes           | Complete | 2026-07-06    |
 
 #### Core Documents (Frozen)
 
@@ -139,20 +144,21 @@ This document is updated whenever a file is added, modified or completed.
 
 ## 5. Module Status
 
-| Module         | Status  | Notes                          |
-| -------------- | ------- | ------------------------------ |
-| Authentication | Planned | Will be implemented in Phase 3 |
-| User Profiles  | Planned | Will be implemented in Phase 3 |
-| Friends System | Planned | Will be implemented in Phase 3 |
-| Matchmaking    | Planned | Will be implemented in Phase 4 |
-| Game Engine    | Planned | Will be implemented in Phase 4 |
-| Hokm Classic   | Frozen  | Documentation complete         |
-| AI Players     | Planned | Will be implemented in Phase 4 |
-| Statistics     | Planned | Will be implemented in Phase 5 |
-| Rankings       | Planned | Will be implemented in Phase 5 |
-| Economy        | Planned | Will be implemented in Phase 6 |
-| Wallet         | Planned | Will be implemented in Phase 6 |
-| Shop           | Planned | Will be implemented in Phase 6 |
+| Module         | Status      | Notes                             |
+| -------------- | ----------- | --------------------------------- |
+| Authentication | Planned     | Will be implemented in Phase 3    |
+| User Profiles  | Planned     | Will be implemented in Phase 3    |
+| Friends System | Planned     | Will be implemented in Phase 3    |
+| Matchmaking    | Planned     | Will be implemented in Phase 4    |
+| Game Engine    | Planned     | Will be implemented in Phase 4    |
+| Hokm Classic   | Frozen      | Documentation complete            |
+| AI Players     | Planned     | Will be implemented in Phase 4    |
+| Statistics     | Planned     | Will be implemented in Phase 5    |
+| Rankings       | Planned     | Will be implemented in Phase 5    |
+| Economy        | Planned     | Will be implemented in Phase 6    |
+| Wallet         | Planned     | Will be implemented in Phase 6    |
+| Shop           | Planned     | Will be implemented in Phase 6    |
+| Authentication | In Progress | Task 2.1 - Basic auth implemented |
 
 ---
 
@@ -196,7 +202,7 @@ This document is updated whenever a file is added, modified or completed.
 | Task     | Description                   | Status    |
 | -------- | ----------------------------- | --------- |
 | Task 2.0 | Backend Development           | Completed |
-| Task 2.1 | Authentication Implementation | Pending   |
+| Task 2.1 | Authentication Implementation | Completed |
 | Task 2.2 | User Management               | Pending   |
 
 ---
@@ -215,9 +221,10 @@ Related documents:
 
 ## 9. Version History
 
-| Version | Date       | Description                                                         |
-| ------- | ---------- | ------------------------------------------------------------------- |
-| 1.1.0   | 2026-07-05 | Task 2.0 completed - Backend structure, response helper, validation |
+| Version | Date       | Description                                                            |
+| ------- | ---------- | ---------------------------------------------------------------------- |
+| 1.1.0   | 2026-07-05 | Task 2.0 completed - Backend structure, response helper, validation    |
+| 1.2.0   | 2026-07-06 | Task 2.1 completed - Authentication module with guest and google login |
 
 ---
 

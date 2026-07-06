@@ -750,12 +750,13 @@ Related documents:
 
 ## 12. Version History
 
-| Version | Date       | Description                                                       |
-| ------- | ---------- | ----------------------------------------------------------------- |
-| 0.1.0   | 2026-06-30 | Initial project status document                                   |
-| 0.2.0   | 2026-07-04 | Repository bootstrap completed and development officially started |
-| 0.3.0   | 2026-07-04 | Added Implemented Files section and updated documentation status  |
-| 0.4.0   | 2026-07-05 | Task 2.0 completed - Backend development structure established    |
+| Version | Date       | Description                                                         |
+| ------- | ---------- | ------------------------------------------------------------------- |
+| 0.1.0   | 2026-06-30 | Initial project status document                                     |
+| 0.2.0   | 2026-07-04 | Repository bootstrap completed and development officially started   |
+| 0.3.0   | 2026-07-04 | Added Implemented Files section and updated documentation status    |
+| 0.4.0   | 2026-07-05 | Task 2.0 completed - Backend development structure established      |
+| 0.5.0   | 2026-07-06 | Task 2.1 completed - Authentication module (guest, google, upgrade) |
 
 ---
 
@@ -771,7 +772,7 @@ Sprint 1
 
 ### Current Task
 
-Task 2.0 - Backend Development
+Task 2.1 - Authentication Implementation
 
 ### Current Status
 
@@ -787,7 +788,7 @@ Branch: main
 
 ### Next Task
 
-Task 2.1 - Authentication Implementation
+Task 2.2 - User Management
 
 ### Repository Health
 
