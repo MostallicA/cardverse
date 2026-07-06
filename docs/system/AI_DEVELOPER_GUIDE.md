@@ -378,12 +378,30 @@ Only after completing this checklist should the task be considered finished.
 
 ### Command Execution Pattern
 
-```cmd
-:: Step description
-command_to_execute
+All commands follow this protocol:
 
-:: Verify output
-type file_to_check
+1. **AI Suggests**: AI assistant suggests a CMD command with explanation of its purpose
+2. **User Executes**: User runs the command in CMD terminal
+3. **Output Verified**: Output is reviewed and verified for correctness
+4. **Confirmation**: Both parties confirm the step is complete
+5. **Next Step**: Proceed to next step only after confirmation
+
+Example:
+
+\`\`\`cmd
+:: Step 1: Create directory structure
+mkdir backend\src\controllers
+
+:: Step 2: Verify directory was created
+dir backend\src /b
+\`\`\`
+
+This pattern ensures:
+
+- No commands are executed without user awareness
+- Each step is validated before proceeding
+- Errors are caught immediately
+- Development remains incremental and reviewable
 
 ### Session End Protocol
 
@@ -414,11 +432,12 @@ type file_to_check
 ## 17. Version History
 
 | Version | Date       | Description                                                   |
-|---------|------------|---------------------------------------------------------------|
+| ------- | ---------- | ------------------------------------------------------------- |
 | 0.1.0   | 2026-06-30 | Initial AI Developer Guide established                        |
 | 0.1.0   | 2026-07-01 | Documentation Freeze completed                                |
 | 0.2.0   | 2026-07-04 | Added Session Recovery Workflow and updated references        |
 | 0.3.0   | 2026-07-05 | Added Step-by-Step Development Workflow and Session protocols |
+| 0.4.0   | 2026-07-05 | Updated Command Execution Pattern with step-by-step protocol  |
 
 ---
 
@@ -433,4 +452,7 @@ Changes to this document require updating the Version History.
 This document defines the standard operating procedure for AI collaboration within CardVerse.
 
 All AI-assisted development sessions should follow this guide unless explicitly instructed otherwise by the project owner.
+
+```
+
 ```
