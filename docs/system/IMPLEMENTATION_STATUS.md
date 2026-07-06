@@ -44,12 +44,12 @@ This document is updated whenever a file is added, modified or completed.
 | ------------- | --------- | ------- | ------ |
 | Root Files    | 7         | 0       | 7      |
 | Documentation | 12        | 0       | 12     |
-| Backend       | 6         | 0       | 6      |
+| Backend       | 11        | 0       | 11     |
 | Frontend      | 0         | 2       | 2      |
 | Shared        | 1         | 0       | 1      |
 | Tests         | 0         | 1       | 1      |
 | Tools         | 0         | 1       | 1      |
-| **Total**     | **26**    | **4**   | **30** |
+| **Total**     | **31**    | **4**   | **35** |
 
 ---
 
@@ -67,6 +67,16 @@ This document is updated whenever a file is added, modified or completed.
 | README.md           | Project introduction         | Frozen   | 2026-07-01    |
 
 ### Documentation Files
+
+### Backend Files
+
+| File                                   | Purpose             | Status   | Last Modified |
+| -------------------------------------- | ------------------- | -------- | ------------- |
+| backend/src/utils/response.ts          | API response helper | Complete | 2026-07-05    |
+| backend/src/middleware/asyncHandler.ts | Async error wrapper | Complete | 2026-07-05    |
+| backend/src/middleware/validate.ts     | Request validation  | Complete | 2026-07-05    |
+| backend/src/routes/v1/index.ts         | API v1 routes       | Complete | 2026-07-05    |
+| backend/src/index.ts                   | Updated entry point | Complete | 2026-07-05    |
 
 #### Core Documents (Frozen)
 
@@ -99,11 +109,6 @@ This document is updated whenever a file is added, modified or completed.
 ## 4. Pending Files
 
 ### Backend Files
-
-| File                 | Purpose              | Status  | Priority |
-| -------------------- | -------------------- | ------- | -------- |
-| backend/package.json | Backend dependencies | Pending | High     |
-| backend/src/index.ts | Backend entry point  | Pending | High     |
 
 ### Frontend Files
 
@@ -188,11 +193,11 @@ This document is updated whenever a file is added, modified or completed.
 
 ### Sprint 1 - In Progress
 
-| Task     | Description                   | Status  |
-| -------- | ----------------------------- | ------- |
-| Task 2.0 | Backend Development           | Pending |
-| Task 2.1 | Authentication Implementation | Pending |
-| Task 2.2 | User Management               | Pending |
+| Task     | Description                   | Status    |
+| -------- | ----------------------------- | --------- |
+| Task 2.0 | Backend Development           | Completed |
+| Task 2.1 | Authentication Implementation | Pending   |
+| Task 2.2 | User Management               | Pending   |
 
 ---
 
@@ -210,9 +215,9 @@ Related documents:
 
 ## 9. Version History
 
-| Version | Date       | Description                           |
-| ------- | ---------- | ------------------------------------- |
-| 1.0.0   | 2026-07-04 | Initial implementation status created |
+| Version | Date       | Description                                                         |
+| ------- | ---------- | ------------------------------------------------------------------- |
+| 1.1.0   | 2026-07-05 | Task 2.0 completed - Backend structure, response helper, validation |
 
 ---
 

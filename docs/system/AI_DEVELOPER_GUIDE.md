@@ -27,7 +27,8 @@
 13. Forbidden Behaviors
 14. AI Session Checklist
 15. References
-16. Version History
+16. Step-by-Step Development Workflow
+17. Version History
 
 ---
 
@@ -365,13 +366,59 @@ Only after completing this checklist should the task be considered finished.
 
 ---
 
-## 16. Version History
+## 16. Step-by-Step Development Workflow
 
-| Version | Date       | Description                                            |
-|---------|------------|--------------------------------------------------------|
-| 0.1.0   | 2026-06-30 | Initial AI Developer Guide established                 |
-| 0.1.0   | 2026-07-01 | Documentation Freeze completed                         |
-| 0.2.0   | 2026-07-04 | Added Session Recovery Workflow and updated references |
+### Session Start Protocol
+
+1. **Review Documentation**: Before any development, review PROJECT_STATUS.md to understand current state.
+2. **Identify Current Task**: Determine the current task from PROJECT_STATUS.md.
+3. **Execute Commands**: All commands are executed in CMD with step-by-step confirmation.
+4. **Verify Output**: After each command, verify output before proceeding.
+5. **Update Documentation**: After task completion, update all relevant documentation.
+
+### Command Execution Pattern
+
+```cmd
+:: Step description
+command_to_execute
+
+:: Verify output
+type file_to_check
+
+### Session End Protocol
+
+1. **Review Changes**: Verify all changes are committed.
+
+2. **Update Status**: Update PROJECT_STATUS.md and IMPLEMENTATION_STATUS.md.
+
+3. **Record Decisions**: Document decisions in DECISION_LOG.md.
+
+4. **Final Commit**: Create a commit with the completed task.
+
+### Rules for Step-by-Step Development
+
+1. **Read Before Modify**: Always review existing code before making changes.
+
+2. **Small Incremental Changes**: Prefer small, reviewable changes over large rewrites.
+
+3. **Verify After Each Step**: After executing commands, verify output before continuing.
+
+4. **Document Decisions**: Record important decisions in DECISION_LOG.md.
+
+5. **Update Status**: Always update project status after completing tasks.
+
+6. **No Assumptions**: When documentation is incomplete, identify uncertainty rather than inventing behavior.
+
+---
+
+## 17. Version History
+
+| Version | Date       | Description                                                   |
+|---------|------------|---------------------------------------------------------------|
+| 0.1.0   | 2026-06-30 | Initial AI Developer Guide established                        |
+| 0.1.0   | 2026-07-01 | Documentation Freeze completed                                |
+| 0.2.0   | 2026-07-04 | Added Session Recovery Workflow and updated references        |
+| 0.3.0   | 2026-07-05 | Added Step-by-Step Development Workflow and Session protocols |
 
 ---
 
@@ -386,3 +433,4 @@ Changes to this document require updating the Version History.
 This document defines the standard operating procedure for AI collaboration within CardVerse.
 
 All AI-assisted development sessions should follow this guide unless explicitly instructed otherwise by the project owner.
+```
