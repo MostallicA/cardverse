@@ -151,8 +151,8 @@ This document is updated whenever a file is added, modified or completed.
 
 | Module         | Status      | Notes                                        |
 | -------------- | ----------- | -------------------------------------------- |
-| Authentication | Planned     | Will be implemented in Phase 3               |
-| User Profiles  | Planned     | Will be implemented in Phase 3               |
+| Authentication | In Progress | Task 2.1 - Guest and Google auth implemented |
+| User Profiles  | In Progress | Task 2.2 - Profile management implemented    |
 | Friends System | Planned     | Will be implemented in Phase 3               |
 | Matchmaking    | Planned     | Will be implemented in Phase 4               |
 | Game Engine    | Planned     | Will be implemented in Phase 4               |
@@ -163,8 +163,6 @@ This document is updated whenever a file is added, modified or completed.
 | Economy        | Planned     | Will be implemented in Phase 6               |
 | Wallet         | Planned     | Will be implemented in Phase 6               |
 | Shop           | Planned     | Will be implemented in Phase 6               |
-| Authentication | In Progress | Task 2.1 - Basic auth implemented            |
-| User Profiles  | In Progress | Task 2.2 - Basic user management implemented |
 
 ---
 
@@ -210,7 +208,7 @@ This document is updated whenever a file is added, modified or completed.
 | -------- | ----------------------------- | --------- |
 | Task 2.0 | Backend Development           | Completed |
 | Task 2.1 | Authentication Implementation | Completed |
-| Task 2.2 | User Management               | Pending   |
+| Task 2.2 | User Management               | Completed |
 
 ---
 

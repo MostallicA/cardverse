@@ -201,6 +201,27 @@ CardVerse/
 | +-- middleware/
 | +-- logger.ts (Logger middleware)
 | +-- errorHandler.ts (Error handling)
+| +-- modules/
+| | +-- auth/
+| | | +-- auth.types.ts
+| | | +-- auth.service.ts
+| | | +-- auth.validator.ts
+| | | +-- auth.controller.ts
+| | | +-- auth.routes.ts
+| | +-- user/
+| | | +-- user.types.ts
+| | | +-- user.service.ts
+| | | +-- user.validator.ts
+| | | +-- user.controller.ts
+| | | +-- user.routes.ts
+| +-- routes/
+| | +-- v1/
+| | | +-- index.ts
+| +-- utils/
+| | +-- response.ts
+| +-- middleware/
+| | +-- asyncHandler.ts
+| | +-- validate.ts
 +-- backups/ (Backup storage)
 | +-- .gitkeep
 +-- CHANGELOG.md (Version history)
@@ -305,9 +326,10 @@ Related documents:
 
 ## 9. Version History
 
-| Version | Date       | Description                         |
-| ------- | ---------- | ----------------------------------- |
-| 1.0.0   | 2026-07-04 | Initial repository snapshot created |
+| Version | Date       | Description                                              |
+| ------- | ---------- | -------------------------------------------------------- |
+| 1.0.0   | 2026-07-04 | Initial repository snapshot created                      |
+| 1.1.0   | 2026-07-06 | Added auth and user modules, updated directory structure |
 
 ---
 

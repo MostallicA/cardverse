@@ -302,6 +302,46 @@ List the authoritative project documents that define or are affected by this dec
 
 ---
 
+### CV-DEC-0010
+
+**Title:** Step-by-Step Development Protocol
+
+**Date:** 2026-07-06
+
+**Status:** Accepted
+
+**Context:** Multiple development sessions required a consistent protocol for AI-human collaboration.
+
+**Decision:** All development follows a strict step-by-step protocol where the AI suggests CMD commands, the user executes them, output is verified, and each step is confirmed before proceeding.
+
+**Rationale:** This pattern ensures no commands are executed without user awareness, each step is validated, errors are caught immediately, and development remains incremental and reviewable.
+
+**Consequences:** Development is slightly slower but significantly more controlled and auditable. Every change is explicitly confirmed.
+
+**Related Documents:** AI_DEVELOPER_GUIDE.md (Section 16)
+
+---
+
+### CV-DEC-0011
+
+**Title:** Module Organization Pattern
+
+**Date:** 2026-07-06
+
+**Status:** Accepted
+
+**Context:** The project needed a consistent pattern for organizing backend modules.
+
+**Decision:** Each platform module follows the structure: `modules/<name>/<name>.types.ts`, `.service.ts`, `.validator.ts`, `.controller.ts`, `.routes.ts`. This separates concerns following Hexagonal Architecture with Controllers as adapters and Services containing business logic.
+
+**Rationale:** Consistent structure across modules improves maintainability, makes the codebase predictable for new contributors, and supports future extraction into microservices.
+
+**Consequences:** All future modules (Friends, Matchmaking, Game Engine, etc.) will follow this same pattern.
+
+**Related Documents:** ARCHITECTURE.md, IMPLEMENTATION_STATUS.md
+
+---
+
 ## 6. References
 
 - PROJECT_DNA.md
@@ -320,11 +360,12 @@ List the authoritative project documents that define or are affected by this dec
 
 ## 7. Version History
 
-| Version | Date       | Description                                |
-| ------- | ---------- | ------------------------------------------ |
-| 0.1.0   | 2026-06-30 | Initial Decision Log established           |
-| 0.1.0   | 2026-07-01 | Documentation Freeze completed             |
-| 0.2.0   | 2026-07-04 | Added CV-DEC-0009 for new system documents |
+| Version | Date       | Description                                                               |
+| ------- | ---------- | ------------------------------------------------------------------------- |
+| 0.1.0   | 2026-06-30 | Initial Decision Log established                                          |
+| 0.1.0   | 2026-07-01 | Documentation Freeze completed                                            |
+| 0.2.0   | 2026-07-04 | Added CV-DEC-0009 for new system documents                                |
+| 0.3.0   | 2026-07-06 | Added CV-DEC-0010 and CV-DEC-0011 for session protocol and module pattern |
 
 ---
 
