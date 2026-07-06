@@ -7,6 +7,7 @@ import { APP_NAME, APP_VERSION } from '@cardverse/shared';
 
 import { ResponseHelper } from '../../utils/response.js';
 import authRoutes from '../../modules/auth/auth.routes.js';
+import userRoutes from '../../modules/user/user.routes.js';
 
 const router: Router = Router();
 
@@ -39,6 +40,12 @@ router.get('/', (_req: Request, res: Response) => {
           upgrade: 'POST /api/v1/auth/upgrade',
           me: 'GET /api/v1/auth/me',
         },
+        users: {
+          create: 'POST /api/v1/users',
+          search: 'GET /api/v1/users?username=',
+          getById: 'GET /api/v1/users/:id',
+          update: 'PATCH /api/v1/users/:id',
+        },
       },
     })
   );
@@ -47,8 +54,10 @@ router.get('/', (_req: Request, res: Response) => {
 // Auth routes
 router.use('/auth', authRoutes);
 
+// User routes
+router.use('/users', userRoutes);
+
 // Placeholder for future route groups
-// router.use('/users', userRoutes);
 // router.use('/matches', matchRoutes);
 
 export default router;

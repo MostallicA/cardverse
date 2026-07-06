@@ -757,6 +757,7 @@ Related documents:
 | 0.3.0   | 2026-07-04 | Added Implemented Files section and updated documentation status    |
 | 0.4.0   | 2026-07-05 | Task 2.0 completed - Backend development structure established      |
 | 0.5.0   | 2026-07-06 | Task 2.1 completed - Authentication module (guest, google, upgrade) |
+| 0.6.0   | 2026-07-06 | Task 2.2 completed - User management module                         |
 
 ---
 
@@ -772,7 +773,7 @@ Sprint 1
 
 ### Current Task
 
-Task 2.1 - Authentication Implementation
+Task 2.2 - User Management
 
 ### Current Status
 
@@ -782,13 +783,13 @@ Completed
 
 Branch: main
 
-Latest Commit: a83047b
+Latest Commit: 0ecb427
 
 Latest Commit Message: feat(auth): add guest and google authentication
 
 ### Next Task
 
-Task 2.2 - User Management
+Task 2.3 - Friends System
 
 ### Repository Health
 
