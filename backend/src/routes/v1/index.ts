@@ -11,6 +11,7 @@ import { ResponseHelper } from '../../utils/response.js';
 import authRoutes from '../../modules/auth/auth.routes.js';
 import userRoutes from '../../modules/user/user.routes.js';
 import chatRoutes from '../../modules/chat/chat.routes';
+import notificationsRoutes from '../../modules/notifications/notifications.routes';
 
 const router: Router = Router();
 
@@ -57,6 +58,15 @@ router.get('/', (_req: Request, res: Response) => {
           getUnread: 'GET /api/v1/chat/unread',
           markAsRead: 'POST /api/v1/chat/read',
         },
+        notifications: {
+          get: 'GET /api/v1/notifications',
+          getUnread: 'GET /api/v1/notifications/unread',
+          markAsRead: 'POST /api/v1/notifications/read',
+          delete: 'DELETE /api/v1/notifications/:notificationId',
+          deleteAll: 'DELETE /api/v1/notifications',
+          getPreferences: 'GET /api/v1/notifications/preferences',
+          updatePreferences: 'PUT /api/v1/notifications/preferences',
+        },
       },
     })
   );
@@ -76,6 +86,9 @@ router.use('/presence', presenceRoutes);
 
 // Chat routes
 router.use('/chat', chatRoutes);
+
+// Notifications routes
+router.use('/notifications', notificationsRoutes);
 
 // Placeholder for future route groups
 // router.use('/matches', matchRoutes);
