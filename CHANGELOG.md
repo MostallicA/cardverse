@@ -21,6 +21,7 @@ The format is inspired by **Keep a Changelog** and follows **Semantic Versioning
 - Presence System Module (status tracking, heartbeat, batch queries)
 - Chat System Module (private messaging between friends, chat rooms, unread counts)
 - Notifications System Module (create, list, read/unread, delete, preferences)
+- Matchmaking Foundation Module (queue management, skill-based matching, region optimization)
 
 ### Changed
 
