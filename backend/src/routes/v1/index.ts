@@ -12,6 +12,7 @@ import authRoutes from '../../modules/auth/auth.routes.js';
 import userRoutes from '../../modules/user/user.routes.js';
 import chatRoutes from '../../modules/chat/chat.routes';
 import notificationsRoutes from '../../modules/notifications/notifications.routes';
+import matchmakingRoutes from '../../modules/matchmaking/matchmaking.routes';
 
 const router: Router = Router();
 
@@ -67,6 +68,14 @@ router.get('/', (_req: Request, res: Response) => {
           getPreferences: 'GET /api/v1/notifications/preferences',
           updatePreferences: 'PUT /api/v1/notifications/preferences',
         },
+        matchmaking: {
+          joinQueue: 'POST /api/v1/matchmaking/queue',
+          leaveQueue: 'DELETE /api/v1/matchmaking/queue',
+          getStatus: 'GET /api/v1/matchmaking/queue/status',
+          findMatch: 'POST /api/v1/matchmaking/find',
+          getStats: 'GET /api/v1/matchmaking/stats',
+          getMatch: 'GET /api/v1/matchmaking/matches/:matchId',
+        },
       },
     })
   );
@@ -89,6 +98,9 @@ router.use('/chat', chatRoutes);
 
 // Notifications routes
 router.use('/notifications', notificationsRoutes);
+
+// Matchmaking routes
+router.use('/matchmaking', matchmakingRoutes);
 
 // Placeholder for future route groups
 // router.use('/matches', matchRoutes);
