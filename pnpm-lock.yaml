@@ -91,7 +91,7 @@ importers:
   frontend:
     dependencies:
       axios:
-        specifier: ^1.7.0
+        specifier: ^1.18.1
         version: 1.18.1
       react:
         specifier: ^18.3.0
@@ -100,7 +100,7 @@ importers:
         specifier: ^18.3.0
         version: 18.3.1(react@18.3.1)
       react-router-dom:
-        specifier: ^6.23.0
+        specifier: ^6.30.4
         version: 6.30.4(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
     devDependencies:
       '@types/react':
