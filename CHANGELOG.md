@@ -18,6 +18,7 @@ The format is inspired by **Keep a Changelog** and follows **Semantic Versioning
 - Authentication Module (guest login, Google login, account upgrade)
 - User Management Module (profile CRUD, search)
 - Friends System Module (requests, accept, reject, list, remove)
+- Presence System Module (status tracking, heartbeat, batch queries)
 
 ### Changed
 

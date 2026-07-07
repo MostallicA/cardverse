@@ -5,6 +5,7 @@
 import { Router, Request, Response } from 'express';
 import { APP_NAME, APP_VERSION } from '@cardverse/shared';
 
+import presenceRoutes from '../../modules/presence/presence.routes';
 import friendsRoutes from '../../modules/friends/friends.routes.js';
 import { ResponseHelper } from '../../utils/response.js';
 import authRoutes from '../../modules/auth/auth.routes.js';
@@ -58,10 +59,13 @@ router.use('/auth', authRoutes);
 // User routes
 router.use('/users', userRoutes);
 
+// Friends routes
+router.use('/friends', friendsRoutes);
+
+// Presence routes
+router.use('/presence', presenceRoutes);
+
 // Placeholder for future route groups
 // router.use('/matches', matchRoutes);
 
 export default router;
-
-// Friends routes
-router.use('/friends', friendsRoutes);
