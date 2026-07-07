@@ -31,6 +31,9 @@ The format is inspired by **Keep a Changelog** and follows **Semantic Versioning
 - Shared Package Configuration (@cardverse/shared)
 - Tests Package Configuration (@cardverse/tests)
 - Tools Package Configuration (@cardverse/tools)
+- Frontend Authentication Integration (auth service, AuthContext, Login/Register pages)
+- Frontend UI Components (ProtectedRoute, authentication styles)
+- Frontend Routing (react-router-dom integration)
 
 ### Changed
 
