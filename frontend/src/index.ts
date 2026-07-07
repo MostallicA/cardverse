@@ -1,6 +1,6 @@
 /**
  * CardVerse Frontend - Entry Point
- * 
+ *
  * Document ID: CV-FE-002
  * Version: 0.1.0
  * Status: Development
