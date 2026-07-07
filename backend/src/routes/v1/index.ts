@@ -15,6 +15,7 @@ import notificationsRoutes from '../../modules/notifications/notifications.route
 import matchmakingRoutes from '../../modules/matchmaking/matchmaking.routes';
 import walletRoutes from '../../modules/wallet/wallet.routes';
 import shopRoutes from '../../modules/shop/shop.routes';
+import inventoryRoutes from '../../modules/inventory/inventory.routes';
 
 const router: Router = Router();
 
@@ -97,6 +98,16 @@ router.get('/', (_req: Request, res: Response) => {
           unequip: 'POST /api/v1/shop/unequip',
           equipped: 'GET /api/v1/shop/equipped',
         },
+        inventory: {
+          get: 'GET /api/v1/inventory',
+          getItem: 'GET /api/v1/inventory/:itemId',
+          use: 'POST /api/v1/inventory/use',
+          transfer: 'POST /api/v1/inventory/transfer',
+          stats: 'GET /api/v1/inventory/stats',
+          equipped: 'GET /api/v1/inventory/equipped',
+          equip: 'POST /api/v1/inventory/equip',
+          unequip: 'POST /api/v1/inventory/unequip',
+        },
       },
     })
   );
@@ -128,6 +139,9 @@ router.use('/wallet', walletRoutes);
 
 // Shop routes
 router.use('/shop', shopRoutes);
+
+// Inventory routes
+router.use('/inventory', inventoryRoutes);
 
 // Placeholder for future route groups
 // router.use('/matches', matchRoutes);
