@@ -23,6 +23,14 @@ The format is inspired by **Keep a Changelog** and follows **Semantic Versioning
 - Notifications System Module (create, list, read/unread, delete, preferences)
 - Matchmaking Foundation Module (queue management, skill-based matching, region optimization)
 - Wallet System Module (balance management, transactions, daily rewards with streak system)
+- Shop System Module (item catalog, purchasing, inventory management, equip/unequip)
+- Inventory System Module (view inventory, use consumables, transfer items, equip/unequip)
+- Frontend Foundation (React, TypeScript, Vite)
+- Frontend Configuration (package.json, tsconfig.json, vite.config.ts)
+- Frontend Core Components (App, index, styles)
+- Shared Package Configuration (@cardverse/shared)
+- Tests Package Configuration (@cardverse/tests)
+- Tools Package Configuration (@cardverse/tools)
 
 ### Changed
 

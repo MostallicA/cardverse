@@ -1,0 +1,14 @@
+{
+  "name": "@cardverse/tools",
+  "version": "0.1.0",
+  "description": "CardVerse development tools",
+  "private": true,
+  "scripts": {
+    "generate": "ts-node src/generate.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "ts-node": "^10.9.0",
+    "typescript": "^5.4.0"
+  }
+}
