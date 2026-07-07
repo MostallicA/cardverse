@@ -40,17 +40,17 @@ It combines the functionality of:
 
 ## 2. Quick Status
 
-| Item                      | Value                                            |
-| ------------------------- | ------------------------------------------------ |
-| **Current Phase**         | Backend Foundation                               |
-| **Current Sprint**        | Sprint 2                                         |
-| **Current Task**          | Task 3.2 - Matchmaking Foundation                |
-| **Current Status**        | Completed                                        |
-| **Latest Commit**         | e6a9781                                          |
-| **Latest Commit Message** | feat(backend): add matchmaking foundation module |
-| **Next Task**             | Sprint 3 Planning                                |
-| **Repository Status**     | Development                                      |
-| **Current Version**       | 0.7.0                                            |
+| Item                      | Value                                   |
+| ------------------------- | --------------------------------------- |
+| **Current Phase**         | Backend Foundation                      |
+| **Current Sprint**        | Sprint 3                                |
+| **Current Task**          | Task 4.0 - Wallet System                |
+| **Current Status**        | Completed                               |
+| **Latest Commit**         | 38417de                                 |
+| **Latest Commit Message** | feat(backend): add wallet system module |
+| **Next Task**             | Task 4.1 - Shop System                  |
+| **Repository Status**     | Development                             |
+| **Current Version**       | 0.7.0                                   |
 
 ---
 
@@ -119,6 +119,12 @@ Sprint 3 Planning
 - Task 3.1: Notifications System - Completed
 - Task 3.2: Matchmaking Foundation - Completed
 
+**Sprint 3 - In Progress:**
+
+- Task 4.0: Wallet System - Completed
+- Task 4.1: Shop System - Pending
+- Task 4.2: Inventory System - Pending
+
 ### Notes
 
 Sprint 0 completed successfully.
@@ -159,6 +165,12 @@ Features include: join/leave queue, find opponents based on skill and fair play 
 
 Architecture follows Hexagonal pattern with 5 files (types, service, validator, controller, routes).
 
+Wallet system module implemented with balance management, transactions, and daily rewards.
+
+Features include: add/spend coins, transaction history with filtering, daily reward with streak system, and balance validation.
+
+Architecture follows Hexagonal pattern with 5 files (types, service, validator, controller, routes).
+
 ---
 
 ## 4. Implementation Status
@@ -169,12 +181,12 @@ Architecture follows Hexagonal pattern with 5 files (types, service, validator, 
 | ------------- | --------- | ------- | ------ |
 | Root Files    | 7         | 0       | 7      |
 | Documentation | 12        | 0       | 12     |
-| Backend       | 44        | 0       | 44     |
+| Backend       | 49        | 0       | 49     |
 | Frontend      | 0         | 2       | 2      |
 | Shared        | 1         | 0       | 1      |
 | Tests         | 0         | 1       | 1      |
 | Tools         | 0         | 1       | 1      |
-| **Total**     | **64**    | **4**   | **68** |
+| **Total**     | **69**    | **4**   | **73** |
 
 ### Completed Backend Modules
 
@@ -187,6 +199,7 @@ Architecture follows Hexagonal pattern with 5 files (types, service, validator, 
 | **Chat**          | 5 files (types, service, validator, controller, routes) | Complete |
 | **Notifications** | 5 files (types, service, validator, controller, routes) | Complete |
 | **Matchmaking**   | 5 files (types, service, validator, controller, routes) | Complete |
+| **Wallet**        | 5 files (types, service, validator, controller, routes) | Complete |
 
 ### Completed Backend Infrastructure
 
@@ -272,7 +285,7 @@ Architecture follows Hexagonal pattern with 5 files (types, service, validator, 
 | Documentation Standardization | Completed   | 100%     |
 | Documentation Freeze          | Completed   | 100%     |
 | Repository Foundation         | Completed   | 100%     |
-| Backend Foundation            | In Progress | 90%      |
+| Backend Foundation            | In Progress | 95%      |
 | Backend Development           | Pending     | 0%       |
 | Frontend Development          | Pending     | 0%       |
 | Integration                   | Pending     | 0%       |
@@ -315,11 +328,11 @@ Architecture follows Hexagonal pattern with 5 files (types, service, validator, 
 
 ### Sprint 3 - Planned
 
-| Task | Description      | Status  |
-| ---- | ---------------- | ------- |
-| 4.0  | Wallet System    | Pending |
-| 4.1  | Shop System      | Pending |
-| 4.2  | Inventory System | Pending |
+| Task | Description      | Status    |
+| ---- | ---------------- | --------- |
+| 4.0  | Wallet System    | Completed |
+| 4.1  | Shop System      | Pending   |
+| 4.2  | Inventory System | Pending   |
 
 ---
 
@@ -348,6 +361,7 @@ Architecture follows Hexagonal pattern with 5 files (types, service, validator, 
 | 1.2.0   | 2026-07-07 | Task 3.0 completed - Chat System implemented                                                                  |
 | 1.3.0   | 2026-07-07 | Task 3.1 completed - Notifications System implemented                                                         |
 | 1.4.0   | 2026-07-07 | Task 3.2 completed - Matchmaking Foundation implemented                                                       |
+| 1.5.0   | 2026-07-07 | Task 4.0 completed - Wallet System implemented                                                                |
 
 ---
 

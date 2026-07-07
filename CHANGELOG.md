@@ -22,6 +22,7 @@ The format is inspired by **Keep a Changelog** and follows **Semantic Versioning
 - Chat System Module (private messaging between friends, chat rooms, unread counts)
 - Notifications System Module (create, list, read/unread, delete, preferences)
 - Matchmaking Foundation Module (queue management, skill-based matching, region optimization)
+- Wallet System Module (balance management, transactions, daily rewards with streak system)
 
 ### Changed
 
