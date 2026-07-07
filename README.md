@@ -1,12 +1,12 @@
-# CardVerse
+﻿# CardVerse
 
 **Document ID:** CV-0001
-**Version:** 0.1.0
+**Version:** 0.2.0
 **Status:** Frozen
 **Classification:** Core
 **Owner:** Mostafa & ChatGPT
 **Created:** 2026-06-26
-**Last Updated:** 2026-07-01
+**Last Updated:** 2026-07-07
 
 ---
 
@@ -24,7 +24,7 @@ Create an enterprise-grade platform that delivers secure, fast and enjoyable mul
 
 # Project Status
 
-Current project status, milestones and development progress are maintained in **PROJECT_STATUS.md**.
+Current project status, milestones and development progress are maintained in **DASHBOARD.md**.
 
 ---
 
@@ -32,31 +32,31 @@ Current project status, milestones and development progress are maintained in **
 
 ## Included
 
-* Hokm
-* Multiplayer
-* Authentication
-* Matchmaking
-* AI Bots
-* Administration Panel
+- Hokm
+- Multiplayer
+- Authentication
+- Matchmaking
+- AI Bots
+- Administration Panel
 
 ## Not Included
 
-* Additional Card Games
-* Mobile Applications
-* Tournament System
+- Additional Card Games
+- Mobile Applications
+- Tournament System
 
 ---
 
 # Core Goals
 
-* Enterprise Architecture
-* Modular Design
-* High Performance
-* Scalability
-* Cross Platform
-* Secure Backend
-* Professional AI Bots
-* Long-term Maintainability
+- Enterprise Architecture
+- Modular Design
+- High Performance
+- Scalability
+- Cross Platform
+- Secure Backend
+- Professional AI Bots
+- Long-term Maintainability
 
 ---
 
@@ -64,114 +64,103 @@ Current project status, milestones and development progress are maintained in **
 
 ## Phase 1
 
-* Hokm
+- Hokm
 
 ## Phase 2
 
-* Shelem
-* Haft Khabis
+- Shelem
+- Haft Khabis
 
 ## Phase 3
 
-* Nars
-* Tak Nars
-* Sars
+- Nars
+- Tak Nars
+- Sars
 
 ---
 
 # Repository Structure
 
-```text
-CardVerse/
-	assets/
-	backend/
-	backups/
-	docs/
-		core/
-			PRODUCT_BIBLE.md
-			ARCHITECTURE.md
-			DATABASE.md
-			API.md
-			RULEBOOK.md
-		system/
-			PROJECT_DNA.md
-			PROJECT_RULES.md
-			PROJECT_MANIFEST.md
-			PROJECT_STATUS.md
-			CARDVERSE_INDEX.md
-			AI_DEVELOPER_GUIDE.md
-			SYSTEM_START_HERE.md
-			DECISION_LOG.md
-	frontend/
-	shared/
-	temp/
-	tests/
-	tools/
-	.gitignore
-	CHANGELOG.md
-	LICENSE
-	README.md
+CardVerse/ - .git/ - .github/ - .husky/ - assets/ - backend/ - dist/ - node_modules - src/ - config/ - controllers/ - middleware/ - models/ - modules/ - auth/ - user/ - friends/ - routes/ - v1/ - services/ - utils/ - validators/ - backups/ - docs/ - core/ - API.md - ARCHITECTURE.md - DATABASE.md - PRODUCT_BIBLE.md - RULEBOOK.md - system/ - AI_DEVELOPER_GUIDE.md - CARDVERSE_INDEX.md - DASHBOARD.md - PROJECT_DNA.md - PROJECT_RULES.md - frontend/ - node_modules/ - shared/ - dist/ - node_modules/ - src/ - constants/ - types/ - utils/ - temp/ - tests/ - tools/ - .gitignore - CHANGELOG.md - LICENSE - package.json - pnpm-workspace.yaml - README.md
 
-```
+---
+
+# Development Setup
+
+## Prerequisites
+
+| Tool    | Minimum Version | Verification Command |
+| ------- | --------------- | -------------------- |
+| Git     | 2.x             | `git --version`      |
+| Node.js | 20.x            | `node --version`     |
+| pnpm    | 9.x             | `pnpm --version`     |
+
+## Quick Setup
+
+```cmd
+cd C:\Dev\CardVerse
+pnpm install
+pnpm run build
+pnpm run dev
+
+## Development Commands
+
+| Command         | Purpose                   |
+|-----------------|---------------------------|
+| pnpm install    | Install all dependencies  |
+| pnpm run dev    | Start development servers |
+| pnpm run build  | Build all packages        |
+| pnpm run test   | Run all tests             |
+| pnpm run lint   | Lint all code             |
+| pnpm run format | Format all code           |
 
 ---
 
 # Documentation
 
-## Core Documents
+## Core Documents (Frozen)
 
-* PRODUCT_BIBLE.md
-* RULEBOOK.md
-* ARCHITECTURE.md
-* DATABASE.md
-* API.md
+**PRODUCT_BIBLE.md**
+
+**RULEBOOK.md**
+
+**ARCHITECTURE.md**
+
+**DATABASE.md**
+
+**API.md**
 
 ## System Documents
 
-* PROJECT_DNA.md
-* PROJECT_RULES.md
-* PROJECT_MANIFEST.md
-* PROJECT_STATUS.md
-* CARDVERSE_INDEX.md
-* AI_DEVELOPER_GUIDE.md
-* SYSTEM_START_HERE.md
-* DECISION_LOG.md
+**PROJECT_DNA.md (Frozen)**
+
+**PROJECT_RULES.md (Frozen)**
+
+**DASHBOARD.md (Operational)**
+
+**CARDVERSE_INDEX.md (Frozen)**
+
+**AI_DEVELOPER_GUIDE.md (Frozen)**
+
+**CHANGELOG.md (Operational)**
 
 ---
 
 # Engineering Principles
 
-* Simplicity
-* Modularity
-* Scalability
-* Maintainability
-* Performance First
-* Security First
-* Documentation First
+**Simplicity**
 
----
+**Modularity**
 
-# Development Workflow
+**Scalability**
 
-```text
+**Maintainability**
 
-Foundation
- ↓
-Design
- ↓
-Implementation
- ↓
-Testing
- ↓
-Release
+**Performance First**
 
-```
+**Security First**
 
----
-
-# Technology Status
-
-The technology stack will be finalized after completion of the Architecture and System Design phases to ensure full alignment with documented requirements.
+**Documentation First**
 
 ---
 
@@ -185,22 +174,31 @@ All rights reserved.
 
 # References
 
-* CARDVERSE_INDEX.md
-* PROJECT_MANIFEST.md
-* PROJECT_STATUS.md
-* PRODUCT_BIBLE.md
-* ARCHITECTURE.md
-* DATABASE.md
-* API.md
-* PROJECT_RULES.md
-* PROJECT_DNA.md
+**CARDVERSE_INDEX.md**
+
+**DASHBOARD.md**
+
+**PRODUCT_BIBLE.md**
+
+**ARCHITECTURE.md**
+
+**DATABASE.md**
+
+**API.md**
+
+**PROJECT_RULES.md**
+
+**PROJECT_DNA.md**
 
 ---
 
 # Version History
 
-| Version | Date       | Description                        |
-| ------- | ---------- | ---------------------------------- |
-| 0.1.0   | 2026-06-30 | Initial project README established |
-| 0.1.0   | 2026-07-01 | Documentation Freeze completed     |
- 
+| Version | Date       | Description                                              |
+|---------|------------|----------------------------------------------------------|
+| 0.1.0   | 2026-06-30 | Initial project README established                       |
+| 0.1.0   | 2026-07-01 | Documentation Freeze completed                           |
+| 0.2.0   | 2026-07-07 | Updated with new documentation structure and setup guide |
+
+
+```

@@ -48,40 +48,40 @@ This document defines the business vision, product requirements, gameplay featur
 
 ### Core Platform
 
-* User Authentication
-* Google Sign-In
-* Guest Mode
-* Player Profile
-* Friends System
-* Private Chat
-* Notifications
-* Match History
+- User Authentication
+- Google Sign-In
+- Guest Mode
+- Player Profile
+- Friends System
+- Private Chat
+- Notifications
+- Match History
 
 ### Gameplay
 
-* Hokm
-* Practice Mode
-* Friendly Match
-* Ranked Match
-* AI Bot Replacement
-* Reconnect System
+- Hokm
+- Practice Mode
+- Friendly Match
+- Ranked Match
+- AI Bot Replacement
+- Reconnect System
 
 ### Competitive
 
-* Ranking System
-* Matchmaking
-* Fair Play Score
-* Statistics
-* XP & Level
-* Seasonal Rating
+- Ranking System
+- Matchmaking
+- Fair Play Score
+- Statistics
+- XP & Level
+- Seasonal Rating
 
 ### Economy
 
-* Coins
-* Cosmetic Shop
-* Daily Rewards
-* Weekly Missions
-* Achievements
+- Coins
+- Cosmetic Shop
+- Daily Rewards
+- Weekly Missions
+- Achievements
 
 ---
 
@@ -89,12 +89,12 @@ This document defines the business vision, product requirements, gameplay featur
 
 These features are already part of the product vision but are not included in Version 1.0.
 
-* Tournament System
-* Battle Pass
-* Spectator Mode
-* Voice Messages
-* Advanced Avatar Builder
-* Premium Currency (Gems)
+- Tournament System
+- Battle Pass
+- Spectator Mode
+- Voice Messages
+- Advanced Avatar Builder
+- Premium Currency (Gems)
 
 ---
 
@@ -102,14 +102,14 @@ These features are already part of the product vision but are not included in Ve
 
 Future expansions may include:
 
-* Shelem
-* Haft Khabis
-* Nars
-* Tak Nars
-* Sars
-* Guild System
-* Cross Game Progression
-* Mobile Native Applications
+- Shelem
+- Haft Khabis
+- Nars
+- Tak Nars
+- Sars
+- Guild System
+- Cross Game Progression
+- Mobile Native Applications
 
 ---
 
@@ -117,11 +117,11 @@ Future expansions may include:
 
 The following features are intentionally excluded from Version 1.0.
 
-* Pay-to-Win Mechanics
-* NFT Integration
-* Cryptocurrency
-* User Generated Card Rules
-* Community Hosted Servers
+- Pay-to-Win Mechanics
+- NFT Integration
+- Cryptocurrency
+- User Generated Card Rules
+- Community Hosted Servers
 
 ---
 
@@ -157,16 +157,16 @@ New games must reuse existing infrastructure whenever possible instead of introd
 
 ## Core Principles
 
-* Performance First
-* Security by Design
-* Fair Play
-* Modular Architecture
-* Scalability
-* Maintainability
-* Cross Platform
-* Consistent User Experience
-* Data Driven Decisions
-* Long-term Sustainability
+- Performance First
+- Security by Design
+- Fair Play
+- Modular Architecture
+- Scalability
+- Maintainability
+- Cross Platform
+- Consistent User Experience
+- Data Driven Decisions
+- Long-term Sustainability
 
 ---
 
@@ -206,16 +206,16 @@ Every new game should require minimal backend changes by reusing existing platfo
 
 The platform should continuously measure:
 
-* Match Completion Rate
-* Matchmaking Time
-* Daily Active Users
-* Monthly Active Users
-* Player Retention
-* Fair Play Score Distribution
-* Crash Rate
-* Average Match Duration
-* Reconnect Success Rate
-* Player Satisfaction
+- Match Completion Rate
+- Matchmaking Time
+- Daily Active Users
+- Monthly Active Users
+- Player Retention
+- Fair Play Score Distribution
+- Crash Rate
+- Average Match Duration
+- Reconnect Success Rate
+- Player Satisfaction
 
 ---
 
@@ -225,10 +225,10 @@ CardVerse must never sacrifice fairness, maintainability or security in order to
 
 Every new feature must satisfy the following conditions:
 
-* Improves player experience.
-* Does not introduce technical debt.
-* Fits the modular architecture.
-* Can be maintained over the long term.
+- Improves player experience.
+- Does not introduce technical debt.
+- Fits the modular architecture.
+- Can be maintained over the long term.
 
 ---
 
@@ -248,12 +248,12 @@ Guest Mode allows players to experience CardVerse without creating a permanent a
 
 ### Characteristics
 
-* No permanent progression
-* No ranked matchmaking
-* No achievements
-* No seasonal rewards
-* No cloud synchronization
-* Limited customization
+- No permanent progression
+- No ranked matchmaking
+- No achievements
+- No seasonal rewards
+- No cloud synchronization
+- Limited customization
 
 Guest players may upgrade to a Google Account at any time. After upgrading, all supported progress is migrated to the permanent account.
 
@@ -267,12 +267,12 @@ Practice Mode allows players to improve their skills by competing against AI-con
 
 ### Characteristics
 
-* Single Player
-* Adjustable AI Difficulty
-* No Rank Changes
-* No Fair Play Impact
-* Reduced Rewards
-* Learning Environment
+- Single Player
+- Adjustable AI Difficulty
+- No Rank Changes
+- No Fair Play Impact
+- Reduced Rewards
+- Learning Environment
 
 Practice matches are intended for learning and testing strategies.
 
@@ -286,12 +286,12 @@ Friendly Matches allow players to create private rooms and play with invited fri
 
 ### Characteristics
 
-* Private Lobby
-* Invite System
-* No Rank Changes
-* No Competitive Rewards
-* Match Statistics Recorded Separately
-* Custom Room Settings
+- Private Lobby
+- Invite System
+- No Rank Changes
+- No Competitive Rewards
+- Match Statistics Recorded Separately
+- Custom Room Settings
 
 Future versions may support spectators.
 
@@ -305,13 +305,13 @@ Ranked Match is the primary competitive mode of CardVerse.
 
 ### Characteristics
 
-* Automatic Matchmaking
-* Skill-Based Pairing
-* Rank Progression
-* Fair Play Monitoring
-* Full Statistics Tracking
-* Coin Rewards
-* Seasonal Rating Updates
+- Automatic Matchmaking
+- Skill-Based Pairing
+- Rank Progression
+- Fair Play Monitoring
+- Full Statistics Tracking
+- Coin Rewards
+- Seasonal Rating Updates
 
 Only Ranked Matches affect competitive rankings.
 
@@ -325,12 +325,12 @@ Tournament Mode provides organized competitive events.
 
 Planned Features
 
-* Scheduled Events
-* Bracket Management
-* Registration
-* Exclusive Rewards
-* Seasonal Championships
-* Live Match Tracking
+- Scheduled Events
+- Bracket Management
+- Registration
+- Exclusive Rewards
+- Seasonal Championships
+- Live Match Tracking
 
 Tournament rules will be defined in a future version.
 
@@ -344,10 +344,10 @@ To preserve match integrity, disconnected players are temporarily replaced by AI
 
 Rules
 
-* AI immediately occupies the disconnected player's seat.
-* The original player may reconnect within the allowed timeout.
-* Control automatically returns after successful reconnection.
-* If the timeout expires, the AI completes the match.
+- AI immediately occupies the disconnected player's seat.
+- The original player may reconnect within the allowed timeout.
+- Control automatically returns after successful reconnection.
+- If the timeout expires, the AI completes the match.
 
 ---
 
@@ -369,12 +369,12 @@ If a suitable match cannot be found, search criteria gradually expand while main
 
 All multiplayer modes must comply with the following principles:
 
-* Fair Play
-* Secure Match Validation
-* Server Authority
-* Reliable Reconnection
-* Anti-Abuse Protection
-* Consistent Match Results
+- Fair Play
+- Secure Match Validation
+- Server Authority
+- Reliable Reconnection
+- Anti-Abuse Protection
+- Consistent Match Results
 
 These principles apply regardless of the selected game mode.
 
@@ -398,11 +398,11 @@ CardVerse supports the following account types.
 
 Characteristics
 
-* Instant access
-* No registration required
-* Limited progression
-* Local data storage
-* Can be upgraded to a permanent account
+- Instant access
+- No registration required
+- Limited progression
+- Local data storage
+- Can be upgraded to a permanent account
 
 ---
 
@@ -410,13 +410,13 @@ Characteristics
 
 Characteristics
 
-* Cloud synchronization
-* Permanent progression
-* Friends system
-* Competitive matchmaking
-* Achievements
-* Statistics
-* Cross-device access
+- Cloud synchronization
+- Permanent progression
+- Friends system
+- Competitive matchmaking
+- Achievements
+- Statistics
+- Cross-device access
 
 ---
 
@@ -430,17 +430,17 @@ Every player owns a unique profile.
 
 ### Profile Information
 
-* Player ID
-* Username
-* Avatar
-* Avatar Frame
-* Country Flag
-* Level
-* Rank
-* Current Status
-* Join Date
-* Last Online
-* Bio (Planned)
+- Player ID
+- Username
+- Avatar
+- Avatar Frame
+- Country Flag
+- Level
+- Rank
+- Current Status
+- Join Date
+- Last Online
+- Bio (Planned)
 
 ---
 
@@ -450,13 +450,13 @@ Every player owns a unique profile.
 
 Requirements
 
-* Unique across the platform
-* 3–20 characters
-* Letters and numbers supported
-* Underscore allowed
-* No offensive words
-* No reserved system names
-* Case-insensitive uniqueness
+- Unique across the platform
+- 3–20 characters
+- Letters and numbers supported
+- Underscore allowed
+- No offensive words
+- No reserved system names
+- Case-insensitive uniqueness
 
 Usernames may become changeable in future versions.
 
@@ -472,8 +472,8 @@ Players earn XP through gameplay.
 
 XP increases:
 
-* Player Level
-* Profile Progress
+- Player Level
+- Profile Progress
 
 XP never decreases.
 
@@ -487,10 +487,10 @@ Level does not affect gameplay balance.
 
 Level rewards may include:
 
-* Cosmetics
-* Titles
-* Profile Frames
-* Coins
+- Cosmetics
+- Titles
+- Profile Frames
+- Coins
 
 ---
 
@@ -520,22 +520,22 @@ Statistics are permanently stored.
 
 ### General Statistics
 
-* Total Matches
-* Wins
-* Losses
-* Win Rate
-* Disconnect Rate
-* Average Match Duration
+- Total Matches
+- Wins
+- Losses
+- Win Rate
+- Disconnect Rate
+- Average Match Duration
 
 ---
 
 ### Hokm Statistics
 
-* Hokm Kooti
-* Kooti
-* Bam
-* Total Tricks
-* Cards Played
+- Hokm Kooti
+- Kooti
+- Bam
+- Total Tricks
+- Cards Played
 
 Additional games introduce their own statistics.
 
@@ -549,21 +549,21 @@ Achievements reward important milestones.
 
 Examples
 
-* First Victory
-* 10 Wins
-* 100 Wins
-* Tournament Champion
-* Fair Player
-* Veteran Player
-* First Ranked Win
-* Daily Login Streak
+- First Victory
+- 10 Wins
+- 100 Wins
+- Tournament Champion
+- Fair Player
+- Veteran Player
+- First Ranked Win
+- Daily Login Streak
 
 Achievements may unlock:
 
-* Coins
-* Badges
-* Titles
-* Cosmetic Items
+- Coins
+- Badges
+- Titles
+- Cosmetic Items
 
 ---
 
@@ -581,24 +581,24 @@ The score changes based on player behavior.
 
 Positive Actions
 
-* Completing Matches
-* Fair Conduct
-* Successful Reconnection
-* No Reports
+- Completing Matches
+- Fair Conduct
+- Successful Reconnection
+- No Reports
 
 Negative Actions
 
-* Rage Quit
-* AFK
-* Disconnect
-* Match Throwing
-* Confirmed Reports
+- Rage Quit
+- AFK
+- Disconnect
+- Match Throwing
+- Confirmed Reports
 
 A low Fair Play Score may result in:
 
-* Reduced matchmaking priority
-* Tournament restrictions
-* Temporary competitive limitations
+- Reduced matchmaking priority
+- Tournament restrictions
+- Temporary competitive limitations
 
 Fair Play never affects gameplay mechanics.
 
@@ -608,20 +608,20 @@ Fair Play never affects gameplay mechanics.
 
 Players may receive rewards from:
 
-* Ranked Matches
-* Daily Rewards
-* Weekly Missions
-* Achievements
-* Seasonal Rewards
-* Events
+- Ranked Matches
+- Daily Rewards
+- Weekly Missions
+- Achievements
+- Seasonal Rewards
+- Events
 
 Rewards may include:
 
-* XP
-* Coins
-* Badges
-* Cosmetics
-* Titles
+- XP
+- Coins
+- Badges
+- Cosmetics
+- Titles
 
 ---
 
@@ -631,12 +631,12 @@ The platform tracks the player's current state.
 
 Available States
 
-* Online
-* Offline
-* Away
-* In Lobby
-* Matchmaking
-* In Match
+- Online
+- Offline
+- Away
+- In Lobby
+- Matchmaking
+- In Match
 
 Player status is synchronized across supported platform services.
 
@@ -646,12 +646,12 @@ Player status is synchronized across supported platform services.
 
 Player identity systems must satisfy the following requirements.
 
-* Secure
-* Persistent
-* Cross-platform
-* Scalable
-* Privacy-aware
-* Independent from gameplay balance
+- Secure
+- Persistent
+- Cross-platform
+- Scalable
+- Privacy-aware
+- Independent from gameplay balance
 
 No progression system may provide competitive gameplay advantages.
 
@@ -673,22 +673,22 @@ Players can build and manage a personal friends list.
 
 ### Features
 
-* Send Friend Request
-* Accept Request
-* Reject Request
-* Cancel Pending Request
-* Remove Friend
-* Search Players
-* Favorite Friends (Planned)
+- Send Friend Request
+- Accept Request
+- Reject Request
+- Cancel Pending Request
+- Remove Friend
+- Search Players
+- Favorite Friends (Planned)
 
 ---
 
 ## Friend Rules
 
-* Friendship requires mutual acceptance.
-* Duplicate requests are not allowed.
-* Blocked players cannot become friends.
-* Friend relationships are synchronized across all supported games.
+- Friendship requires mutual acceptance.
+- Duplicate requests are not allowed.
+- Blocked players cannot become friends.
+- Friend relationships are synchronized across all supported games.
 
 ---
 
@@ -700,21 +700,21 @@ Every player profile displays public information.
 
 ### Public Information
 
-* Avatar
-* Avatar Frame
-* Username
-* Country Flag
-* Level
-* Competitive Rank
-* Player ID
-* Online Status
+- Avatar
+- Avatar Frame
+- Username
+- Country Flag
+- Level
+- Competitive Rank
+- Player ID
+- Online Status
 
 ### Planned Information
 
-* Bio
-* Favorite Game
-* Showcase Achievements
-* Profile Themes
+- Bio
+- Favorite Game
+- Showcase Achievements
+- Profile Themes
 
 ---
 
@@ -722,11 +722,11 @@ Every player profile displays public information.
 
 Players may:
 
-* Send Friend Request
-* Invite to Match
-* Send Message
-* Report Player
-* Block Player
+- Send Friend Request
+- Invite to Match
+- Send Message
+- Report Player
+- Block Player
 
 ---
 
@@ -738,9 +738,9 @@ Private chat is available only between friends.
 
 ### Features
 
-* Text Messages
-* Emoji Support
-* Sticker Support (Future)
+- Text Messages
+- Emoji Support
+- Sticker Support (Future)
 
 ---
 
@@ -748,8 +748,8 @@ Private chat is available only between friends.
 
 Chat is disabled:
 
-* During active gameplay
-* Between blocked users
+- During active gameplay
+- Between blocked users
 
 Future versions may introduce optional voice messaging.
 
@@ -763,12 +763,12 @@ Player presence is updated in real time.
 
 ### Available States
 
-* Online
-* Offline
-* Away
-* In Lobby
-* Matchmaking
-* In Match
+- Online
+- Offline
+- Away
+- In Lobby
+- Matchmaking
+- In Match
 
 Presence information is visible only according to the user's privacy settings.
 
@@ -782,14 +782,14 @@ The platform delivers real-time notifications.
 
 ### Notification Types
 
-* Friend Request
-* Friend Accepted
-* Match Invitation
-* Daily Reward
-* Achievement Unlocked
-* Mission Completed
-* Season Reward
-* System Announcement
+- Friend Request
+- Friend Accepted
+- Match Invitation
+- Daily Reward
+- Achievement Unlocked
+- Mission Completed
+- Season Reward
+- System Announcement
 
 Players may individually enable or disable supported notification categories.
 
@@ -821,10 +821,10 @@ Players can block unwanted users.
 
 Blocked players:
 
-* Cannot send messages
-* Cannot send invitations
-* Cannot send friend requests
-* Are excluded from friend suggestions
+- Cannot send messages
+- Cannot send invitations
+- Cannot send friend requests
+- Are excluded from friend suggestions
 
 Blocking does not affect existing match history.
 
@@ -838,12 +838,12 @@ Players may report inappropriate behavior.
 
 ### Report Categories
 
-* Cheating
-* Offensive Username
-* Harassment
-* AFK
-* Match Throwing
-* Spam
+- Cheating
+- Offensive Username
+- Harassment
+- AFK
+- Match Throwing
+- Spam
 
 Reports are reviewed by automated systems and may be escalated for manual review when necessary.
 
@@ -857,10 +857,10 @@ CardVerse respects player privacy.
 
 Players control visibility of:
 
-* Online Status
-* Last Seen
-* Friend Requests
-* Match Invitations
+- Online Status
+- Last Seen
+- Friend Requests
+- Match Invitations
 
 Additional privacy controls may be introduced in future releases.
 
@@ -870,12 +870,12 @@ Additional privacy controls may be introduced in future releases.
 
 The social system must remain:
 
-* Secure
-* Privacy-aware
-* Cross-platform
-* Scalable
-* Moderated
-* Independent of gameplay balance
+- Secure
+- Privacy-aware
+- Cross-platform
+- Scalable
+- Moderated
+- Independent of gameplay balance
 
 Social features must enhance community interaction without affecting competitive fairness.
 
@@ -911,13 +911,13 @@ Players earn Coins through gameplay and spend them on cosmetic content.
 
 Sources of Coins:
 
-* Ranked Match Victories
-* Daily Rewards
-* Weekly Missions
-* Seasonal Rewards
-* Achievements
-* Events
-* Tournament Rewards (Future)
+- Ranked Match Victories
+- Daily Rewards
+- Weekly Missions
+- Seasonal Rewards
+- Achievements
+- Events
+- Tournament Rewards (Future)
 
 ---
 
@@ -929,9 +929,9 @@ Gems are the premium currency.
 
 Possible Sources:
 
-* Real Money Purchases
-* Promotional Events
-* Seasonal Rewards
+- Real Money Purchases
+- Promotional Events
+- Seasonal Rewards
 
 Gems are never required to remain competitive.
 
@@ -945,19 +945,19 @@ The in-game shop offers cosmetic items.
 
 ### Categories
 
-* Avatars
-* Avatar Frames
-* Card Backs
-* Table Themes
-* Profile Decorations
-* Emotes
-* Titles
+- Avatars
+- Avatar Frames
+- Card Backs
+- Table Themes
+- Profile Decorations
+- Emotes
+- Titles
 
 Future Categories
 
-* Sticker Packs
-* Sound Packs
-* Animated Cosmetics
+- Sticker Packs
+- Sound Packs
+- Animated Cosmetics
 
 ---
 
@@ -965,17 +965,17 @@ Future Categories
 
 Cosmetic items may change:
 
-* Appearance
-* Animations
-* Profile Presentation
+- Appearance
+- Animations
+- Profile Presentation
 
 Cosmetics must never affect:
 
-* Gameplay
-* Card Distribution
-* Matchmaking
-* AI Behavior
-* Player Statistics
+- Gameplay
+- Card Distribution
+- Matchmaking
+- AI Behavior
+- Player Statistics
 
 ---
 
@@ -987,10 +987,10 @@ Players receive login rewards once per day.
 
 Possible Rewards
 
-* Coins
-* XP
-* Cosmetic Items
-* Limited-Time Bonuses
+- Coins
+- XP
+- Cosmetic Items
+- Limited-Time Bonuses
 
 Future versions may introduce login streak bonuses.
 
@@ -1020,10 +1020,10 @@ Available during active seasons.
 
 Mission Rewards
 
-* Coins
-* XP
-* Cosmetics
-* Titles
+- Coins
+- XP
+- Cosmetics
+- Titles
 
 ---
 
@@ -1033,18 +1033,18 @@ Achievements reward important milestones.
 
 Examples
 
-* First Victory
-* 100 Wins
-* Fair Player
-* Ranked Champion
-* Veteran Player
+- First Victory
+- 100 Wins
+- Fair Player
+- Ranked Champion
+- Veteran Player
 
 Achievement rewards may include:
 
-* Coins
-* Badges
-* Titles
-* Exclusive Cosmetics
+- Coins
+- Badges
+- Titles
+- Exclusive Cosmetics
 
 ---
 
@@ -1056,11 +1056,11 @@ Battle Pass provides seasonal progression.
 
 Possible Features
 
-* Free Track
-* Premium Track
-* Exclusive Cosmetics
-* Seasonal Missions
-* Bonus Rewards
+- Free Track
+- Premium Track
+- Exclusive Cosmetics
+- Seasonal Missions
+- Bonus Rewards
 
 Battle Pass content remains cosmetic only.
 
@@ -1070,17 +1070,17 @@ Battle Pass content remains cosmetic only.
 
 At the end of each season, players may receive rewards based on:
 
-* Final Rank
-* Seasonal Rating
-* Fair Play Score
-* Participation
+- Final Rank
+- Seasonal Rating
+- Fair Play Score
+- Participation
 
 Rewards may include:
 
-* Coins
-* Titles
-* Frames
-* Exclusive Cosmetics
+- Coins
+- Titles
+- Frames
+- Exclusive Cosmetics
 
 ---
 
@@ -1090,18 +1090,18 @@ CardVerse monetization follows these rules.
 
 Allowed
 
-* Cosmetic Purchases
-* Optional Premium Features
-* Battle Pass
-* Profile Customization
+- Cosmetic Purchases
+- Optional Premium Features
+- Battle Pass
+- Profile Customization
 
 Not Allowed
 
-* Pay-to-Win
-* Gameplay Advantages
-* Stronger Cards
-* Better Matchmaking
-* Increased Win Probability
+- Pay-to-Win
+- Gameplay Advantages
+- Stronger Cards
+- Better Matchmaking
+- Increased Win Probability
 
 ---
 
@@ -1109,11 +1109,11 @@ Not Allowed
 
 The economy must remain:
 
-* Fair
-* Sustainable
-* Transparent
-* Rewarding
-* Long-term
+- Fair
+- Sustainable
+- Transparent
+- Rewarding
+- Long-term
 
 Players who never spend real money must still be able to enjoy the complete competitive experience.
 
@@ -1123,11 +1123,11 @@ Players who never spend real money must still be able to enjoy the complete comp
 
 Every economic feature must satisfy the following requirements.
 
-* Competitive Fairness
-* Transparent Rewards
-* No Hidden Advantages
-* Long-Term Sustainability
-* Positive Player Experience
+- Competitive Fairness
+- Transparent Rewards
+- No Hidden Advantages
+- Long-Term Sustainability
+- Positive Player Experience
 
 The economy exists to support player engagement and platform sustainability—not to influence competitive outcomes.
 
@@ -1167,8 +1167,8 @@ The standard player journey is:
 
 Supported methods:
 
-* Guest Login
-* Google Sign-In
+- Guest Login
+- Google Sign-In
 
 After authentication, player data is synchronized before entering the main menu.
 
@@ -1178,13 +1178,13 @@ After authentication, player data is synchronized before entering the main menu.
 
 The Main Menu provides access to:
 
-* Play
-* Friends
-* Profile
-* Shop
-* Missions
-* Achievements
-* Settings
+- Play
+- Friends
+- Profile
+- Shop
+- Missions
+- Achievements
+- Settings
 
 Future versions may introduce additional sections.
 
@@ -1228,11 +1228,11 @@ Before the match begins, players enter a lobby.
 
 Lobby responsibilities:
 
-* Display participants
-* Verify player readiness
-* Synchronize game configuration
-* Handle invitations
-* Prepare game session
+- Display participants
+- Verify player readiness
+- Synchronize game configuration
+- Handle invitations
+- Prepare game session
 
 The lobby is authoritative and synchronized by the server.
 
@@ -1244,8 +1244,8 @@ All participants must confirm readiness.
 
 If a player does not respond before the timeout:
 
-* The player is removed from the queue, or
-* The lobby is cancelled, depending on the selected game mode.
+- The player is removed from the queue, or
+- The lobby is cancelled, depending on the selected game mode.
 
 ---
 
@@ -1253,12 +1253,12 @@ If a player does not respond before the timeout:
 
 During gameplay, the platform is responsible for:
 
-* Player synchronization
-* Turn management
-* Network recovery
-* Disconnect handling
-* Rule enforcement
-* Anti-cheat validation
+- Player synchronization
+- Turn management
+- Network recovery
+- Disconnect handling
+- Rule enforcement
+- Anti-cheat validation
 
 Game-specific rules are defined in the corresponding RuleBook.
 
@@ -1270,10 +1270,10 @@ Game-specific rules are defined in the corresponding RuleBook.
 
 If a player disconnects:
 
-* Their seat is reserved.
-* A temporary AI replaces them.
-* The player may reconnect within the configured timeout.
-* Control returns automatically after reconnection.
+- Their seat is reserved.
+- A temporary AI replaces them.
+- The player may reconnect within the configured timeout.
+- Control returns automatically after reconnection.
 
 If the timeout expires, the AI completes the match.
 
@@ -1283,9 +1283,9 @@ If the timeout expires, the AI completes the match.
 
 When the match ends, the platform:
 
-* Determines the winner
-* Validates match integrity
-* Records the final result
+- Determines the winner
+- Validates match integrity
+- Records the final result
 
 Game-specific scoring is handled by the game engine.
 
@@ -1297,11 +1297,11 @@ After validation, eligible rewards are distributed.
 
 Possible rewards include:
 
-* XP
-* Coins
-* Achievement Progress
-* Mission Progress
-* Seasonal Progress
+- XP
+- Coins
+- Achievement Progress
+- Mission Progress
+- Seasonal Progress
 
 Only valid matches generate rewards.
 
@@ -1311,12 +1311,12 @@ Only valid matches generate rewards.
 
 The platform updates:
 
-* Match History
-* Win/Loss Record
-* Rank
-* Seasonal Rating
-* Fair Play Score
-* Lifetime Statistics
+- Match History
+- Win/Loss Record
+- Rank
+- Seasonal Rating
+- Fair Play Score
+- Lifetime Statistics
 
 Statistics are stored permanently.
 
@@ -1326,17 +1326,17 @@ Statistics are stored permanently.
 
 Players may choose to:
 
-* Return to Main Menu
-* Start Matchmaking Again
-* Invite Friends
-* View Match Results
-* Open Player Profiles
+- Return to Main Menu
+- Start Matchmaking Again
+- Invite Friends
+- View Match Results
+- Open Player Profiles
 
 Future versions may support:
 
-* Rematch Voting
-* Replay Viewer
-* Match Sharing
+- Rematch Voting
+- Replay Viewer
+- Match Sharing
 
 ---
 
@@ -1344,12 +1344,12 @@ Future versions may support:
 
 The complete game flow must be:
 
-* Predictable
-* Reliable
-* Recoverable
-* Secure
-* Fair
-* Consistent
+- Predictable
+- Reliable
+- Recoverable
+- Secure
+- Fair
+- Consistent
 
 Every multiplayer session must produce a single validated result that is recorded by the platform.
 
@@ -1369,38 +1369,38 @@ The roadmap serves as strategic guidance only and does not define implementation
 
 ### Platform
 
-* Authentication
-* Google Sign-In
-* Guest Mode
-* Friends System
-* Private Chat
-* Player Profiles
-* Notifications
+- Authentication
+- Google Sign-In
+- Guest Mode
+- Friends System
+- Private Chat
+- Player Profiles
+- Notifications
 
 ### Gameplay
 
-* Hokm
-* Practice Mode
-* Friendly Match
-* Ranked Match
-* AI Replacement
-* Reconnect System
+- Hokm
+- Practice Mode
+- Friendly Match
+- Ranked Match
+- AI Replacement
+- Reconnect System
 
 ### Progression
 
-* XP
-* Level
-* Competitive Rank
-* Seasonal Rating
-* Fair Play Score
-* Achievements
+- XP
+- Level
+- Competitive Rank
+- Seasonal Rating
+- Fair Play Score
+- Achievements
 
 ### Economy
 
-* Coins
-* Cosmetic Shop
-* Daily Rewards
-* Weekly Missions
+- Coins
+- Cosmetic Shop
+- Daily Rewards
+- Weekly Missions
 
 ---
 
@@ -1410,46 +1410,46 @@ The following features are planned after Version 1.0.
 
 ### Competitive
 
-* Tournament System
-* Spectator Mode
-* Replay System
-* Match History Viewer
+- Tournament System
+- Spectator Mode
+- Replay System
+- Match History Viewer
 
 ---
 
 ### Social
 
-* Voice Messages
-* Guild System
-* Team System
-* Community Events
+- Voice Messages
+- Guild System
+- Team System
+- Community Events
 
 ---
 
 ### Customization
 
-* Avatar Builder
-* Animated Cosmetics
-* Premium Themes
-* Advanced Profiles
+- Avatar Builder
+- Animated Cosmetics
+- Premium Themes
+- Advanced Profiles
 
 ---
 
 ### Economy
 
-* Gems
-* Battle Pass
-* Seasonal Shop
-* Limited-Time Events
+- Gems
+- Battle Pass
+- Seasonal Shop
+- Limited-Time Events
 
 ---
 
 ### Platform Expansion
 
-* Native Android Application
-* Native iOS Application
-* Additional Authentication Providers
-* Cross-Platform Synchronization
+- Native Android Application
+- Native iOS Application
+- Additional Authentication Providers
+- Cross-Platform Synchronization
 
 ---
 
@@ -1459,11 +1459,11 @@ The CardVerse platform is designed to support multiple traditional card games.
 
 Planned games include:
 
-* Shelem
-* Haft Khabis
-* Nars
-* Tak Nars
-* Sars
+- Shelem
+- Haft Khabis
+- Nars
+- Tak Nars
+- Sars
 
 Additional games may be added without fundamental architectural changes.
 
@@ -1475,15 +1475,145 @@ Future development must continue to follow the project's core principles.
 
 Every new feature must:
 
-* Improve player experience.
-* Preserve competitive fairness.
-* Reuse existing platform infrastructure.
-* Maintain architectural consistency.
-* Avoid unnecessary complexity.
+- Improve player experience.
+- Preserve competitive fairness.
+- Reuse existing platform infrastructure.
+- Maintain architectural consistency.
+- Avoid unnecessary complexity.
 
 ---
 
 # 8. Glossary
+
+## Platform Terms
+
+### CardVerse
+
+The complete gaming platform ecosystem. Includes all games, services, infrastructure and documentation.
+
+### Platform
+
+The shared infrastructure and services that support all games. Includes authentication, profiles, friends, matchmaking, economy, etc.
+
+### Game
+
+A specific card game implemented on the platform (e.g., Hokm, Shelem).
+
+### Module
+
+A self-contained component with a single responsibility. Modules communicate through well-defined interfaces.
+
+### Monorepo
+
+A single repository containing multiple projects and modules.
+
+---
+
+## Gameplay Terms
+
+### Match
+
+A complete competitive session consisting of one or more Hands.
+
+### Hand
+
+A single round of a card game. In Hokm, a Hand consists of up to 13 Tricks.
+
+### Trick
+
+One complete cycle in which every player plays exactly one card.
+
+### Leading Suit
+
+The suit of the first card played in a Trick. All subsequent players must follow this suit if possible.
+
+### Trump Suit (Hokm)
+
+The suit selected by the Hakem that outranks all other suits for the duration of the Hand.
+
+### Dealer
+
+The player responsible for dealing the cards to all players.
+
+### Hakem
+
+The player responsible for selecting the Trump Suit. The Hakem has special authority in the game.
+
+### Hand Point
+
+The score awarded after winning a Hand.
+
+### Kooti
+
+A victory in which the losing team wins zero Tricks. Worth 2 Hand Points.
+
+### Hakem Kooti
+
+A Kooti achieved by the Hakem's team. Worth 3 Hand Points.
+
+### Bam
+
+A victory achieved by winning all thirteen Tricks in a Hand. Immediately ends the Match.
+
+### AI Replacement
+
+A temporary AI-controlled player that replaces a disconnected player until they reconnect or the timeout expires.
+
+---
+
+## Technical Terms
+
+### Frozen Document
+
+A document that has been reviewed, approved and should not be modified without formal approval. Changes require updating the Version History.
+
+### Operational Document
+
+A document that is expected to evolve throughout the project lifecycle. Examples: DASHBOARD.md, DECISION_LOG.md.
+
+### Technical Debt
+
+The cost of additional rework caused by choosing an easy solution now instead of a better approach that would take longer.
+
+### Single Source of Truth
+
+The principle that every concept should have exactly one authoritative document.
+
+### Documentation First
+
+The principle that documentation must be created before implementation begins.
+
+### Server Authoritative
+
+The principle that the server is the only trusted source of game state. Clients never determine gameplay outcomes.
+
+---
+
+## Architecture Terms
+
+### Modular Monolith
+
+A single deployment containing multiple modules that are logically independent but share the same runtime.
+
+### Microservice Ready
+
+Architecture designed so that modules can be extracted into independent services in the future without significant redesign.
+
+### Domain-Driven Design (DDD)
+
+An approach that models software to match business domains.
+
+### Hexagonal Architecture
+
+An architecture that isolates business logic from infrastructure and external services.
+
+### Layer
+
+A logical grouping of modules with similar responsibilities. CardVerse has four layers: Platform, Engine, Game and Shared.
+
+### Domain Event
+
+A significant business occurrence that other modules may react to.
 
 | Term            | Definition                                        |
 | --------------- | ------------------------------------------------- |
@@ -1520,10 +1650,11 @@ PROJECT_DNA.md
 
 # 10. Version History
 
-| Version | Date       | Description                    |
-| ------- | ---------- | ------------------------------ |
-| 0.1.0   | 2026-06-30 | Initial Enterprise Foundation  |
-| 0.1.0   | 2026-07-01 | Documentation Freeze completed |
+| Version | Date       | Description                                             |
+| ------- | ---------- | ------------------------------------------------------- |
+| 0.1.0   | 2026-06-30 | Initial Enterprise Foundation                           |
+| 0.1.0   | 2026-07-01 | Documentation Freeze completed                          |
+| 0.2.0   | 2026-07-07 | Updated Glossary section with comprehensive terminology |
 
 ---
 

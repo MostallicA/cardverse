@@ -489,9 +489,10 @@ The following actions are strictly prohibited:
 - DATABASE.md
 - API.md
 - RULEBOOK.md
-- DECISION_LOG.md
-- IMPLEMENTATION_STATUS.md
-- REPOSITORY_SNAPSHOT.md
+- DASHBOARD.md
+- AI_DEVELOPER_GUIDE.md
+- README.md
+- CHANGELOG.md
 
 ---
 
@@ -503,6 +504,7 @@ The following actions are strictly prohibited:
 | 0.1.0   | 2026-07-01 | Documentation Freeze completed                                  |
 | 0.2.0   | 2026-07-04 | Added Git Workflow Rules section and updated Definition of Done |
 | 0.3.0   | 2026-07-05 | Updated to reflect backend development progress                 |
+| 0.4.0   | 2026-07-07 | Updated references with new documentation structure             |
 
 ---
 

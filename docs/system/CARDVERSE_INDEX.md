@@ -41,19 +41,14 @@ New contributors should read project documentation in the following order:
 2. PROJECT_DNA.md
 3. PROJECT_RULES.md
 4. CARDVERSE_INDEX.md
-5. PROJECT_STATUS.md
-6. SYSTEM_START_HERE.md
-7. REPOSITORY_SNAPSHOT.md
-8. SETUP_GUIDE.md
-9. IMPLEMENTATION_STATUS.md
-10. PRODUCT_BIBLE.md
-11. ARCHITECTURE.md
-12. DATABASE.md
-13. API.md
-14. RULEBOOK.md
-15. GLOSSARY.md
-16. AI_DEVELOPER_GUIDE.md
-17. DECISION_LOG.md
+5. DASHBOARD.md
+6. PRODUCT_BIBLE.md
+7. ARCHITECTURE.md
+8. DATABASE.md
+9. API.md
+10. RULEBOOK.md
+11. AI_DEVELOPER_GUIDE.md
+12. CHANGELOG.md
 
 Following this order ensures a complete understanding of the project before implementation begins.
 
@@ -61,67 +56,52 @@ Following this order ensures a complete understanding of the project before impl
 
 ## 3. Documentation Map
 
-| Document                 | Primary Responsibility                    |
-|--------------------------|-------------------------------------------|
-| README.md                | Repository introduction                   |
-| PROJECT_DNA.md           | Project identity and philosophy           |
-| PROJECT_RULES.md         | Engineering rules                         |
-| PROJECT_STATUS.md        | Project status and documentation registry |
-| CARDVERSE_INDEX.md       | Documentation navigation                  |
-| SYSTEM_START_HERE.md     | System onboarding guide                   |
-| REPOSITORY_SNAPSHOT.md   | Complete repository state                 |
-| SETUP_GUIDE.md           | Development environment setup             |
-| IMPLEMENTATION_STATUS.md | Implementation progress                   |
-| PRODUCT_BIBLE.md         | Product requirements                      |
-| ARCHITECTURE.md          | Software architecture                     |
-| DATABASE.md              | Database design                           |
-| API.md                   | API standards                             |
-| RULEBOOK.md              | Game rules                                |
-| GLOSSARY.md              | Terminology dictionary                    |
-| AI_DEVELOPER_GUIDE.md    | AI development workflow                   |
-| DECISION_LOG.md          | Engineering decision history              |
+| Document              | Primary Responsibility            |
+| --------------------- | --------------------------------- |
+| README.md             | Repository introduction and setup |
+| PROJECT_DNA.md        | Project identity and philosophy   |
+| PROJECT_RULES.md      | Engineering rules                 |
+| DASHBOARD.md          | Operational status dashboard      |
+| CARDVERSE_INDEX.md    | Documentation navigation          |
+| PRODUCT_BIBLE.md      | Product requirements              |
+| ARCHITECTURE.md       | Software architecture             |
+| DATABASE.md           | Database design                   |
+| API.md                | API standards                     |
+| RULEBOOK.md           | Game rules                        |
+| AI_DEVELOPER_GUIDE.md | AI development workflow           |
+| CHANGELOG.md          | Version history                   |
 
 ---
 
 ## 4. Topic Index
 
-| Topic                   | Primary Document         | Related Documents       |
-|-------------------------|--------------------------|-------------------------|
-| Product Vision          | PRODUCT_BIBLE.md         | PROJECT_DNA.md          |
-| Project Philosophy      | PROJECT_DNA.md           | PROJECT_RULES.md        |
-| Engineering Rules       | PROJECT_RULES.md         | AI_DEVELOPER_GUIDE.md   |
-| Architecture            | ARCHITECTURE.md          | DATABASE.md, API.md     |
-| Platform Modules        | ARCHITECTURE.md          | PRODUCT_BIBLE.md        |
-| Matchmaking             | PRODUCT_BIBLE.md         | ARCHITECTURE.md, API.md |
-| Authentication          | API.md                   | ARCHITECTURE.md         |
-| User Profile            | PRODUCT_BIBLE.md         | DATABASE.md             |
-| Friends System          | PRODUCT_BIBLE.md         | DATABASE.md, API.md     |
-| Wallet                  | DATABASE.md              | PRODUCT_BIBLE.md        |
-| Shop                    | PRODUCT_BIBLE.md         | DATABASE.md             |
-| Statistics              | PRODUCT_BIBLE.md         | DATABASE.md             |
-| Seasons                 | PRODUCT_BIBLE.md         | DATABASE.md             |
-| Ranking                 | PRODUCT_BIBLE.md         | DATABASE.md, API.md     |
-| AI Bots                 | ARCHITECTURE.md          | RULEBOOK.md             |
-| Game Rules              | RULEBOOK.md              | PRODUCT_BIBLE.md        |
-| API Standards           | API.md                   | PROJECT_RULES.md        |
-| Database Design         | DATABASE.md              | ARCHITECTURE.md         |
-| Documentation Structure | PROJECT_STATUS.md        | PROJECT_RULES.md        |
-| Repository Structure    | REPOSITORY_SNAPSHOT.md   | SETUP_GUIDE.md          |
-| Development Setup       | SETUP_GUIDE.md           | REPOSITORY_SNAPSHOT.md  |
-| Implementation Status   | IMPLEMENTATION_STATUS.md | PROJECT_STATUS.md       |
-| Terminology             | GLOSSARY.md              | All documents           |
-| Development Workflow    | AI_DEVELOPER_GUIDE.md    | PROJECT_RULES.md        |
-| Engineering Decisions   | DECISION_LOG.md          | ARCHITECTURE.md         |
-
----
+| Topic                   | Primary Document      | Related Documents       |
+| ----------------------- | --------------------- | ----------------------- |
+| Product Vision          | PRODUCT_BIBLE.md      | PROJECT_DNA.md          |
+| Project Philosophy      | PROJECT_DNA.md        | PROJECT_RULES.md        |
+| Engineering Rules       | PROJECT_RULES.md      | AI_DEVELOPER_GUIDE.md   |
+| Architecture            | ARCHITECTURE.md       | DATABASE.md, API.md     |
+| Platform Modules        | ARCHITECTURE.md       | PRODUCT_BIBLE.md        |
+| Matchmaking             | PRODUCT_BIBLE.md      | ARCHITECTURE.md, API.md |
+| Authentication          | API.md                | ARCHITECTURE.md         |
+| User Profile            | PRODUCT_BIBLE.md      | DATABASE.md             |
+| Friends System          | PRODUCT_BIBLE.md      | DATABASE.md, API.md     |
+| Wallet                  | DATABASE.md           | PRODUCT_BIBLE.md        |
+| Shop                    | PRODUCT_BIBLE.md      | DATABASE.md             |
+| Statistics              | PRODUCT_BIBLE.md      | DATABASE.md             |
+| Seasons                 | PRODUCT_BIBLE.md      | DATABASE.md             |
+| Ranking                 | PRODUCT_BIBLE.md      | DATABASE.md, API.md     |
+| AI Bots                 | ARCHITECTURE.md       | RULEBOOK.md             |
+| Game Rules              | RULEBOOK.md           | PRODUCT_BIBLE.md        |
+| API Standards           | API.md                | PROJECT_RULES.md        |
+| Database Design         | DATABASE.md           | ARCHITECTURE.md         |
+| Documentation Structure | DASHBOARD.md          | PROJECT_RULES.md        |
+| Development Setup       | README.md             | DASHBOARD.md            |
+| Implementation Status   | DASHBOARD.md          | README.md               |
+| Development Workflow    | AI_DEVELOPER_GUIDE.md | PROJECT_RULES.md        |
+| Engineering Decisions   | DASHBOARD.md          | ARCHITECTURE.md         |
 
 ## 5. Document Responsibilities
-
-Each document has exactly one primary responsibility.
-
-Documentation should not duplicate information already owned by another document.
-
-When additional context is required, documents should reference each other instead of repeating content.
 
 ### Document Categories
 
@@ -139,15 +119,10 @@ These documents define processes, workflows and operational status. They may be 
 
 - PROJECT_DNA.md (Frozen)
 - PROJECT_RULES.md (Frozen)
-- PROJECT_STATUS.md (Operational)
+- DASHBOARD.md (Operational)
 - CARDVERSE_INDEX.md (Frozen)
-- SYSTEM_START_HERE.md (Frozen)
-- REPOSITORY_SNAPSHOT.md (Operational)
-- SETUP_GUIDE.md (Frozen)
-- IMPLEMENTATION_STATUS.md (Operational)
-- GLOSSARY.md (Frozen)
 - AI_DEVELOPER_GUIDE.md (Frozen)
-- DECISION_LOG.md (Operational)
+- CHANGELOG.md (Operational)
 
 ---
 
@@ -177,11 +152,12 @@ This approach reduces duplicated work and prevents inconsistent interpretations.
 
 ## 8. Version History
 
-| Version | Date       | Description                             |
-|---------|------------|-----------------------------------------|
-| 0.1.0   | 2026-06-30 | Initial documentation index established |
-| 0.1.0   | 2026-07-01 | Documentation Freeze completed          |
-| 0.2.0   | 2026-07-04 | Added new system documents to index     |
+| Version | Date       | Description                                          |
+| ------- | ---------- | ---------------------------------------------------- |
+| 0.1.0   | 2026-06-30 | Initial documentation index established              |
+| 0.1.0   | 2026-07-01 | Documentation Freeze completed                       |
+| 0.2.0   | 2026-07-04 | Added new system documents to index                  |
+| 0.3.0   | 2026-07-07 | Updated with new documentation structure (DASHBOARD) |
 
 ---
 

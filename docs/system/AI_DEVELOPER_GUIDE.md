@@ -70,20 +70,14 @@ Before performing any implementation work, the AI should understand the project 
 2. PROJECT_DNA.md
 3. PROJECT_RULES.md
 4. CARDVERSE_INDEX.md
-5. PROJECT_STATUS.md
-6. SYSTEM_START_HERE.md
-7. REPOSITORY_SNAPSHOT.md
-8. SETUP_GUIDE.md
-9. IMPLEMENTATION_STATUS.md
-10. PRODUCT_BIBLE.md
-11. ARCHITECTURE.md
-12. DATABASE.md
-13. API.md
-14. RULEBOOK.md
-15. GLOSSARY.md
-16. DECISION_LOG.md
-
-SYSTEM_START_HERE.md may be used as the quick entry point for new sessions.
+5. DASHBOARD.md
+6. PRODUCT_BIBLE.md
+7. ARCHITECTURE.md
+8. DATABASE.md
+9. API.md
+10. RULEBOOK.md
+11. AI_DEVELOPER_GUIDE.md
+12. CHANGELOG.md
 
 ---
 
@@ -123,41 +117,37 @@ When starting a new chat session after a previous session was interrupted or com
 
 ### Step 1
 
-Read SYSTEM_START_HERE.md to understand the project entry point.
+Read DASHBOARD.md to understand the project entry point and current status.
 
 ### Step 2
 
-Read PROJECT_STATUS.md to understand the current state.
+Read README.md to understand the project overview.
 
 ### Step 3
 
-Read IMPLEMENTATION_STATUS.md to understand what has been completed.
+Read CARDVERSE_INDEX.md to locate relevant documents.
 
 ### Step 4
 
-Read REPOSITORY_SNAPSHOT.md to understand what files exist.
+Review DECISION_LOG.md section in DASHBOARD.md to understand recent engineering decisions.
 
 ### Step 5
 
-Read DECISION_LOG.md to understand recent engineering decisions.
+Verify the current task and status from DASHBOARD.md.
 
 ### Step 6
 
-Verify the current task and status from PROJECT_STATUS.md.
+Continue development exactly from the Current Task.
 
 ### Step 7
 
-Continue development exactly from the Current Task.
+If Current Task is completed, proceed to Next Task.
 
 ### Step 8
 
-If Current Task is completed, proceed to Next Task.
-
-### Step 9
-
 Confirm understanding of the project state before making any changes.
 
-### Step 10
+### Step 9
 
 Proceed with the Development Workflow.
 
@@ -350,19 +340,14 @@ Only after completing this checklist should the task be considered finished.
 - README.md
 - PROJECT_DNA.md
 - PROJECT_RULES.md
-- PROJECT_STATUS.md
+- DASHBOARD.md
 - CARDVERSE_INDEX.md
-- SYSTEM_START_HERE.md
-- REPOSITORY_SNAPSHOT.md
-- SETUP_GUIDE.md
-- IMPLEMENTATION_STATUS.md
-- GLOSSARY.md
 - PRODUCT_BIBLE.md
 - ARCHITECTURE.md
 - DATABASE.md
 - API.md
 - RULEBOOK.md
-- DECISION_LOG.md
+- CHANGELOG.md
 
 ---
 
@@ -702,6 +687,7 @@ This rule REPLACES the PowerShell-based approach. The AI MUST NOT suggest PowerS
 | 0.4.0   | 2026-07-05 | Updated Command Execution Pattern with step-by-step protocol                   |
 | 0.5.0   | 2026-07-06 | Added Rules 9-10 for PowerShell and CD command protocols                       |
 | 0.6.0   | 2026-07-07 | Replaced PowerShell method with Manual Documentation Update Protocol (Rule 10) |
+| 0.7.0   | 2026-07-07 | Updated references and reading order with new documentation structure          |
 
 ---
 
