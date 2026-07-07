@@ -10,6 +10,7 @@ import friendsRoutes from '../../modules/friends/friends.routes.js';
 import { ResponseHelper } from '../../utils/response.js';
 import authRoutes from '../../modules/auth/auth.routes.js';
 import userRoutes from '../../modules/user/user.routes.js';
+import chatRoutes from '../../modules/chat/chat.routes';
 
 const router: Router = Router();
 
@@ -48,6 +49,14 @@ router.get('/', (_req: Request, res: Response) => {
           getById: 'GET /api/v1/users/:id',
           update: 'PATCH /api/v1/users/:id',
         },
+        chat: {
+          send: 'POST /api/v1/chat/messages',
+          getMessages: 'GET /api/v1/chat/messages/:friendId',
+          deleteMessage: 'DELETE /api/v1/chat/messages/:messageId',
+          getRooms: 'GET /api/v1/chat/rooms',
+          getUnread: 'GET /api/v1/chat/unread',
+          markAsRead: 'POST /api/v1/chat/read',
+        },
       },
     })
   );
@@ -64,6 +73,9 @@ router.use('/friends', friendsRoutes);
 
 // Presence routes
 router.use('/presence', presenceRoutes);
+
+// Chat routes
+router.use('/chat', chatRoutes);
 
 // Placeholder for future route groups
 // router.use('/matches', matchRoutes);

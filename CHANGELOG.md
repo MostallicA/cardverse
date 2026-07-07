@@ -19,6 +19,7 @@ The format is inspired by **Keep a Changelog** and follows **Semantic Versioning
 - User Management Module (profile CRUD, search)
 - Friends System Module (requests, accept, reject, list, remove)
 - Presence System Module (status tracking, heartbeat, batch queries)
+- Chat System Module (private messaging between friends, chat rooms, unread counts)
 
 ### Changed
 
