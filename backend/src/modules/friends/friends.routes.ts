@@ -1,5 +1,7 @@
-// Friends Routes
-// Based on API.md Section 4 - Endpoint Standards
+/**
+ * Friends Routes
+ * Based on API.md Section 4 - Endpoint Standards
+ */
 
 import { Router } from 'express';
 
@@ -12,7 +14,7 @@ import {
   searchQuerySchema,
 } from './friends.validator.js';
 
-const router = Router();
+const router: Router = Router();
 const controller = new FriendsController();
 
 // Friend requests

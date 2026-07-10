@@ -10,7 +10,7 @@ import { Router } from 'express';
 
 import { presenceController } from './presence.controller';
 
-const router = Router();
+const router: Router = Router();
 
 /**
  * @route   POST /api/v1/presence

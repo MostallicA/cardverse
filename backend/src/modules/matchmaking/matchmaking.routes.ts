@@ -10,7 +10,7 @@ import { Router } from 'express';
 
 import { matchmakingController } from './matchmaking.controller';
 
-const router = Router();
+const router: Router = Router();
 
 /**
  * @route   POST /api/v1/matchmaking/queue

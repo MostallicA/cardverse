@@ -21,72 +21,81 @@ export interface ValidationSchema {
   params?: Record<string, ValidationRule>;
 }
 
-export const validate = (schema: ValidationSchema) => {
+// Support both (schema) and (schema, source) signatures
+export const validate = (schema: any, source?: 'body' | 'query' | 'params') => {
   return (req: Request, res: Response, next: NextFunction): void => {
+    // If schema has a validate method (Joi schema)
+    if (schema && typeof schema.validate === 'function') {
+      const data = source === 'params' ? req.params : source === 'query' ? req.query : req.body;
+      const { error, value } = schema.validate(data);
+      if (error) {
+        res
+          .status(400)
+          .json(
+            ResponseHelper.error(
+              'VALIDATION_ERROR',
+              error.details?.[0]?.message || 'Validation failed'
+            )
+          );
+        return;
+      }
+      // Replace with validated data
+      if (source === 'params') req.params = value;
+      else if (source === 'query') req.query = value;
+      else req.body = value;
+      next();
+      return;
+    }
+
+    // If schema is our custom ValidationSchema
     const errors: string[] = [];
 
-    // Validate body
-    if (schema.body) {
-      Object.keys(schema.body).forEach((field) => {
-        const rules = schema.body![field];
-        const value = req.body[field];
+    // If source is specified, only validate that source
+    const sourcesToValidate = source ? [source] : (['body', 'query', 'params'] as const);
 
-        if (rules.required && (value === undefined || value === null || value === '')) {
-          errors.push(rules.message || `${field} is required`);
+    for (const src of sourcesToValidate) {
+      const rules = (schema as ValidationSchema)[src];
+      if (!rules) continue;
+
+      const data = src === 'body' ? req.body : src === 'query' ? req.query : req.params;
+
+      Object.keys(rules).forEach((field) => {
+        const rule = rules[field];
+        const value = data[field];
+
+        if (rule.required && (value === undefined || value === null || value === '')) {
+          errors.push(rule.message || `${field} is required`);
+          return;
         }
 
-        if (rules.type && value !== undefined && value !== null) {
-          if (rules.type === 'array') {
+        if (rule.type && value !== undefined && value !== null) {
+          if (rule.type === 'array') {
             if (!Array.isArray(value)) {
-              errors.push(rules.message || `${field} must be an array`);
+              errors.push(rule.message || `${field} must be an array`);
             }
-          } else if (typeof value !== rules.type) {
-            errors.push(rules.message || `${field} must be of type ${rules.type}`);
+          } else if (typeof value !== rule.type) {
+            errors.push(rule.message || `${field} must be of type ${rule.type}`);
           }
         }
 
-        if (rules.min !== undefined && value !== undefined) {
-          if (typeof value === 'string' && value.length < rules.min) {
-            errors.push(rules.message || `${field} must be at least ${rules.min} characters`);
-          } else if (typeof value === 'number' && value < rules.min) {
-            errors.push(rules.message || `${field} must be at least ${rules.min}`);
+        if (rule.min !== undefined && value !== undefined) {
+          if (typeof value === 'string' && value.length < rule.min) {
+            errors.push(rule.message || `${field} must be at least ${rule.min} characters`);
+          } else if (typeof value === 'number' && value < rule.min) {
+            errors.push(rule.message || `${field} must be at least ${rule.min}`);
           }
         }
 
-        if (rules.max !== undefined && value !== undefined) {
-          if (typeof value === 'string' && value.length > rules.max) {
-            errors.push(rules.message || `${field} must be at most ${rules.max} characters`);
-          } else if (typeof value === 'number' && value > rules.max) {
-            errors.push(rules.message || `${field} must be at most ${rules.max}`);
+        if (rule.max !== undefined && value !== undefined) {
+          if (typeof value === 'string' && value.length > rule.max) {
+            errors.push(rule.message || `${field} must be at most ${rule.max} characters`);
+          } else if (typeof value === 'number' && value > rule.max) {
+            errors.push(rule.message || `${field} must be at most ${rule.max}`);
           }
         }
 
-        if (rules.pattern && typeof value === 'string' && !rules.pattern.test(value)) {
-          errors.push(rules.message || `${field} format is invalid`);
-        }
-      });
-    }
-
-    // Validate query
-    if (schema.query) {
-      Object.keys(schema.query).forEach((field) => {
-        const rules = schema.query![field];
-        const value = req.query[field] as string;
-
-        if (rules.required && !value) {
-          errors.push(rules.message || `Query parameter ${field} is required`);
-        }
-      });
-    }
-
-    // Validate params
-    if (schema.params) {
-      Object.keys(schema.params).forEach((field) => {
-        const rules = schema.params![field];
-        const value = req.params[field];
-
-        if (rules.required && !value) {
-          errors.push(rules.message || `URL parameter ${field} is required`);
+        if (rule.pattern && typeof value === 'string' && !rule.pattern.test(value)) {
+          errors.push(rule.message || `${field} format is invalid`);
         }
       });
     }

@@ -8,11 +8,10 @@
 
 import { Request, Response } from 'express';
 
-import { successResponse, errorResponse } from '../../utils/response';
-import { asyncHandler } from '../../middleware/asyncHandler';
+import { sendSuccess, sendError, getRequiredParamString } from '../../utils/controller.utils';
 
 import { matchmakingService } from './matchmaking.service';
-import { validateJoinQueue, validateMatchId } from './matchmaking.validator';
+import { validateJoinQueue } from './matchmaking.validator';
 
 type AuthenticatedRequest = Request & { user?: { id: string } };
 
@@ -21,108 +20,133 @@ export class MatchmakingController {
    * Join the matchmaking queue
    * POST /api/v1/matchmaking/queue
    */
-  joinQueue = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
-    const userId = req.user?.id;
-    if (!userId) {
-      return errorResponse(res, 'User not authenticated', 401);
-    }
+  joinQueue = async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
+    try {
+      const userId = req.user?.id;
+      if (!userId) {
+        return sendError(res, 'User not authenticated', 401);
+      }
 
-    // Validate request
-    const validation = validateJoinQueue(req.body);
-    if (!validation.valid) {
-      return errorResponse(res, 'Validation failed', 400, validation.errors);
-    }
+      // Validate request
+      const validation = validateJoinQueue(req.body);
+      if (!validation.valid) {
+        return sendError(res, 'Validation failed', 400, validation.errors);
+      }
 
-    const status = await matchmakingService.joinQueue(userId, req.body);
-    return successResponse(res, status, 'Joined matchmaking queue successfully');
-  });
+      const status = await matchmakingService.joinQueue(userId, req.body);
+      return sendSuccess(res, status, 'Joined matchmaking queue successfully');
+    } catch (error) {
+      return sendError(res, error instanceof Error ? error.message : 'Failed to join queue', 500);
+    }
+  };
 
   /**
    * Leave the matchmaking queue
    * DELETE /api/v1/matchmaking/queue
    */
-  leaveQueue = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
-    const userId = req.user?.id;
-    if (!userId) {
-      return errorResponse(res, 'User not authenticated', 401);
-    }
+  leaveQueue = async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
+    try {
+      const userId = req.user?.id;
+      if (!userId) {
+        return sendError(res, 'User not authenticated', 401);
+      }
 
-    await matchmakingService.leaveQueue(userId);
-    return successResponse(res, null, 'Left matchmaking queue successfully');
-  });
+      await matchmakingService.leaveQueue(userId);
+      return sendSuccess(res, null, 'Left matchmaking queue successfully');
+    } catch (error) {
+      return sendError(res, error instanceof Error ? error.message : 'Failed to leave queue', 500);
+    }
+  };
 
   /**
    * Get queue status for current user
    * GET /api/v1/matchmaking/queue/status
    */
-  getQueueStatus = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
-    const userId = req.user?.id;
-    if (!userId) {
-      return errorResponse(res, 'User not authenticated', 401);
-    }
+  getQueueStatus = async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
+    try {
+      const userId = req.user?.id;
+      if (!userId) {
+        return sendError(res, 'User not authenticated', 401);
+      }
 
-    const status = await matchmakingService.getQueueStatus(userId);
-    return successResponse(res, status, 'Queue status retrieved successfully');
-  });
+      const status = await matchmakingService.getQueueStatus(userId);
+      return sendSuccess(res, status, 'Queue status retrieved successfully');
+    } catch (error) {
+      return sendError(
+        res,
+        error instanceof Error ? error.message : 'Failed to get queue status',
+        500
+      );
+    }
+  };
 
   /**
    * Find a match (trigger matchmaking)
    * POST /api/v1/matchmaking/find
    */
-  findMatch = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
-    const userId = req.user?.id;
-    if (!userId) {
-      return errorResponse(res, 'User not authenticated', 401);
-    }
+  findMatch = async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
+    try {
+      const userId = req.user?.id;
+      if (!userId) {
+        return sendError(res, 'User not authenticated', 401);
+      }
 
-    const match = await matchmakingService.findMatch(userId);
-    if (!match) {
-      return successResponse(res, null, 'No match found yet, still searching');
-    }
+      const match = await matchmakingService.findMatch(userId);
+      if (!match) {
+        return sendSuccess(res, null, 'No match found yet, still searching');
+      }
 
-    return successResponse(res, match, 'Match found successfully');
-  });
+      return sendSuccess(res, match, 'Match found successfully');
+    } catch (error) {
+      return sendError(res, error instanceof Error ? error.message : 'Failed to find match', 500);
+    }
+  };
 
   /**
    * Get matchmaking statistics
    * GET /api/v1/matchmaking/stats
    */
-  getStats = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
-    // Allow access to authenticated users (admin in future)
-    const userId = req.user?.id;
-    if (!userId) {
-      return errorResponse(res, 'User not authenticated', 401);
-    }
+  getStats = async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
+    try {
+      const userId = req.user?.id;
+      if (!userId) {
+        return sendError(res, 'User not authenticated', 401);
+      }
 
-    const stats = await matchmakingService.getStats();
-    return successResponse(res, stats, 'Matchmaking statistics retrieved successfully');
-  });
+      const stats = await matchmakingService.getStats();
+      return sendSuccess(res, stats, 'Matchmaking statistics retrieved successfully');
+    } catch (error) {
+      return sendError(
+        res,
+        error instanceof Error ? error.message : 'Failed to get statistics',
+        500
+      );
+    }
+  };
 
   /**
    * Get a specific match by ID
    * GET /api/v1/matchmaking/matches/:matchId
    */
-  getMatch = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
-    const userId = req.user?.id;
-    if (!userId) {
-      return errorResponse(res, 'User not authenticated', 401);
+  getMatch = async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
+    try {
+      const userId = req.user?.id;
+      if (!userId) {
+        return sendError(res, 'User not authenticated', 401);
+      }
+
+      const matchId = getRequiredParamString(req.params.matchId, 'matchId');
+
+      const match = await matchmakingService.getMatch(matchId);
+      if (!match) {
+        return sendError(res, 'Match not found', 404);
+      }
+
+      return sendSuccess(res, match, 'Match retrieved successfully');
+    } catch (error) {
+      return sendError(res, error instanceof Error ? error.message : 'Failed to get match', 500);
     }
-
-    const { matchId } = req.params;
-
-    // Validate matchId
-    const validation = validateMatchId(matchId);
-    if (!validation.valid) {
-      return errorResponse(res, 'Validation failed', 400, validation.errors);
-    }
-
-    const match = await matchmakingService.getMatch(matchId);
-    if (!match) {
-      return errorResponse(res, 'Match not found', 404);
-    }
-
-    return successResponse(res, match, 'Match retrieved successfully');
-  });
+  };
 }
 
 // Export singleton instance

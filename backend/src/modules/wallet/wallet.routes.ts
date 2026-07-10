@@ -8,9 +8,14 @@
 
 import { Router } from 'express';
 
+import { authenticate } from '../../middleware/auth.middleware';
+
 import { walletController } from './wallet.controller';
 
-const router = Router();
+const router: Router = Router();
+
+// All wallet routes require authentication
+router.use(authenticate);
 
 /**
  * @route   GET /api/v1/wallet

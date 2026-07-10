@@ -66,8 +66,12 @@ export class WalletService {
     // Update wallet
     wallet.coins += request.amount;
     wallet.totalEarned += request.amount;
-    wallet.updatedAt = new Date();
-    wallets.set(userId, wallet);
+    // Type assertion to update updatedAt field
+    (wallet as Wallet).updatedAt = new Date();
+    const existingWallet = wallets.get(userId)!;
+    existingWallet.coins = wallet.coins;
+    existingWallet.totalEarned = wallet.totalEarned;
+    wallets.set(userId, existingWallet);
 
     // Create transaction
     const transaction: Transaction = {
@@ -106,10 +110,10 @@ export class WalletService {
     const balanceBefore = wallet.coins;
 
     // Update wallet
-    wallet.coins -= request.amount;
-    wallet.totalSpent += request.amount;
-    wallet.updatedAt = new Date();
-    wallets.set(userId, wallet);
+    const existingWallet = wallets.get(userId)!;
+    existingWallet.coins = wallet.coins;
+    existingWallet.totalSpent = wallet.totalSpent;
+    wallets.set(userId, existingWallet);
 
     // Create transaction
     const transaction: Transaction = {

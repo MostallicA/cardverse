@@ -10,7 +10,7 @@ import { Router } from 'express';
 
 import { notificationsController } from './notifications.controller';
 
-const router = Router();
+const router: Router = Router();
 
 /**
  * @route   GET /api/v1/notifications

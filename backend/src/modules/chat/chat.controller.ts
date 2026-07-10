@@ -2,166 +2,150 @@
  * Chat - Controller Layer
  * CV-MOD-005
  *
- * Handles HTTP requests for private messaging including sending messages,
- * retrieving chat history, managing chat rooms, and marking messages as read.
+ * Handles HTTP requests for chat functionality including private messaging,
+ * chat rooms, unread counts, and message management.
  */
 
 import { Request, Response } from 'express';
 
-import { successResponse, errorResponse } from '../../utils/response';
-import { asyncHandler } from '../../middleware/asyncHandler';
+import { sendSuccess, sendError, getRequiredParamString } from '../../utils/controller.utils';
 
 import { chatService } from './chat.service';
-import {
-  validateSendMessage,
-  validateFriendId,
-  validateMessageId,
-  validateMarkAsRead,
-} from './chat.validator';
-
-type AuthenticatedRequest = Request & { user?: { id: string } };
 
 export class ChatController {
   /**
    * Send a message to a friend
    * POST /api/v1/chat/messages
    */
-  sendMessage = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
-    const userId = req.user?.id;
-    if (!userId) {
-      return errorResponse(res, 'User not authenticated', 401);
-    }
+  sendMessage = async (req: Request, res: Response): Promise<Response> => {
+    try {
+      const userId = (req as any).userId;
+      if (!userId) {
+        return sendError(res, 'User not authenticated', 401);
+      }
 
-    // Validate request
-    const validation = validateSendMessage(req.body);
-    if (!validation.valid) {
-      return errorResponse(res, 'Validation failed', 400, validation.errors);
-    }
+      const { friendId, content } = req.body;
+      if (!friendId || !content) {
+        return sendError(res, 'friendId and content are required', 400);
+      }
 
-    const message = await chatService.sendMessage(userId, req.body);
-    return successResponse(res, message, 'Message sent successfully');
-  });
+      const message = await chatService.sendMessage(userId, {
+        receiverId: friendId,
+        content,
+      });
+      return sendSuccess(res, message, 'Message sent successfully');
+    } catch (error) {
+      return sendError(res, error instanceof Error ? error.message : 'Failed to send message', 500);
+    }
+  };
 
   /**
-   * Get messages between current user and a friend
+   * Get messages with a friend
    * GET /api/v1/chat/messages/:friendId
    */
-  getMessages = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
-    const userId = req.user?.id;
-    if (!userId) {
-      return errorResponse(res, 'User not authenticated', 401);
-    }
-
-    const { friendId } = req.params;
-    const { limit, before } = req.query;
-
-    // Validate friendId
-    const validation = validateFriendId(friendId);
-    if (!validation.valid) {
-      return errorResponse(res, 'Validation failed', 400, validation.errors);
-    }
-
-    // Parse limit
-    let parsedLimit = 50;
-    if (limit) {
-      parsedLimit = parseInt(limit as string, 10);
-      if (isNaN(parsedLimit) || parsedLimit < 1) {
-        parsedLimit = 50;
+  getMessages = async (req: Request, res: Response): Promise<Response> => {
+    try {
+      const userId = (req as any).userId;
+      if (!userId) {
+        return sendError(res, 'User not authenticated', 401);
       }
-      if (parsedLimit > 100) {
-        parsedLimit = 100;
-      }
-    }
 
-    // Parse before date
-    let beforeDate: Date | undefined;
-    if (before) {
-      beforeDate = new Date(before as string);
-      if (isNaN(beforeDate.getTime())) {
-        beforeDate = undefined;
-      }
-    }
+      const friendId = getRequiredParamString(req.params.friendId, 'friendId');
+      const limit = req.query.limit ? parseInt(req.query.limit as string) : 50;
+      const before = req.query.before ? new Date(req.query.before as string) : undefined;
 
-    const result = await chatService.getMessages(userId, friendId, parsedLimit, beforeDate);
-    return successResponse(res, result, 'Messages retrieved successfully');
-  });
+      const result = await chatService.getMessages(userId, friendId, limit, before);
+      return sendSuccess(res, result, 'Messages retrieved successfully');
+    } catch (error) {
+      return sendError(res, error instanceof Error ? error.message : 'Failed to get messages', 500);
+    }
+  };
 
   /**
-   * Get all chat rooms for current user
+   * Get chat rooms for the current user
    * GET /api/v1/chat/rooms
    */
-  getChatRooms = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
-    const userId = req.user?.id;
-    if (!userId) {
-      return errorResponse(res, 'User not authenticated', 401);
-    }
+  getRooms = async (req: Request, res: Response): Promise<Response> => {
+    try {
+      const userId = (req as any).userId;
+      if (!userId) {
+        return sendError(res, 'User not authenticated', 401);
+      }
 
-    const rooms = await chatService.getChatRooms(userId);
-    return successResponse(res, { rooms }, 'Chat rooms retrieved successfully');
-  });
+      const rooms = await chatService.getChatRooms(userId);
+      return sendSuccess(res, { rooms }, 'Chat rooms retrieved successfully');
+    } catch (error) {
+      return sendError(res, error instanceof Error ? error.message : 'Failed to get rooms', 500);
+    }
+  };
 
   /**
    * Get unread message count
    * GET /api/v1/chat/unread
    */
-  getUnreadCount = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
-    const userId = req.user?.id;
-    if (!userId) {
-      return errorResponse(res, 'User not authenticated', 401);
-    }
+  getUnreadCount = async (req: Request, res: Response): Promise<Response> => {
+    try {
+      const userId = (req as any).userId;
+      if (!userId) {
+        return sendError(res, 'User not authenticated', 401);
+      }
 
-    const unread = await chatService.getUnreadCount(userId);
-    return successResponse(
-      res,
-      {
-        total: unread.total,
-        byFriend: Object.fromEntries(unread.byFriend),
-      },
-      'Unread count retrieved successfully'
-    );
-  });
+      const unread = await chatService.getUnreadCount(userId);
+      return sendSuccess(res, unread, 'Unread count retrieved successfully');
+    } catch (error) {
+      return sendError(
+        res,
+        error instanceof Error ? error.message : 'Failed to get unread count',
+        500
+      );
+    }
+  };
 
   /**
-   * Mark messages as read for a specific friend
+   * Mark messages as read
    * POST /api/v1/chat/read
    */
-  markAsRead = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
-    const userId = req.user?.id;
-    if (!userId) {
-      return errorResponse(res, 'User not authenticated', 401);
-    }
+  markAsRead = async (req: Request, res: Response): Promise<Response> => {
+    try {
+      const userId = (req as any).userId;
+      if (!userId) {
+        return sendError(res, 'User not authenticated', 401);
+      }
 
-    // Validate request
-    const validation = validateMarkAsRead(req.body);
-    if (!validation.valid) {
-      return errorResponse(res, 'Validation failed', 400, validation.errors);
-    }
+      const { friendId } = req.body;
+      if (!friendId) {
+        return sendError(res, 'friendId is required', 400);
+      }
 
-    await chatService.markAsRead(userId, req.body.friendId);
-    return successResponse(res, null, 'Messages marked as read successfully');
-  });
+      await chatService.markAsRead(userId, friendId);
+      return sendSuccess(res, null, 'Messages marked as read successfully');
+    } catch (error) {
+      return sendError(res, error instanceof Error ? error.message : 'Failed to mark as read', 500);
+    }
+  };
 
   /**
    * Delete a message
    * DELETE /api/v1/chat/messages/:messageId
    */
-  deleteMessage = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
-    const userId = req.user?.id;
-    if (!userId) {
-      return errorResponse(res, 'User not authenticated', 401);
+  deleteMessage = async (req: Request, res: Response): Promise<Response> => {
+    try {
+      const userId = (req as any).userId;
+      if (!userId) {
+        return sendError(res, 'User not authenticated', 401);
+      }
+
+      const messageId = getRequiredParamString(req.params.messageId, 'messageId');
+      await chatService.deleteMessage(userId, messageId);
+      return sendSuccess(res, null, 'Message deleted successfully');
+    } catch (error) {
+      return sendError(
+        res,
+        error instanceof Error ? error.message : 'Failed to delete message',
+        500
+      );
     }
-
-    const { messageId } = req.params;
-
-    // Validate messageId
-    const validation = validateMessageId(messageId);
-    if (!validation.valid) {
-      return errorResponse(res, 'Validation failed', 400, validation.errors);
-    }
-
-    await chatService.deleteMessage(userId, messageId);
-    return successResponse(res, null, 'Message deleted successfully');
-  });
+  };
 }
 
 // Export singleton instance

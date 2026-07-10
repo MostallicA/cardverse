@@ -3,4 +3,4 @@ packages:
   - frontend
   - shared
 allowBuilds:
-  esbuild: set this to true or false
+  esbuild: false

@@ -1,5 +1,7 @@
-// Friends Service - Business Logic
-// Based on PRODUCT_BIBLE.md Section 4.1 - Friends System
+/**
+ * Friends Service - Business Logic
+ * Based on PRODUCT_BIBLE.md Section 4.1 - Friends System
+ */
 
 import { Friend, FriendRequest } from './friends.types.js';
 
@@ -160,11 +162,16 @@ export class FriendsService {
     return friendRequests.filter((r) => r.fromUserId === userId && r.status === 'pending');
   }
 
-  // Search players (for friend request)
-  async searchPlayers(): Promise<unknown[]> {
-    // This would normally query the user service
-    // For now, return empty array as placeholder
-    // In real implementation, this would search users by username
+  /**
+   * Search players by username (for friend request)
+   * This is a placeholder - will be implemented when UserService is ready
+   * Returns empty array for now
+   */
+  async searchPlayers(): Promise<
+    Array<{ id: string; username: string; avatar?: string; isFriend: boolean }>
+  > {
+    // TODO: Implement search using UserService
+    // This will query the User module to find players by username
     return [];
   }
 }

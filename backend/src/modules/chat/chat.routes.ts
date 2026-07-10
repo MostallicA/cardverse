@@ -10,7 +10,7 @@ import { Router } from 'express';
 
 import { chatController } from './chat.controller';
 
-const router = Router();
+const router: Router = Router();
 
 /**
  * @route   POST /api/v1/chat/messages
@@ -38,7 +38,7 @@ router.delete('/messages/:messageId', chatController.deleteMessage);
  * @desc    Get all chat rooms for current user
  * @access  Private
  */
-router.get('/rooms', chatController.getChatRooms);
+router.get('/rooms', chatController.getRooms);
 
 /**
  * @route   GET /api/v1/chat/unread
