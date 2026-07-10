@@ -22,11 +22,12 @@ export interface ValidationSchema {
   params?: Record<string, ValidationRule>;
 }
 
-// Type for Joi-like schema
+// Type for Joi-like schema - using any to avoid ESLint unused parameter error
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type JoiLikeSchema = {
-  validate: (data: unknown) => {
+  validate: (data: any) => {
     error?: { details?: Array<{ message: string }> };
-    value: unknown;
+    value: any;
   };
 };
 
@@ -42,7 +43,7 @@ export const validate = (schema: ValidationSchema | unknown, source?: 'body' | '
     // Check if schema is a Joi-like schema
     if (isJoiLikeSchema(schema)) {
       const requestData = source === 'params' ? req.params : source === 'query' ? req.query : req.body;
-      const result = schema.validate(requestData);
+      const result = (schema as JoiLikeSchema).validate(requestData);
       if (result.error) {
         res.status(400).json(
           ResponseHelper.error('VALIDATION_ERROR', result.error.details?.[0]?.message || 'Validation failed')
