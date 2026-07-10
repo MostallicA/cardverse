@@ -50,9 +50,14 @@ export const validate = (schema: ValidationSchema | unknown, source?: 'body' | '
         );
         return;
       }
-      if (source === 'params') req.params = result.value as Record<string, unknown>;
-      else if (source === 'query') req.query = result.value as Record<string, unknown>;
-      else req.body = result.value as Record<string, unknown>;
+      // Replace with validated data - using type assertion for Express compatibility
+      if (source === 'params') {
+        req.params = result.value as typeof req.params;
+      } else if (source === 'query') {
+        req.query = result.value as typeof req.query;
+      } else {
+        req.body = result.value as typeof req.body;
+      }
       next();
       return;
     }
