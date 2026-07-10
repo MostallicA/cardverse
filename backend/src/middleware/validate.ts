@@ -1,9 +1,10 @@
-// Request validation middleware
-// Follows API.md Input Validation standards
-// All requests must be validated before reaching business logic
+/**
+ * Request validation middleware
+ * Follows API.md Input Validation standards
+ * All requests must be validated before reaching business logic
+ */
 
 import { Request, Response, NextFunction } from 'express';
-
 import { ResponseHelper } from '../utils/response.js';
 
 export interface ValidationRule {
@@ -21,59 +22,64 @@ export interface ValidationSchema {
   params?: Record<string, ValidationRule>;
 }
 
-// Support both (schema) and (schema, source) signatures
-export const validate = (schema: any, source?: 'body' | 'query' | 'params') => {
+// Type for Joi-like schema
+type JoiLikeSchema = {
+  validate: (data: unknown) => {
+    error?: { details?: Array<{ message: string }> };
+    value: unknown;
+  };
+};
+
+/**
+ * Check if schema is a Joi-like schema (has validate method)
+ */
+function isJoiLikeSchema(schema: unknown): schema is JoiLikeSchema {
+  return typeof schema === 'object' && schema !== null && typeof (schema as Record<string, unknown>).validate === 'function';
+}
+
+export const validate = (schema: ValidationSchema | unknown, source?: 'body' | 'query' | 'params') => {
   return (req: Request, res: Response, next: NextFunction): void => {
-    // If schema has a validate method (Joi schema)
-    if (schema && typeof schema.validate === 'function') {
-      const data = source === 'params' ? req.params : source === 'query' ? req.query : req.body;
-      const { error, value } = schema.validate(data);
-      if (error) {
-        res
-          .status(400)
-          .json(
-            ResponseHelper.error(
-              'VALIDATION_ERROR',
-              error.details?.[0]?.message || 'Validation failed'
-            )
-          );
+    // Check if schema is a Joi-like schema
+    if (isJoiLikeSchema(schema)) {
+      const requestData = source === 'params' ? req.params : source === 'query' ? req.query : req.body;
+      const result = schema.validate(requestData);
+      if (result.error) {
+        res.status(400).json(
+          ResponseHelper.error('VALIDATION_ERROR', result.error.details?.[0]?.message || 'Validation failed')
+        );
         return;
       }
-      // Replace with validated data
-      if (source === 'params') req.params = value;
-      else if (source === 'query') req.query = value;
-      else req.body = value;
+      if (source === 'params') req.params = result.value as Record<string, unknown>;
+      else if (source === 'query') req.query = result.value as Record<string, unknown>;
+      else req.body = result.value as Record<string, unknown>;
       next();
       return;
     }
 
-    // If schema is our custom ValidationSchema
+    // Custom ValidationSchema
     const errors: string[] = [];
+    const customSchema = schema as ValidationSchema;
+    const sources = source ? [source] : (['body', 'query', 'params'] as const);
 
-    // If source is specified, only validate that source
-    const sourcesToValidate = source ? [source] : (['body', 'query', 'params'] as const);
-
-    for (const src of sourcesToValidate) {
-      const rules = (schema as ValidationSchema)[src];
+    for (const src of sources) {
+      const rules = customSchema[src];
       if (!rules) continue;
 
-      const data = src === 'body' ? req.body : src === 'query' ? req.query : req.params;
+      const values = src === 'body' ? req.body : src === 'query' ? req.query : req.params;
 
-      Object.keys(rules).forEach((field) => {
+      for (const field of Object.keys(rules)) {
         const rule = rules[field];
-        const value = data[field];
+        const value = values[field];
 
         if (rule.required && (value === undefined || value === null || value === '')) {
           errors.push(rule.message || `${field} is required`);
-          return;
+          continue;
         }
 
         if (rule.type && value !== undefined && value !== null) {
-          if (rule.type === 'array') {
-            if (!Array.isArray(value)) {
-              errors.push(rule.message || `${field} must be an array`);
-            }
-          } else if (typeof value !== rule.type) {
+          if (rule.type === 'array' && !Array.isArray(value)) {
+            errors.push(rule.message || `${field} must be an array`);
+          } else if (rule.type !== 'array' && typeof value !== rule.type) {
             errors.push(rule.message || `${field} must be of type ${rule.type}`);
           }
         }
@@ -97,7 +103,7 @@ export const validate = (schema: any, source?: 'body' | 'query' | 'params') => {
         if (rule.pattern && typeof value === 'string' && !rule.pattern.test(value)) {
           errors.push(rule.message || `${field} format is invalid`);
         }
-      });
+      }
     }
 
     if (errors.length > 0) {
