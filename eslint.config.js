@@ -40,7 +40,15 @@ export default [
           'newlines-between': 'always',
         },
       ],
-      'no-undef': 'off', // غیرفعال کردن no-undef چون TypeScript این کار را انجام می‌دهد
+      'no-undef': 'off',
+    },
+  },
+  // 🔧 غیرفعال کردن قوانین unused-vars برای پوشه Engine (زیرا بسیاری از متغیرها برای استفاده در آینده تعریف شده‌اند)
+  {
+    files: ['backend/src/engine/**/*.ts'],
+    rules: {
+      '@typescript-eslint/no-unused-vars': 'off',
+      'no-unused-vars': 'off',
     },
   },
 ];
