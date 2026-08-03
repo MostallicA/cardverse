@@ -15,9 +15,15 @@ export { ruleExecutor, RuleExecutor } from './card/rule.executor';
 export { turnManager, TurnManager } from './turn/turn.manager';
 export * from './turn/turn.types';
 
+// Disconnect Manager
+export { disconnectManager, DisconnectManager } from './disconnect/disconnect.manager';
+export type { DisconnectConfig, DisconnectEvent } from './disconnect/disconnect.manager';
+
+// Bot Manager
+export { botManager, BotManager } from './bot/bot.manager';
+export type { BotManagerConfig } from './bot/bot.manager';
+
 // Sub-module exports (will be added as implemented)
 // export * from './lobby/lobby.manager';
 // export * from './room/room.manager';
 // export * from './session/session.manager';
-// export * from './disconnect/disconnect.manager';
-// export * from './bot/bot.manager';
