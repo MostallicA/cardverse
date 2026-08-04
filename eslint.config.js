@@ -43,12 +43,21 @@ export default [
       'no-undef': 'off',
     },
   },
-  // 🔧 غیرفعال کردن قوانین unused-vars برای پوشه Engine (زیرا بسیاری از متغیرها برای استفاده در آینده تعریف شده‌اند)
+  // 🔧 غیرفعال کردن قوانین برای پوشه Engine (برای متغیرهای استفاده نشده)
   {
     files: ['backend/src/engine/**/*.ts'],
     rules: {
       '@typescript-eslint/no-unused-vars': 'off',
       'no-unused-vars': 'off',
+    },
+  },
+  // 🔧 غیرفعال کردن قوانین برای پوشه Socket (برای متغیرهای استفاده نشده و any)
+  {
+    files: ['backend/src/socket/**/*.ts'],
+    rules: {
+      '@typescript-eslint/no-unused-vars': 'off',
+      'no-unused-vars': 'off',
+      '@typescript-eslint/no-explicit-any': 'off',
     },
   },
 ];

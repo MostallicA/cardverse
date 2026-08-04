@@ -1,7 +1,7 @@
 # CardVerse Dashboard
 
 **Document ID:** CV-SYS-016
-**Version:** 2.3.0
+**Version:** 2.4.0
 **Status:** Operational
 **Classification:** System
 **Owner:** Mostafa
@@ -56,11 +56,11 @@ Do not create new status/tracking files. Everything operational belongs in this 
 | ------------------------- | ------------------------------------------------------------ |
 | **Current Phase**         | Core Game Engine Development (Hokm)                          |
 | **Current Sprint**        | Sprint 6                                                     |
-| **Current Task**          | Real-time protocol decision + implementation                 |
+| **Current Task**          | Integration of Engine Layer with Platform Layer              |
 | **Current Status**        | Pending                                                      |
 | **Latest Commit**         | b90aff3 _(update after next commit)_                         |
 | **Latest Commit Message** | chore(frontend): add react-router-dom and axios dependencies |
-| **Next Task**             | Real-time protocol decision + implementation                 |
+| **Next Task**             | Integration of Engine Layer with Platform Layer              |
 | **Repository Status**     | Development                                                  |
 | **Current Version**       | 0.9.0                                                        |
 
@@ -280,6 +280,15 @@ Only decisions with long-term impact (architecture, product direction, database,
 
 ---
 
+### CV-DEC-0017 — Real-time Communication Protocol
+
+**Date:** 2026-08-04 · **Status:** Accepted
+**Decision:** Socket.IO selected as the real-time communication protocol for in-match gameplay.
+**Rationale:** Provides auto-reconnection, built-in room management, fallback support, and excellent integration with the existing Node.js/TypeScript stack. WebSocket alone would require manual reconnection logic; SSE is one-way only and insufficient for bidirectional gameplay.
+**Consequences:** Socket.IO will be added as a dependency. All Engine Layer modules (Turn Manager, Disconnect Manager, etc.) will emit events through Socket.IO rooms. REST API (API.md) remains for all non-gameplay operations.
+
+---
+
 ## 7. Phase & Sprint Status
 
 ### Phase Status
@@ -309,7 +318,7 @@ See CHANGELOG.md for the full task-by-task history of these sprints.
 | 6.1  | Turn Manager (timers per RULEBOOK.md §12)             | Complete |
 | 6.2  | Card Engine + Rule Executor (Hokm/Sars/Nars/Tak Nars) | Complete |
 | 6.3  | Disconnect Manager + Bot Manager (basic)              | Complete |
-| 6.4  | Real-time protocol decision + implementation          | Pending  |
+| 6.4  | Real-time protocol decision + implementation          | Complete |
 
 ### Sprint 7 — Integration & Testing (Planned)
 
@@ -347,6 +356,7 @@ See CHANGELOG.md for the full task-by-task history of these sprints.
 | 2.1.0         | 2026-08-03              | Engine Layer foundation: created Card Engine, Rule Executor, Turn Manager, and shared types                                                                                                                                                                                                                                                                                          |
 | 2.2.0         | 2026-08-04              | Engine Layer: added Disconnect Manager and Bot Manager                                                                                                                                                                                                                                                                                                                               |
 | 2.3.0         | 2026-08-04              | Engine Layer: added Lobby Manager, Room Manager, and Session Manager - all Engine modules complete                                                                                                                                                                                                                                                                                   |
+| 2.4.0         | 2026-08-04              | Real-time communication implemented with Socket.IO; Engine Layer complete                                                                                                                                                                                                                                                                                                            |
 
 ---
 

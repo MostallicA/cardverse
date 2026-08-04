@@ -1,53 +1,80 @@
-﻿// CardVerse Backend Entry Point
+﻿import { createServer } from 'http';
 
-import express, { Express } from 'express';
+import express, { Express, Request, Response } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import compression from 'compression';
-import { APP_NAME, APP_VERSION } from '@cardverse/shared';
+import morgan from 'morgan';
 
-import { config } from './config/index.js';
-import { logger, requestLogger } from './middleware/logger.js';
-import { errorHandler, notFoundHandler } from './middleware/errorHandler.js';
-import v1Routes from './routes/v1/index.js';
+import { config } from './config';
+import { errorHandler } from './middleware/errorHandler';
+import v1Routes from './routes/v1';
+import { initSocketIO } from './socket';
 
 const app: Express = express();
-const port = config.port;
+const server = createServer(app);
+const logger = console;
 
-// Global Middleware
+// Socket.IO initialization
+initSocketIO(server);
+
+// Middleware
 app.use(helmet());
-app.use(cors({ origin: config.corsOrigin, credentials: true }));
+app.use(
+  cors({
+    origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+    credentials: true,
+  })
+);
 app.use(compression());
-app.use(logger);
-app.use(requestLogger);
+app.use(morgan('combined', { stream: { write: (message) => logger.info(message.trim()) } }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // API Routes
-app.use(config.apiPrefix, v1Routes);
+app.use('/api/v1', v1Routes);
 
-// Root redirect
-app.get('/', (_req, res) => {
+// Health check
+app.get('/health', (req: Request, res: Response) => {
   res.json({
-    message: `Welcome to ${APP_NAME} API`,
-    version: APP_VERSION,
-    documentation: '/api/v1',
-    health: '/api/v1/health',
+    status: 'ok',
+    timestamp: new Date().toISOString(),
+    version: (config as any).version ?? 'unknown',
   });
 });
 
-// Error Handling
+// 404 handler
+const notFoundHandler = (_req: Request, res: Response) => {
+  res.status(404).json({ message: 'Not Found' });
+};
 app.use(notFoundHandler);
+
+// Error handler
 app.use(errorHandler);
 
-// Server Startup
-app.listen(port, () => {
-  console.log('='.repeat(50));
-  console.log(`${APP_NAME} v${APP_VERSION} - Backend Service`);
-  console.log(`Server: http://localhost:${port}`);
-  console.log(`Health: http://localhost:${port}/api/v1/health`);
-  console.log(`Environment: ${config.nodeEnv}`);
-  console.log('='.repeat(50));
+// Start server
+const PORT = config.port || 3000;
+server.listen(PORT, () => {
+  logger.info(`🚀 Server running on port ${PORT}`);
+  logger.info(`📡 Socket.IO ready on /socket.io`);
+  logger.info(`🌐 Environment: ${config.nodeEnv}`);
 });
 
-export default app;
+// Graceful shutdown
+process.on('SIGTERM', () => {
+  logger.info('SIGTERM received, closing server...');
+  server.close(() => {
+    logger.info('Server closed');
+    process.exit(0);
+  });
+});
+
+process.on('SIGINT', () => {
+  logger.info('SIGINT received, closing server...');
+  server.close(() => {
+    logger.info('Server closed');
+    process.exit(0);
+  });
+});
+
+export { app, server };
