@@ -23,7 +23,14 @@ export type { DisconnectConfig, DisconnectEvent } from './disconnect/disconnect.
 export { botManager, BotManager } from './bot/bot.manager';
 export type { BotManagerConfig } from './bot/bot.manager';
 
-// Sub-module exports (will be added as implemented)
-// export * from './lobby/lobby.manager';
-// export * from './room/room.manager';
-// export * from './session/session.manager';
+// Lobby Manager
+export { lobbyManager, LobbyManager } from './lobby/lobby.manager';
+export type { Lobby, LobbyConfig, LobbyPlayer } from './lobby/lobby.manager';
+
+// Room Manager
+export { roomManager, RoomManager } from './room/room.manager';
+export type { Room, RoomSeat } from './room/room.manager';
+
+// Session Manager
+export { sessionManager, SessionManager } from './session/session.manager';
+export type { Session } from './session/session.manager';

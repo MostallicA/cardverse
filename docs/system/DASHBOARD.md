@@ -1,7 +1,7 @@
 # CardVerse Dashboard
 
 **Document ID:** CV-SYS-016
-**Version:** 2.2.0
+**Version:** 2.3.0
 **Status:** Operational
 **Classification:** System
 **Owner:** Mostafa
@@ -56,11 +56,11 @@ Do not create new status/tracking files. Everything operational belongs in this 
 | ------------------------- | ------------------------------------------------------------ |
 | **Current Phase**         | Core Game Engine Development (Hokm)                          |
 | **Current Sprint**        | Sprint 6                                                     |
-| **Current Task**          | Disconnect Manager + Bot Manager implementation              |
-| **Current Status**        | In Progress                                                  |
+| **Current Task**          | Real-time protocol decision + implementation                 |
+| **Current Status**        | Pending                                                      |
 | **Latest Commit**         | b90aff3 _(update after next commit)_                         |
 | **Latest Commit Message** | chore(frontend): add react-router-dom and axios dependencies |
-| **Next Task**             | Implement Lobby / Room / Session Manager                     |
+| **Next Task**             | Real-time protocol decision + implementation                 |
 | **Repository Status**     | Development                                                  |
 | **Current Version**       | 0.9.0                                                        |
 
@@ -101,13 +101,13 @@ Not started. This sprint must deliver, per ARCHITECTURE.md Section 3.2 and RULEB
 
 ### Overall Status (Accurate — separated by architectural layer)
 
-| Layer                               | Modules                                                                                             | Status                                                                                      |
-| ----------------------------------- | --------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
-| **Platform Layer**                  | Auth, User, Friends, Presence, Chat, Notifications, Matchmaking Foundation, Wallet, Shop, Inventory | Complete (backend)                                                                          |
-| **Frontend (Platform-facing)**      | Auth integration, routing, protected routes                                                         | Complete                                                                                    |
-| **Engine Layer**                    | Lobby, Room, Session, Turn Manager, Card Engine, Rule Executor, Bot Manager, Disconnect Manager     | **In Progress (Card Engine, Rule Executor, Turn Manager, Disconnect Manager, Bot Manager)** |
-| **Game Layer (Hokm)**               | Rule implementation, scoring, AI logic, match configuration                                         | **Not started**                                                                             |
-| **Shared / Tests / Tools packages** | Configuration only                                                                                  | Complete                                                                                    |
+| Layer                               | Modules                                                                                             | Status             |
+| ----------------------------------- | --------------------------------------------------------------------------------------------------- | ------------------ |
+| **Platform Layer**                  | Auth, User, Friends, Presence, Chat, Notifications, Matchmaking Foundation, Wallet, Shop, Inventory | Complete (backend) |
+| **Frontend (Platform-facing)**      | Auth integration, routing, protected routes                                                         | Complete           |
+| **Engine Layer**                    | Lobby, Room, Session, Turn Manager, Card Engine, Rule Executor, Bot Manager, Disconnect Manager     | **Complete**       |
+| **Game Layer (Hokm)**               | Rule implementation, scoring, AI logic, match configuration                                         | **Not started**    |
+| **Shared / Tests / Tools packages** | Configuration only                                                                                  | Complete           |
 
 > **Why this table replaced the old "88/88 — 100%" summary:** the previous version only counted Platform Layer files and implied full project completion. The Engine and Game layers — the actual card game — had not been started. This table exists so that "percent complete" always reflects the whole project, not one layer of it.
 
@@ -292,7 +292,7 @@ Only decisions with long-term impact (architecture, product direction, database,
 | Repository Foundation         | Completed   | 100%     |
 | Platform Backend Development  | Completed   | 100%     |
 | Platform Frontend Development | Completed   | 100%     |
-| **Core Game Engine (Hokm)**   | **Pending** | **0%**   |
+| **Core Game Engine (Hokm)**   | In Progress | **~80%** |
 | Integration                   | Pending     | 0%       |
 | Testing                       | Pending     | 0%       |
 | Production Release            | Pending     | 0%       |
@@ -303,13 +303,13 @@ See CHANGELOG.md for the full task-by-task history of these sprints.
 
 ### Sprint 6 — Core Game Engine (Current)
 
-| Task | Description                                           | Status      |
-| ---- | ----------------------------------------------------- | ----------- |
-| 6.0  | Lobby / Room / Session Manager                        | Pending     |
-| 6.1  | Turn Manager (timers per RULEBOOK.md §12)             | Complete    |
-| 6.2  | Card Engine + Rule Executor (Hokm/Sars/Nars/Tak Nars) | Complete    |
-| 6.3  | Disconnect Manager + Bot Manager (basic)              | In Progress |
-| 6.4  | Real-time protocol decision + implementation          | Pending     |
+| Task | Description                                           | Status   |
+| ---- | ----------------------------------------------------- | -------- |
+| 6.0  | Lobby / Room / Session Manager                        | Complete |
+| 6.1  | Turn Manager (timers per RULEBOOK.md §12)             | Complete |
+| 6.2  | Card Engine + Rule Executor (Hokm/Sars/Nars/Tak Nars) | Complete |
+| 6.3  | Disconnect Manager + Bot Manager (basic)              | Complete |
+| 6.4  | Real-time protocol decision + implementation          | Pending  |
 
 ### Sprint 7 — Integration & Testing (Planned)
 
@@ -346,6 +346,7 @@ See CHANGELOG.md for the full task-by-task history of these sprints.
 | 2.0.0         | 2026-07-12              | Full consolidation: absorbed remaining Decision Log entries (CV-DEC-0001–0008); corrected Implementation Status to separate Platform Layer (complete) from Engine/Game Layer (not started); retired incorrect "Integration" sprint in favor of new Sprint 6 (Core Game Engine); this document is now permanently the single operational file — no new status files are to be created |
 | 2.1.0         | 2026-08-03              | Engine Layer foundation: created Card Engine, Rule Executor, Turn Manager, and shared types                                                                                                                                                                                                                                                                                          |
 | 2.2.0         | 2026-08-04              | Engine Layer: added Disconnect Manager and Bot Manager                                                                                                                                                                                                                                                                                                                               |
+| 2.3.0         | 2026-08-04              | Engine Layer: added Lobby Manager, Room Manager, and Session Manager - all Engine modules complete                                                                                                                                                                                                                                                                                   |
 
 ---
 
