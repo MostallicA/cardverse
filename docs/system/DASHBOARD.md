@@ -1,12 +1,12 @@
 # CardVerse Dashboard
 
 **Document ID:** CV-SYS-016
-**Version:** 2.4.0
+**Version:** 2.5.0
 **Status:** Operational
 **Classification:** System
 **Owner:** Mostafa
 **Created:** 2026-07-07
-**Last Updated:** 2026-08-04
+**Last Updated:** 2026-08-06
 
 ---
 
@@ -52,17 +52,17 @@ Do not create new status/tracking files. Everything operational belongs in this 
 
 ## 3. Quick Status
 
-| Item                      | Value                                                        |
-| ------------------------- | ------------------------------------------------------------ |
-| **Current Phase**         | Core Game Engine Development (Hokm)                          |
-| **Current Sprint**        | Sprint 6                                                     |
-| **Current Task**          | Integration of Engine Layer with Platform Layer              |
-| **Current Status**        | Pending                                                      |
-| **Latest Commit**         | b90aff3 _(update after next commit)_                         |
-| **Latest Commit Message** | chore(frontend): add react-router-dom and axios dependencies |
-| **Next Task**             | Integration of Engine Layer with Platform Layer              |
-| **Repository Status**     | Development                                                  |
-| **Current Version**       | 0.9.0                                                        |
+| Item                      | Value                                                          |
+| ------------------------- | -------------------------------------------------------------- |
+| **Current Phase**         | Core Game Engine Development (Hokm)                            |
+| **Current Sprint**        | Sprint 7 - Integration & Testing                               |
+| **Current Task**          | End-to-end testing                                             |
+| **Current Status**        | Pending                                                        |
+| **Latest Commit**         | 71836ba _(update after next commit)_                           |
+| **Latest Commit Message** | feat(socket): implement real-time communication with socket.io |
+| **Next Task**             | End-to-end testing                                             |
+| **Repository Status**     | Development                                                    |
+| **Current Version**       | 0.9.0                                                          |
 
 ---
 
@@ -75,7 +75,7 @@ Core Game Engine Development — implementing the actual Hokm game engine (Lobby
 ### Repository Health
 
 - Git Repository: Healthy
-- Documentation: Synchronized (as of 2026-07-12 rewrite)
+- Documentation: Synchronized (as of 2026-08-06)
 - Development Environment: Ready
 
 ### Session Summary
@@ -83,17 +83,21 @@ Core Game Engine Development — implementing the actual Hokm game engine (Lobby
 **Sprints 0–4 — Completed (Platform Layer only):**
 Repository standards, TypeScript foundation, shared tooling, backend foundation, Auth, User Management, Friends, Presence, Chat, Notifications, Matchmaking Foundation (queue only — not the actual match engine), Wallet, Shop, Inventory, and the full Frontend foundation with authentication integration. See Section 5 for the exact file-level breakdown.
 
-**Sprint 5 (previously "Integration") — superseded:**
-This sprint was originally planned as "Integration" on the assumption that all gameplay modules already existed. That assumption was incorrect — the Engine Layer and Game Layer (the actual Hokm game) had not been built yet. Sprint 5 is retired in favor of Sprint 6 below.
-
-**Sprint 6 — Core Game Engine Development (current):**
-Not started. This sprint must deliver, per ARCHITECTURE.md Section 3.2 and RULEBOOK.md:
+**Sprint 6 — Core Game Engine Development (Completed):**
+All Engine Layer modules implemented:
 
 - Lobby Manager, Room Manager, Session Manager
-- Turn Manager (including the ~8s turn timer and ~20s Hokm-declaration timer from RULEBOOK.md Section 12)
-- Card Engine + Rule Executor implementing Hokm, Sars, Nars, and Tak Nars exactly as specified in RULEBOOK.md v0.2.0
-- Disconnect Manager (auto-kick after 3 consecutive missed turns, bot takeover, reconnection support)
-- Bot Manager (basic rule-following bot; advanced "professional play" heuristics are explicitly deferred — see RULEBOOK.md Section 13)
+- Turn Manager (timers per RULEBOOK.md)
+- Card Engine + Rule Executor (Hokm/Sars/Nars/Tak Nars)
+- Disconnect Manager (auto-kick, bot takeover, reconnection)
+- Bot Manager (basic rule-following bot)
+- Real-time communication with Socket.IO
+
+**Sprint 7 — Integration & Testing (Current):**
+
+- Task 7.0: Integration of Engine Layer with Platform Layer — ✅ Complete
+- Task 7.1: End-to-end testing — Pending
+- Task 7.2: Production release preparation — Pending
 
 ---
 
@@ -106,6 +110,7 @@ Not started. This sprint must deliver, per ARCHITECTURE.md Section 3.2 and RULEB
 | **Platform Layer**                  | Auth, User, Friends, Presence, Chat, Notifications, Matchmaking Foundation, Wallet, Shop, Inventory | Complete (backend) |
 | **Frontend (Platform-facing)**      | Auth integration, routing, protected routes                                                         | Complete           |
 | **Engine Layer**                    | Lobby, Room, Session, Turn Manager, Card Engine, Rule Executor, Bot Manager, Disconnect Manager     | **Complete**       |
+| **Matchmaking Integration**         | Integration Service, API Routes, Controller, Validator                                              | **Complete**       |
 | **Game Layer (Hokm)**               | Rule implementation, scoring, AI logic, match configuration                                         | **Not started**    |
 | **Shared / Tests / Tools packages** | Configuration only                                                                                  | Complete           |
 
@@ -137,12 +142,36 @@ Not started. This sprint must deliver, per ARCHITECTURE.md Section 3.2 and RULEB
 | backend/src/index.ts                   | Entry point         |
 | backend/src/config/index.ts            | Configuration       |
 
+### Completed Engine Layer Modules
+
+| Module                 | Files                                    | Status   |
+| ---------------------- | ---------------------------------------- | -------- |
+| **Engine Types**       | engine.types.ts                          | Complete |
+| **Engine Service**     | engine.service.ts                        | Complete |
+| **Card Engine**        | card/card.engine.ts                      | Complete |
+| **Rule Executor**      | card/rule.executor.ts                    | Complete |
+| **Turn Manager**       | turn/turn.manager.ts, turn/turn.types.ts | Complete |
+| **Disconnect Manager** | disconnect/disconnect.manager.ts         | Complete |
+| **Bot Manager**        | bot/bot.manager.ts                       | Complete |
+| **Lobby Manager**      | lobby/lobby.manager.ts                   | Complete |
+| **Room Manager**       | room/room.manager.ts                     | Complete |
+| **Session Manager**    | session/session.manager.ts               | Complete |
+| **Socket.IO**          | socket/index.ts                          | Complete |
+
+### Completed Matchmaking Integration
+
+| Module                     | Files                                 | Status   |
+| -------------------------- | ------------------------------------- | -------- |
+| **Integration Service**    | matchmaking-integration.service.ts    | Complete |
+| **Integration Types**      | matchmaking-integration.types.ts      | Complete |
+| **Integration Controller** | matchmaking-integration.controller.ts | Complete |
+| **Integration Routes**     | matchmaking-integration.routes.ts     | Complete |
+| **Integration Validator**  | matchmaking-integration.validator.ts  | Complete |
+
 ### Not Yet Started
 
-- Engine Layer (all modules)
-- Game Layer / Hokm implementation
-- Real-time communication protocol (WebSocket or equivalent) — not yet chosen; see ARCHITECTURE.md open item
-- Bot AI behavior specification beyond basic rule-following
+- Game Layer / Hokm implementation (actual game logic, scoring, AI)
+- Frontend game client integration
 
 ---
 
@@ -301,8 +330,8 @@ Only decisions with long-term impact (architecture, product direction, database,
 | Repository Foundation         | Completed   | 100%     |
 | Platform Backend Development  | Completed   | 100%     |
 | Platform Frontend Development | Completed   | 100%     |
-| **Core Game Engine (Hokm)**   | In Progress | **~80%** |
-| Integration                   | Pending     | 0%       |
+| **Core Game Engine (Hokm)**   | In Progress | **~85%** |
+| Integration                   | In Progress | **~50%** |
 | Testing                       | Pending     | 0%       |
 | Production Release            | Pending     | 0%       |
 
@@ -310,7 +339,7 @@ Only decisions with long-term impact (architecture, product direction, database,
 
 See CHANGELOG.md for the full task-by-task history of these sprints.
 
-### Sprint 6 — Core Game Engine (Current)
+### Sprint 6 — Core Game Engine (Completed)
 
 | Task | Description                                           | Status   |
 | ---- | ----------------------------------------------------- | -------- |
@@ -320,13 +349,13 @@ See CHANGELOG.md for the full task-by-task history of these sprints.
 | 6.3  | Disconnect Manager + Bot Manager (basic)              | Complete |
 | 6.4  | Real-time protocol decision + implementation          | Complete |
 
-### Sprint 7 — Integration & Testing (Planned)
+### Sprint 7 — Integration & Testing (Current)
 
-| Task | Description                                     | Status  |
-| ---- | ----------------------------------------------- | ------- |
-| 7.0  | Integration of Engine Layer with Platform Layer | Pending |
-| 7.1  | End-to-end testing                              | Pending |
-| 7.2  | Production release preparation                  | Pending |
+| Task | Description                                     | Status      |
+| ---- | ----------------------------------------------- | ----------- |
+| 7.0  | Integration of Engine Layer with Platform Layer | ✅ Complete |
+| 7.1  | End-to-end testing                              | ⏳ Pending  |
+| 7.2  | Production release preparation                  | ⏳ Pending  |
 
 ---
 
@@ -357,6 +386,7 @@ See CHANGELOG.md for the full task-by-task history of these sprints.
 | 2.2.0         | 2026-08-04              | Engine Layer: added Disconnect Manager and Bot Manager                                                                                                                                                                                                                                                                                                                               |
 | 2.3.0         | 2026-08-04              | Engine Layer: added Lobby Manager, Room Manager, and Session Manager - all Engine modules complete                                                                                                                                                                                                                                                                                   |
 | 2.4.0         | 2026-08-04              | Real-time communication implemented with Socket.IO; Engine Layer complete                                                                                                                                                                                                                                                                                                            |
+| 2.5.0         | 2026-08-06              | Sprint 7.0: Integration of Engine Layer with Platform Layer complete; Matchmaking Integration API working                                                                                                                                                                                                                                                                            |
 
 ---
 

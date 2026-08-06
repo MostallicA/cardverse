@@ -16,6 +16,7 @@ import matchmakingRoutes from '../../modules/matchmaking/matchmaking.routes';
 import walletRoutes from '../../modules/wallet/wallet.routes';
 import shopRoutes from '../../modules/shop/shop.routes';
 import inventoryRoutes from '../../modules/inventory/inventory.routes';
+import matchmakingIntegrationRoutes from '../../modules/matchmaking-integration/matchmaking-integration.routes';
 
 const router: Router = Router();
 
@@ -108,6 +109,17 @@ router.get('/', (_req: Request, res: Response) => {
           equip: 'POST /api/v1/inventory/equip',
           unequip: 'POST /api/v1/inventory/unequip',
         },
+        matchIntegration: {
+          create: 'POST /api/v1/match-integration/create',
+          start: 'POST /api/v1/match-integration/start',
+          ready: 'POST /api/v1/match-integration/ready',
+          playCard: 'POST /api/v1/match-integration/play-card',
+          declareHokm: 'POST /api/v1/match-integration/declare-hokm',
+          reconnect: 'POST /api/v1/match-integration/reconnect',
+          getState: 'GET /api/v1/match-integration/state/:matchId',
+          getStatistics: 'GET /api/v1/match-integration/statistics/:matchId',
+          cleanup: 'POST /api/v1/match-integration/cleanup',
+        },
       },
     })
   );
@@ -143,7 +155,7 @@ router.use('/shop', shopRoutes);
 // Inventory routes
 router.use('/inventory', inventoryRoutes);
 
-// Placeholder for future route groups
-// router.use('/matches', matchRoutes);
+// Matchmaking Integration routes
+router.use('/match-integration', matchmakingIntegrationRoutes);
 
 export default router;
