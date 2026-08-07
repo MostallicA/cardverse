@@ -320,6 +320,15 @@ Only decisions with long-term impact (architecture, product direction, database,
 
 ---
 
+### CV-DEC-0018 — Auth Mock for Development
+
+**Date:** 2026-08-07 · **Status:** Accepted
+**Decision:** استفاده از توکن‌های ساختگی (mock_access_guest_...) برای تسهیل توسعه تا زمانی که احراز هویت واقعی پیاده‌سازی شود.
+**Rationale:** سرعت بخشیدن به توسعه بدون نیاز به زیرساخت احراز هویت کامل در مراحل ابتدایی.
+**Consequences:** قبل از انتشار Production، باید با JWT واقعی جایگزین شود و این تصمیم در آن زمان باطل می‌شود.
+
+---
+
 ## 7. Phase & Sprint Status
 
 ### Phase Status
