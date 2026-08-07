@@ -129,5 +129,9 @@ export interface DisconnectInfo {
   replacedByBot: boolean;
 }
 
-// Export all enums as types to avoid unused warnings
-export type { EngineStatus, GameMode, Suit, Rank, SpecialOutcome };
+// Export type aliases to avoid duplicate export names
+export type EngineStatusType = EngineStatus;
+export type GameModeType = GameMode;
+export type SuitType = Suit;
+export type RankType = Rank;
+export type SpecialOutcomeType = SpecialOutcome;

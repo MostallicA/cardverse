@@ -8,15 +8,17 @@ import { Server as SocketServer, Socket } from 'socket.io';
 import { engineService } from '../engine/engine.service';
 import { sessionManager } from '../engine/session/session.manager';
 import { turnManager } from '../engine/turn/turn.manager';
-import type { TurnPhase } from '../engine/turn/turn.types';
+import { TurnPhase } from '../engine/turn/turn.types';
 import { disconnectManager } from '../engine/disconnect/disconnect.manager';
 import { lobbyManager } from '../engine/lobby/lobby.manager';
+import { matchmakingIntegration } from '../modules/matchmaking-integration/matchmaking-integration.service';
 
 // Socket.IO event types
 export interface ServerToClientEvents {
   // Match events
   match_created: (data: { matchId: string; players: any[] }) => void;
   match_started: (data: { matchId: string; config: any }) => void;
+  match_started_ack: (data: { matchId: string; config: any }) => void;
   match_updated: (data: { matchId: string; state: any }) => void;
   match_completed: (data: { matchId: string; result: any }) => void;
 
@@ -169,8 +171,10 @@ export class SocketManager {
   private handleJoinMatch(socket: Socket, data: { matchId: string; playerId: string }): void {
     const { matchId, playerId } = data;
 
-    // Join the match room
-    socket.join(`match_${matchId}`);
+    const room = matchId.startsWith('match_') ? matchId : `match_${matchId}`;
+    socket.join(room);
+    console.log(`[SocketManager] Player ${playerId} joined room ${room}`);
+
     socket.data.matchId = matchId;
     socket.data.playerId = playerId;
 
@@ -359,30 +363,33 @@ export class SocketManager {
     }
   }
 
-  private handleSetReady(
-    socket: Socket,
-    data: { matchId: string; playerId: string; isReady: boolean }
-  ): void {
-    try {
-      const { matchId, playerId, isReady } = data;
+  private handleSetReady(socket: Socket, data: { matchId: string; playerId: string; isReady: boolean }): void {
+  try {
+    const { matchId, playerId, isReady } = data;
 
-      // Update player ready status
-      lobbyManager.setPlayerReady(matchId, playerId, isReady);
+    console.log(`[SocketManager] handleSetReady match=${matchId} player=${playerId} isReady=${isReady}`);
 
-      // Broadcast ready status update
-      this.io.to(`match_${matchId}`).emit('match_updated', {
-        matchId,
-        state: engineService.getMatchState(matchId),
-      });
+    // Use matchmakingIntegration to handle ready status
+    const success = matchmakingIntegration.setPlayerReady(matchId, playerId, isReady);
 
-      console.log(`[SocketManager] Player ${playerId} ready: ${isReady} in match ${matchId}`);
-    } catch (error) {
-      socket.emit('error', {
-        code: 'SET_READY_ERROR',
-        message: error instanceof Error ? error.message : 'Failed to set ready status',
-      });
+    if (!success) {
+      throw new Error('Failed to set ready status');
     }
+
+    // Broadcast ready status update
+    this.broadcastToMatch(matchId, 'match_updated', {
+      matchId,
+      state: engineService.getMatchState(matchId),
+    });
+
+    console.log(`[SocketManager] Player ${playerId} ready: ${isReady} in match ${matchId}`);
+  } catch (error) {
+    socket.emit('error', {
+      code: 'SET_READY_ERROR',
+      message: error instanceof Error ? error.message : 'Failed to set ready status',
+    });
   }
+}
 
   private handleChat(
     _socket: Socket,
@@ -511,7 +518,9 @@ export class SocketManager {
    * Broadcasts a message to all clients in a match room
    */
   public broadcastToMatch(matchId: string, event: keyof ServerToClientEvents, data: any): void {
-    this.io.to(`match_${matchId}`).emit(event, data);
+    const room = matchId.startsWith('match_') ? matchId : `match_${matchId}`;
+    console.log(`[SocketManager] Broadcasting to room ${room}, event: ${event}`);
+    this.io.to(room).emit(event, data);
   }
 
   /**

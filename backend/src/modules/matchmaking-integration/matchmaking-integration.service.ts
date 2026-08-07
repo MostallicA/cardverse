@@ -29,6 +29,11 @@ export class MatchmakingIntegrationService {
 
   constructor(config: MatchmakingIntegrationConfig) {
     this.config = config;
+
+    lobbyManager.onLobbyStart((matchId: string) => {
+      console.log(`[MatchmakingIntegration] Lobby ${matchId} started; launching match`);
+      this.startMatch(matchId);
+    });
   }
 
   /**
@@ -121,61 +126,104 @@ export class MatchmakingIntegrationService {
   }
 
   /**
-   * Starts a match (all players ready)
-   */
-  startMatch(matchId: string): boolean {
-    try {
-      // Start the match
-      engineService.startMatch(matchId);
+ * Starts a match (called by LobbyManager when all players are ready)
+ */
+startMatch(matchId: string): boolean {
+  try {
+    console.log(`[MatchmakingIntegration] Starting match ${matchId}...`);
+    
+    // Start the match
+    engineService.startMatch(matchId);
+    
+    // Start session
+    sessionManager.startSession(matchId);
+    
+    // Deal cards
+    engineService.dealCards(matchId);
 
-      // Start session
-      sessionManager.startSession(matchId);
+    // Start first turn
+    this.startTurn(matchId);
 
-      // Deal cards
-      engineService.dealCards(matchId);
+    // Notify via Socket.IO
+    const socketManager = getSocketManager();
+    console.log(`[MatchmakingIntegration] SocketManager instance:`, socketManager ? 'EXISTS' : 'NULL');
+    
+    if (socketManager) {
+      console.log(`[MatchmakingIntegration] Broadcasting match_started to match_${matchId}`);
+      const payload = {
+        matchId,
+        config: engineService.getMatchState(matchId)?.config,
+      };
 
-      // Start first turn
-      this.startTurn(matchId);
-
-      // Notify via Socket.IO
-      const socketManager = getSocketManager();
-      if (socketManager) {
-        const matchState = engineService.getMatchState(matchId);
-        socketManager.broadcastToMatch(matchId, 'match_started', {
-          matchId,
-          config: matchState?.config,
-        });
-      }
-
-      console.log(`[MatchmakingIntegration] Match ${matchId} started`);
-      return true;
-    } catch (error) {
-      console.error(`[MatchmakingIntegration] Error starting match ${matchId}:`, error);
-      return false;
+      socketManager.broadcastToMatch(matchId, 'match_started', payload);
+      socketManager.broadcastToMatch(matchId, 'match_started_ack', payload);
+      console.log(`[MatchmakingIntegration] ✅ match_started broadcasted`);
+    } else {
+      console.error(`[MatchmakingIntegration] ❌ SocketManager is NULL!`);
     }
+
+    console.log(`[MatchmakingIntegration] ✅ Match ${matchId} started successfully`);
+    return true;
+  } catch (error) {
+    console.error(`[MatchmakingIntegration] Error starting match ${matchId}:`, error);
+    return false;
   }
+}
 
   /**
-   * Sets a player's ready status
-   */
-  setPlayerReady(matchId: string, userId: string, isReady: boolean): boolean {
-    try {
-      lobbyManager.setPlayerReady(matchId, userId, isReady);
-
-      // Check if all players are ready
-      const lobby = lobbyManager.getLobby(matchId);
-      if (lobby && lobbyManager.areAllPlayersReady(lobby) && lobbyManager.isLobbyFull(lobby)) {
-        // All players ready - start the match
-        lobbyManager.startLobby(matchId);
-        return this.startMatch(matchId);
-      }
-
-      return true;
-    } catch (error) {
-      console.error(`[MatchmakingIntegration] Error setting ready status for ${userId}:`, error);
+ * Sets a player's ready status
+ */
+setPlayerReady(matchId: string, userId: string, isReady: boolean): boolean {
+  try {
+    console.log(`[MatchmakingIntegration] setPlayerReady: match=${matchId}, userId=${userId}, isReady=${isReady}`);
+    
+    const lobby = lobbyManager.getLobby(matchId);
+    if (!lobby) {
+      console.error(`[MatchmakingIntegration] Lobby not found for match ${matchId}`);
       return false;
     }
+
+    // Find and update player
+    const player = lobby.players.find((p) => p.id === userId || p.userId === userId);
+    if (!player) {
+      console.error(`[MatchmakingIntegration] Player ${userId} not found in lobby`);
+      return false;
+    }
+
+    player.isReady = isReady;
+    player.readyAt = isReady ? new Date() : undefined;
+    lobbyManager['lobbies'].set(lobby.id, lobby);
+
+    console.log(`[MatchmakingIntegration] Player ${userId} ready: ${isReady}`);
+
+    // Check if all players are ready AND lobby is full
+    const allReady = lobby.players.every((p) => p.isReady);
+    const isFull = lobby.players.length >= 4;
+
+    console.log(`[MatchmakingIntegration] Lobby status: allReady=${allReady}, isFull=${isFull}, players=${lobby.players.length}`);
+
+    // 🔥 IMPORTANT: If all ready and full, start the match directly!
+    if (allReady && isFull) {
+      console.log(`[MatchmakingIntegration] 🚀 All players ready! Starting match ${matchId}...`);
+      
+      // Call startMatch directly
+      const started = this.startMatch(matchId);
+      
+      if (started) {
+        console.log(`[MatchmakingIntegration] ✅ Match ${matchId} started successfully`);
+      } else {
+        console.error(`[MatchmakingIntegration] ❌ Failed to start match ${matchId}`);
+      }
+      
+      return started;
+    }
+
+    return true;
+  } catch (error) {
+    console.error(`[MatchmakingIntegration] Error setting ready status for ${userId}:`, error);
+    return false;
   }
+}
 
   /**
    * Handles a player's card play

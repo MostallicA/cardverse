@@ -31,9 +31,17 @@ export interface Lobby {
 export class LobbyManager {
   private lobbies: Map<string, Lobby> = new Map();
   private config: LobbyConfig;
+  private onLobbyStartCallbacks: Array<(matchId: string) => void> = [];
 
   constructor(config: LobbyConfig) {
     this.config = config;
+  }
+
+  /**
+   * Register a callback invoked when a lobby starts. Callback receives matchId.
+   */
+  onLobbyStart(callback: (matchId: string) => void): void {
+    this.onLobbyStartCallbacks.push(callback);
   }
 
   /**
@@ -147,28 +155,31 @@ export class LobbyManager {
   }
 
   /**
-   * Updates a player's ready status
-   */
-  setPlayerReady(lobbyId: string, playerId: string, isReady: boolean): Lobby | null {
-    const lobby = this.lobbies.get(lobbyId);
-    if (!lobby) return null;
+ * Updates a player's ready status
+ */
+setPlayerReady(lobbyId: string, playerId: string, isReady: boolean): Lobby | null {
+  const lobby = this.lobbies.get(lobbyId);
+  if (!lobby) return null;
 
-    const player = lobby.players.find((p) => p.id === playerId);
-    if (!player) return null;
+  const player = lobby.players.find((p) => p.id === playerId);
+  if (!player) return null;
 
-    player.isReady = isReady;
-    player.readyAt = isReady ? new Date() : undefined;
+  player.isReady = isReady;
+  player.readyAt = isReady ? new Date() : undefined;
+  this.lobbies.set(lobbyId, lobby);
+
+  // Check if all players are ready AND lobby is full
+  if (this.areAllPlayersReady(lobby) && this.isLobbyFull(lobby)) {
+    lobby.status = 'ready';
     this.lobbies.set(lobbyId, lobby);
+    console.log(`[LobbyManager] All players ready in lobby ${lobbyId}; starting lobby`);
 
-    // Check if all players are ready
-    if (this.areAllPlayersReady(lobby)) {
-      lobby.status = 'ready';
-      this.lobbies.set(lobbyId, lobby);
-      console.log(`[LobbyManager] All players ready in lobby ${lobbyId}`);
-    }
-
-    return lobby;
+    // Automatically start the lobby
+    this.startLobby(lobbyId);
   }
+
+  return lobby;
+}
 
   /**
    * Checks if all players in a lobby are ready
@@ -185,27 +196,37 @@ export class LobbyManager {
   }
 
   /**
-   * Starts the lobby (moves to starting state)
-   */
-  startLobby(lobbyId: string): Lobby | null {
-    const lobby = this.lobbies.get(lobbyId);
-    if (!lobby) return null;
+ * Starts the lobby (moves to starting state)
+ */
+startLobby(lobbyId: string): Lobby | null {
+  const lobby = this.lobbies.get(lobbyId);
+  if (!lobby) return null;
 
-    if (!this.areAllPlayersReady(lobby)) {
-      throw new Error('Not all players are ready');
-    }
-
-    if (!this.isLobbyFull(lobby)) {
-      throw new Error('Lobby is not full');
-    }
-
-    lobby.status = 'starting';
-    lobby.startedAt = new Date();
-    this.lobbies.set(lobbyId, lobby);
-
-    console.log(`[LobbyManager] Lobby ${lobbyId} starting`);
-    return lobby;
+  if (!this.areAllPlayersReady(lobby)) {
+    throw new Error('Not all players are ready');
   }
+
+  if (!this.isLobbyFull(lobby)) {
+    throw new Error('Lobby is not full');
+  }
+
+  lobby.status = 'starting';
+  lobby.startedAt = new Date();
+  this.lobbies.set(lobbyId, lobby);
+
+  console.log(`[LobbyManager] Lobby ${lobbyId} starting with ${lobby.players.length} players`);
+
+  // Trigger callbacks
+  for (const callback of this.onLobbyStartCallbacks) {
+    try {
+      callback(lobby.matchId);
+    } catch (error) {
+      console.error('[LobbyManager] Error in lobby start callback:', error);
+    }
+  }
+
+  return lobby;
+}
 
   /**
    * Closes a lobby (after match starts or is cancelled)

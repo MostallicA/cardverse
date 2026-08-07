@@ -2,8 +2,6 @@
 // Per ARCHITECTURE.md Section 3.2 and RULEBOOK.md Section 13
 
 import { Player, Card, Suit, MatchState, BotConfig, GameMode } from '../engine.types';
-import { cardEngine } from '../card/card.engine';
-import { ruleExecutor } from '../card/rule.executor';
 
 export interface BotManagerConfig {
   defaultDifficulty: 'basic' | 'advanced';

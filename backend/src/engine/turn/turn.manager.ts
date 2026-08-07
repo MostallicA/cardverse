@@ -2,7 +2,7 @@
 
 import { MatchState, Player } from '../engine.types';
 
-import { TurnPhase, TurnInfo, TurnTimeoutEvent, TurnManagerConfig } from './turn.types';
+import { TurnPhase, TurnInfo, TurnManagerConfig } from './turn.types';
 
 export class TurnManager {
   private config: TurnManagerConfig;
@@ -96,7 +96,7 @@ export class TurnManager {
   private handleTurnTimeout(
     matchId: string,
     playerId: string,
-    phase: TurnPhase,
+    _phase: TurnPhase,
     match: MatchState
   ): void {
     const player = match.players.find((p) => p.id === playerId);
@@ -104,15 +104,6 @@ export class TurnManager {
 
     // Increment consecutive misses
     player.consecutiveMisses += 1;
-
-    // Emit timeout event
-
-    const _event: TurnTimeoutEvent = {
-      playerId,
-      matchId,
-      phase,
-      consecutiveMisses: player.consecutiveMisses,
-    };
 
     // Check if player should be auto-kicked (3 consecutive misses)
     // Per RULEBOOK.md Section 12: "If a player misses 3 consecutive turns,
@@ -130,7 +121,7 @@ export class TurnManager {
    * Handles auto-kick of a player
    * Per RULEBOOK.md Section 12
    */
-  private handleAutoKick(_matchId: string, playerId: string, match: MatchState): void {
+  private handleAutoKick(matchId: string, playerId: string, match: MatchState): void {
     const player = match.players.find((p) => p.id === playerId);
     if (!player) return;
 
@@ -148,7 +139,7 @@ export class TurnManager {
    * Resets consecutive misses for a player (when they successfully play)
    * Per RULEBOOK.md Section 12: "counter resets to zero"
    */
-  resetConsecutiveMisses(matchId: string, playerId: string, match: MatchState): void {
+  resetConsecutiveMisses(_matchId: string, playerId: string, match: MatchState): void {
     const player = match.players.find((p) => p.id === playerId);
     if (player) {
       player.consecutiveMisses = 0;
@@ -170,7 +161,7 @@ export class TurnManager {
   /**
    * Clears the timer for a match
    */
-  private clearTimer(): void {
+  private clearTimer(matchId: string): void {
     const timer = this.turnTimers.get(matchId);
     if (timer) {
       clearTimeout(timer);
@@ -182,7 +173,7 @@ export class TurnManager {
    * Cleans up all timers (for shutdown)
    */
   cleanup(): void {
-    for (const [matchId, timer] of this.turnTimers) {
+    for (const [, timer] of this.turnTimers) {
       clearTimeout(timer);
     }
     this.turnTimers.clear();

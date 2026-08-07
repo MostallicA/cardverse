@@ -1,7 +1,7 @@
 // Disconnect Manager - Manages player disconnections, auto-kick, and reconnection
 // Per RULEBOOK.md Section 12
 
-import { Player, MatchState } from '../engine.types';
+import { MatchState } from '../engine.types';
 
 export interface DisconnectConfig {
   maxConsecutiveMisses: number; // 3 per RULEBOOK.md
@@ -112,7 +112,7 @@ export class DisconnectManager {
    * Resets consecutive misses for a player (when they successfully play)
    * Per RULEBOOK.md Section 12: "counter resets to zero"
    */
-  resetMisses(matchId: string, playerId: string, match: MatchState): void {
+  resetMisses(_matchId: string, playerId: string, match: MatchState): void {
     const player = match.players.find((p) => p.id === playerId);
     if (player) {
       player.consecutiveMisses = 0;

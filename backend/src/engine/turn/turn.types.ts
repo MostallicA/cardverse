@@ -28,4 +28,4 @@ export interface TurnManagerConfig {
 }
 
 // Export enums as types
-export type { TurnPhase };
+// TurnPhase is already exported above as a named export

@@ -1,12 +1,12 @@
 # CardVerse Dashboard
 
 **Document ID:** CV-SYS-016
-**Version:** 2.5.0
+**Version:** 2.7.0
 **Status:** Operational
 **Classification:** System
 **Owner:** Mostafa
 **Created:** 2026-07-07
-**Last Updated:** 2026-08-06
+**Last Updated:** 2026-08-07
 
 ---
 
@@ -54,13 +54,13 @@ Do not create new status/tracking files. Everything operational belongs in this 
 
 | Item                      | Value                                                          |
 | ------------------------- | -------------------------------------------------------------- |
-| **Current Phase**         | Core Game Engine Development (Hokm)                            |
+| **Current Phase**         | Production Release Preparation                                 |
 | **Current Sprint**        | Sprint 7 - Integration & Testing                               |
-| **Current Task**          | End-to-end testing                                             |
-| **Current Status**        | Pending                                                        |
+| **Current Task**          | Production release preparation                                 |
+| **Current Status**        | In Progress                                                    |
 | **Latest Commit**         | 71836ba _(update after next commit)_                           |
 | **Latest Commit Message** | feat(socket): implement real-time communication with socket.io |
-| **Next Task**             | End-to-end testing                                             |
+| **Next Task**             | Deployment                                                     |
 | **Repository Status**     | Development                                                    |
 | **Current Version**       | 0.9.0                                                          |
 
@@ -107,11 +107,13 @@ All Engine Layer modules implemented:
 
 | Layer                               | Modules                                                                                             | Status             |
 | ----------------------------------- | --------------------------------------------------------------------------------------------------- | ------------------ |
-| **Platform Layer**                  | Auth, User, Friends, Presence, Chat, Notifications, Matchmaking Foundation, Wallet, Shop, Inventory | Complete (backend) |
+| **Platform Layer**                  | Auth, User, Friends, Presence, Chat, Notifications, Matchmaking Foundation, Wallet, Shop, Inventory | Complete           |
 | **Frontend (Platform-facing)**      | Auth integration, routing, protected routes                                                         | Complete           |
-| **Engine Layer**                    | Lobby, Room, Session, Turn Manager, Card Engine, Rule Executor, Bot Manager, Disconnect Manager     | **Complete**       |
-| **Matchmaking Integration**         | Integration Service, API Routes, Controller, Validator                                              | **Complete**       |
-| **Game Layer (Hokm)**               | Rule implementation, scoring, AI logic, match configuration                                         | **Not started**    |
+| **Engine Layer**                    | Lobby, Room, Session, Turn Manager, Card Engine, Rule Executor, Bot Manager, Disconnect Manager     | Complete           |
+| **Matchmaking Integration**         | Integration Service, API Routes, Controller, Validator                                              | Complete           |
+| **E2E Testing**                     |                                                                                                     | Complete           |
+| **Game Layer (Hokm)**               | Rule implementation, scoring, AI logic, match configuration                                         | Not started (V2)   |
+| **Production Ready**                |                                                                                                     | In Progress        |
 | **Shared / Tests / Tools packages** | Configuration only                                                                                  | Complete           |
 
 > **Why this table replaced the old "88/88 — 100%" summary:** the previous version only counted Platform Layer files and implied full project completion. The Engine and Game layers — the actual card game — had not been started. This table exists so that "percent complete" always reflects the whole project, not one layer of it.
@@ -351,11 +353,11 @@ See CHANGELOG.md for the full task-by-task history of these sprints.
 
 ### Sprint 7 — Integration & Testing (Current)
 
-| Task | Description                                     | Status      |
-| ---- | ----------------------------------------------- | ----------- |
-| 7.0  | Integration of Engine Layer with Platform Layer | ✅ Complete |
-| 7.1  | End-to-end testing                              | ⏳ Pending  |
-| 7.2  | Production release preparation                  | ⏳ Pending  |
+| Task | Description                                     | Status         |
+| ---- | ----------------------------------------------- | -------------- |
+| 7.0  | Integration of Engine Layer with Platform Layer | ✅ Complete    |
+| 7.1  | End-to-end testing                              | ✅ Complete    |
+| 7.2  | Production release preparation                  | 🔄 In Progress |
 
 ---
 
@@ -387,6 +389,8 @@ See CHANGELOG.md for the full task-by-task history of these sprints.
 | 2.3.0         | 2026-08-04              | Engine Layer: added Lobby Manager, Room Manager, and Session Manager - all Engine modules complete                                                                                                                                                                                                                                                                                   |
 | 2.4.0         | 2026-08-04              | Real-time communication implemented with Socket.IO; Engine Layer complete                                                                                                                                                                                                                                                                                                            |
 | 2.5.0         | 2026-08-06              | Sprint 7.0: Integration of Engine Layer with Platform Layer complete; Matchmaking Integration API working                                                                                                                                                                                                                                                                            |
+| 2.6.0         | 2026-08-07              | Sprint 7.1: End-to-end testing complete; all 8 tests passing                                                                                                                                                                                                                                                                                                                         |
+| 2.7.0         | 2026-08-07              | Sprint 7.2: Production release preparation                                                                                                                                                                                                                                                                                                                                           |
 
 ---
 
