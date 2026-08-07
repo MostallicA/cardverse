@@ -48,14 +48,14 @@ Every implementation, database schema and API must remain consistent with this a
 
 The architecture must provide:
 
-* High Performance
-* Scalability
-* Maintainability
-* Testability
-* Security
-* Extensibility
-* Reliability
-* Long-term Evolution
+- High Performance
+- Scalability
+- Maintainability
+- Testability
+- Security
+- Extensibility
+- Reliability
+- Long-term Evolution
 
 ---
 
@@ -99,15 +99,15 @@ Games consume platform capabilities rather than implementing their own infrastru
 
 Examples include:
 
-* Authentication
-* Profiles
-* Friends
-* Chat
-* Matchmaking
-* Statistics
-* Achievements
-* Shop
-* Notifications
+- Authentication
+- Profiles
+- Friends
+- Chat
+- Matchmaking
+- Statistics
+- Achievements
+- Shop
+- Notifications
 
 Every new game should reuse these services instead of creating duplicate implementations.
 
@@ -125,24 +125,24 @@ The Platform Layer contains reusable business services shared across every game.
 
 Responsibilities include:
 
-* Authentication
-* User Management
-* Player Profiles
-* Friends
-* Presence
-* Chat
-* Notifications
-* Wallet
-* Shop
-* Inventory
-* Statistics
-* Achievements
-* Rankings
-* Seasons
-* Reports
-* Moderation
-* Analytics
-* Settings
+- Authentication
+- User Management
+- Player Profiles
+- Friends
+- Presence
+- Chat
+- Notifications
+- Wallet
+- Shop
+- Inventory
+- Statistics
+- Achievements
+- Rankings
+- Seasons
+- Reports
+- Moderation
+- Analytics
+- Settings
 
 Tournament services are planned for future versions.
 
@@ -156,19 +156,19 @@ The Engine Layer provides generic gameplay infrastructure.
 
 Responsibilities include:
 
-* Matchmaking
-* Lobby Management
-* Room Management
-* Session Management
-* Turn Management
-* Timer Management
-* Rule Execution
-* Card Engine
-* Event Dispatcher
-* Disconnect Recovery
-* Bot Management
-* Anti-Cheat
-* Game Logging
+- Matchmaking
+- Lobby Management
+- Room Management
+- Session Management
+- Turn Management
+- Timer Management
+- Rule Execution
+- Card Engine
+- Event Dispatcher
+- Disconnect Recovery
+- Bot Management
+- Anti-Cheat
+- Game Logging
 
 Replay System is planned for a future release.
 
@@ -182,12 +182,12 @@ Every card game is implemented as an isolated module.
 
 Each game owns:
 
-* Rules
-* Scoring
-* Card Logic
-* AI Logic
-* Match Configuration
-* Validation
+- Rules
+- Scoring
+- Card Logic
+- AI Logic
+- Match Configuration
+- Validation
 
 Games never communicate directly with one another.
 
@@ -201,15 +201,15 @@ The Shared Layer contains reusable technical components.
 
 Examples include:
 
-* Utilities
-* Constants
-* Configuration
-* Logging
-* Error Handling
-* Localization
-* Shared Types
-* Caching
-* Feature Flags
+- Utilities
+- Constants
+- Configuration
+- Logging
+- Error Handling
+- Localization
+- Shared Types
+- Caching
+- Feature Flags
 
 The Shared Layer must remain independent from business and gameplay logic.
 
@@ -233,9 +233,9 @@ Platform modules provide reusable services shared by all games.
 
 Responsible for:
 
-* User authentication
-* Session validation
-* Identity management
+- User authentication
+- Session validation
+- Identity management
 
 ---
 
@@ -243,9 +243,9 @@ Responsible for:
 
 Responsible for:
 
-* Player accounts
-* User preferences
-* Account lifecycle
+- Player accounts
+- User preferences
+- Account lifecycle
 
 ---
 
@@ -253,10 +253,10 @@ Responsible for:
 
 Responsible for:
 
-* Player profiles
-* Avatars
-* Levels
-* Public information
+- Player profiles
+- Avatars
+- Levels
+- Public information
 
 ---
 
@@ -264,9 +264,9 @@ Responsible for:
 
 Responsible for:
 
-* Friend requests
-* Friend lists
-* Relationship management
+- Friend requests
+- Friend lists
+- Relationship management
 
 ---
 
@@ -274,9 +274,9 @@ Responsible for:
 
 Responsible for:
 
-* Online status
-* Last seen
-* Player availability
+- Online status
+- Last seen
+- Player availability
 
 ---
 
@@ -284,8 +284,8 @@ Responsible for:
 
 Responsible for:
 
-* Private messaging
-* Future communication features
+- Private messaging
+- Future communication features
 
 ---
 
@@ -293,10 +293,10 @@ Responsible for:
 
 Responsible for:
 
-* System notifications
-* Match invitations
-* Friend requests
-* Reward notifications
+- System notifications
+- Match invitations
+- Friend requests
+- Reward notifications
 
 ---
 
@@ -304,8 +304,8 @@ Responsible for:
 
 Responsible for:
 
-* Coins
-* Future premium currencies
+- Coins
+- Future premium currencies
 
 ---
 
@@ -313,9 +313,9 @@ Responsible for:
 
 Responsible for:
 
-* Cosmetic purchases
-* Product catalog
-* Transactions
+- Cosmetic purchases
+- Product catalog
+- Transactions
 
 ---
 
@@ -323,8 +323,8 @@ Responsible for:
 
 Responsible for:
 
-* Owned cosmetics
-* Unlockable content
+- Owned cosmetics
+- Unlockable content
 
 ---
 
@@ -332,9 +332,9 @@ Responsible for:
 
 Responsible for:
 
-* Match history
-* Lifetime statistics
-* Seasonal statistics
+- Match history
+- Lifetime statistics
+- Seasonal statistics
 
 ---
 
@@ -342,8 +342,8 @@ Responsible for:
 
 Responsible for:
 
-* Achievement tracking
-* Reward unlocking
+- Achievement tracking
+- Reward unlocking
 
 ---
 
@@ -351,8 +351,8 @@ Responsible for:
 
 Responsible for:
 
-* Competitive rating
-* Leaderboards
+- Competitive rating
+- Leaderboards
 
 ---
 
@@ -360,8 +360,8 @@ Responsible for:
 
 Responsible for:
 
-* Seasonal progression
-* Seasonal rewards
+- Seasonal progression
+- Seasonal rewards
 
 ---
 
@@ -369,8 +369,8 @@ Responsible for:
 
 Responsible for:
 
-* Player reports
-* Abuse submissions
+- Player reports
+- Abuse submissions
 
 ---
 
@@ -378,8 +378,8 @@ Responsible for:
 
 Responsible for:
 
-* Rule enforcement
-* Player penalties
+- Rule enforcement
+- Player penalties
 
 ---
 
@@ -387,8 +387,8 @@ Responsible for:
 
 Responsible for:
 
-* Anonymous platform metrics
-* Performance monitoring
+- Anonymous platform metrics
+- Performance monitoring
 
 ---
 
@@ -396,9 +396,9 @@ Responsible for:
 
 Responsible for:
 
-* User preferences
-* Privacy settings
-* Gameplay preferences
+- User preferences
+- Privacy settings
+- Gameplay preferences
 
 ---
 
@@ -408,23 +408,23 @@ The Engine coordinates gameplay execution independently of individual games.
 
 Modules include:
 
-* Matchmaker
-* Lobby Manager
-* Room Manager
-* Session Manager
-* Turn Manager
-* Timer Manager
-* Card Engine
-* Rule Executor
-* Event Dispatcher
-* Disconnect Manager
-* Bot Manager
-* Anti-Cheat
-* Game Logger
+- Matchmaker
+- Lobby Manager
+- Room Manager
+- Session Manager
+- Turn Manager
+- Timer Manager
+- Card Engine
+- Rule Executor
+- Event Dispatcher
+- Disconnect Manager
+- Bot Manager
+- Anti-Cheat
+- Game Logger
 
 Planned:
 
-* Replay System
+- Replay System
 
 The Engine must remain completely game-agnostic.
 
@@ -436,12 +436,12 @@ Each supported card game is implemented as an independent domain.
 
 Every game owns:
 
-* Rule Engine
-* Scoring Logic
-* AI Logic
-* Card Definitions
-* Validation Rules
-* Match Configuration
+- Rule Engine
+- Scoring Logic
+- AI Logic
+- Card Definitions
+- Validation Rules
+- Match Configuration
 
 Game modules must never depend on other game modules.
 
@@ -453,15 +453,15 @@ Shared modules provide reusable technical functionality.
 
 Examples include:
 
-* Utilities
-* Configuration
-* Logging
-* Constants
-* Localization
-* Shared Models
-* Error Handling
-* Caching
-* Feature Flags
+- Utilities
+- Configuration
+- Logging
+- Constants
+- Localization
+- Shared Models
+- Error Handling
+- Caching
+- Feature Flags
 
 Shared modules must not contain business logic.
 
@@ -499,10 +499,10 @@ Whenever appropriate, modules communicate through domain events.
 
 Examples include:
 
-* Match Finished
-* Player Connected
-* Achievement Unlocked
-* Reward Granted
+- Match Finished
+- Player Connected
+- Achievement Unlocked
+- Reward Granted
 
 Events reduce coupling between modules.
 
@@ -548,11 +548,11 @@ These principles are mandatory for all platform components.
 
 The platform follows the SOLID principles.
 
-* Single Responsibility Principle (SRP)
-* Open/Closed Principle (OCP)
-* Liskov Substitution Principle (LSP)
-* Interface Segregation Principle (ISP)
-* Dependency Inversion Principle (DIP)
+- Single Responsibility Principle (SRP)
+- Open/Closed Principle (OCP)
+- Liskov Substitution Principle (LSP)
+- Interface Segregation Principle (ISP)
+- Dependency Inversion Principle (DIP)
 
 ---
 
@@ -640,9 +640,9 @@ This chapter describes how CardVerse is expected to evolve as the platform grows
 
 Deployment model:
 
-* Modular Monolith
-* Single Database
-* Shared Runtime
+- Modular Monolith
+- Single Database
+- Shared Runtime
 
 This approach maximizes development speed while maintaining modularity.
 
@@ -654,11 +654,11 @@ As platform complexity increases, selected modules may be extracted into indepen
 
 Candidate modules include:
 
-* Authentication
-* Matchmaking
-* Chat
-* Notifications
-* Analytics
+- Authentication
+- Matchmaking
+- Chat
+- Notifications
+- Analytics
 
 Extraction must not require redesigning business logic.
 
@@ -668,11 +668,11 @@ Extraction must not require redesigning business logic.
 
 The architecture must support:
 
-* Increased concurrent players
-* Additional card games
-* New gameplay features
-* Cross-platform clients
-* Independent module evolution
+- Increased concurrent players
+- Additional card games
+- New gameplay features
+- Cross-platform clients
+- Independent module evolution
 
 ---
 
@@ -690,13 +690,13 @@ The architecture is intentionally designed for long-term expansion.
 
 Future improvements may include:
 
-* Microservices
-* Distributed Caching
-* Event Streaming
-* Replay Service
-* Tournament Service
-* AI Service
-* Dedicated Analytics Pipeline
+- Microservices
+- Distributed Caching
+- Event Streaming
+- Replay Service
+- Tournament Service
+- AI Service
+- Dedicated Analytics Pipeline
 
 These improvements must preserve the architectural principles defined in this document.
 
@@ -706,15 +706,15 @@ These improvements must preserve the architectural principles defined in this do
 
 Related documents:
 
-* CARDVERSE_INDEX.md
-* PROJECT_STATUS.md
-* README.md
-* PRODUCT_BIBLE.md
-* DATABASE.md
-* API.md
-* RULEBOOK.md
-* PROJECT_RULES.md
-* PROJECT_DNA.md
+- CARDVERSE_INDEX.md
+- DASHBOARD.md
+- README.md
+- PRODUCT_BIBLE.md
+- DATABASE.md
+- API.md
+- RULEBOOK.md
+- PROJECT_RULES.md
+- PROJECT_DNA.md
 
 ---
 

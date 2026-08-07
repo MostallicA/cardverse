@@ -96,7 +96,7 @@ All Engine Layer modules implemented:
 **Sprint 7 — Integration & Testing (Current):**
 
 - Task 7.0: Integration of Engine Layer with Platform Layer — ✅ Complete
-- Task 7.1: End-to-end testing — Pending
+- Task 7.1: End-to-end testing — ✅ Complete
 - Task 7.2: Production release preparation — Pending
 
 ---
@@ -105,16 +105,16 @@ All Engine Layer modules implemented:
 
 ### Overall Status (Accurate — separated by architectural layer)
 
-| Layer                               | Modules                                                                                             | Status             |
-| ----------------------------------- | --------------------------------------------------------------------------------------------------- | ------------------ |
-| **Platform Layer**                  | Auth, User, Friends, Presence, Chat, Notifications, Matchmaking Foundation, Wallet, Shop, Inventory | Complete           |
-| **Frontend (Platform-facing)**      | Auth integration, routing, protected routes                                                         | Complete           |
-| **Engine Layer**                    | Lobby, Room, Session, Turn Manager, Card Engine, Rule Executor, Bot Manager, Disconnect Manager     | Complete           |
-| **Matchmaking Integration**         | Integration Service, API Routes, Controller, Validator                                              | Complete           |
-| **E2E Testing**                     |                                                                                                     | Complete           |
-| **Game Layer (Hokm)**               | Rule implementation, scoring, AI logic, match configuration                                         | Not started (V2)   |
-| **Production Ready**                |                                                                                                     | In Progress        |
-| **Shared / Tests / Tools packages** | Configuration only                                                                                  | Complete           |
+| Layer                               | Modules                                                                                             | Status           |
+| ----------------------------------- | --------------------------------------------------------------------------------------------------- | ---------------- |
+| **Platform Layer**                  | Auth, User, Friends, Presence, Chat, Notifications, Matchmaking Foundation, Wallet, Shop, Inventory | Complete         |
+| **Frontend (Platform-facing)**      | Auth integration, routing, protected routes                                                         | Complete         |
+| **Engine Layer**                    | Lobby, Room, Session, Turn Manager, Card Engine, Rule Executor, Bot Manager, Disconnect Manager     | Complete         |
+| **Matchmaking Integration**         | Integration Service, API Routes, Controller, Validator                                              | Complete         |
+| **E2E Testing**                     |                                                                                                     | Complete         |
+| **Game Layer (Hokm)**               | Rule implementation, scoring, AI logic, match configuration                                         | Not started (V2) |
+| **Production Ready**                |                                                                                                     | In Progress      |
+| **Shared / Tests / Tools packages** | Configuration only                                                                                  | Complete         |
 
 > **Why this table replaced the old "88/88 — 100%" summary:** the previous version only counted Platform Layer files and implied full project completion. The Engine and Game layers — the actual card game — had not been started. This table exists so that "percent complete" always reflects the whole project, not one layer of it.
 
