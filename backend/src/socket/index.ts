@@ -95,7 +95,7 @@ export class SocketManager {
 
   private setupMiddleware(): void {
     // Authentication middleware
-    this.io.use((socket, next) => {
+    this.io.use((socket: Socket, next: (err?: Error) => void) => {
       const userId = socket.handshake.auth.userId;
       if (!userId) {
         return next(new Error('Authentication required'));
@@ -116,47 +116,50 @@ export class SocketManager {
         );
 
         // Handle joining a match room
-        socket.on('join_match', (data) => {
+        socket.on('join_match', (data: { matchId: string; playerId: string }) => {
           this.handleJoinMatch(socket, data);
         });
 
         // Handle leaving a match room
-        socket.on('leave_match', (data) => {
+        socket.on('leave_match', (data: { matchId: string; playerId: string }) => {
           this.handleLeaveMatch(socket, data);
         });
 
         // Handle match creation
-        socket.on('create_match', (data) => {
+        socket.on('create_match', (data: { players: any[]; config: any }) => {
           this.handleCreateMatch(socket, data);
         });
 
         // Handle match start
-        socket.on('start_match', (data) => {
+        socket.on('start_match', (data: { matchId: string }) => {
           this.handleStartMatch(socket, data);
         });
 
         // Handle card play
-        socket.on('play_card', (data) => {
+        socket.on('play_card', (data: { matchId: string; playerId: string; cardId: string }) => {
           this.handlePlayCard(socket, data);
         });
 
         // Handle Hokm declaration
-        socket.on('declare_hokm', (data) => {
-          this.handleDeclareHokm(socket, data);
-        });
+        socket.on(
+          'declare_hokm',
+          (data: { matchId: string; playerId: string; mode: string; suit?: string }) => {
+            this.handleDeclareHokm(socket, data);
+          }
+        );
 
         // Handle ready status
-        socket.on('set_ready', (data) => {
+        socket.on('set_ready', (data: { matchId: string; playerId: string; isReady: boolean }) => {
           this.handleSetReady(socket, data);
         });
 
         // Handle chat
-        socket.on('send_chat', (data) => {
+        socket.on('send_chat', (data: { matchId: string; playerId: string; message: string }) => {
           this.handleChat(socket, data);
         });
 
         // Handle reconnect
-        socket.on('reconnect', (data) => {
+        socket.on('reconnect', (data: { matchId: string; playerId: string }) => {
           this.handleReconnect(socket, data);
         });
 
@@ -363,33 +366,38 @@ export class SocketManager {
     }
   }
 
-  private handleSetReady(socket: Socket, data: { matchId: string; playerId: string; isReady: boolean }): void {
-  try {
-    const { matchId, playerId, isReady } = data;
+  private handleSetReady(
+    socket: Socket,
+    data: { matchId: string; playerId: string; isReady: boolean }
+  ): void {
+    try {
+      const { matchId, playerId, isReady } = data;
 
-    console.log(`[SocketManager] handleSetReady match=${matchId} player=${playerId} isReady=${isReady}`);
+      console.log(
+        `[SocketManager] handleSetReady match=${matchId} player=${playerId} isReady=${isReady}`
+      );
 
-    // Use matchmakingIntegration to handle ready status
-    const success = matchmakingIntegration.setPlayerReady(matchId, playerId, isReady);
+      // Use matchmakingIntegration to handle ready status
+      const success = matchmakingIntegration.setPlayerReady(matchId, playerId, isReady);
 
-    if (!success) {
-      throw new Error('Failed to set ready status');
+      if (!success) {
+        throw new Error('Failed to set ready status');
+      }
+
+      // Broadcast ready status update
+      this.broadcastToMatch(matchId, 'match_updated', {
+        matchId,
+        state: engineService.getMatchState(matchId),
+      });
+
+      console.log(`[SocketManager] Player ${playerId} ready: ${isReady} in match ${matchId}`);
+    } catch (error) {
+      socket.emit('error', {
+        code: 'SET_READY_ERROR',
+        message: error instanceof Error ? error.message : 'Failed to set ready status',
+      });
     }
-
-    // Broadcast ready status update
-    this.broadcastToMatch(matchId, 'match_updated', {
-      matchId,
-      state: engineService.getMatchState(matchId),
-    });
-
-    console.log(`[SocketManager] Player ${playerId} ready: ${isReady} in match ${matchId}`);
-  } catch (error) {
-    socket.emit('error', {
-      code: 'SET_READY_ERROR',
-      message: error instanceof Error ? error.message : 'Failed to set ready status',
-    });
   }
-}
 
   private handleChat(
     _socket: Socket,

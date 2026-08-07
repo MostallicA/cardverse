@@ -14,19 +14,27 @@
     "@cardverse/shared": "workspace:*",
     "compression": "^1.8.1",
     "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
     "express": "^5.2.1",
+    "express-rate-limit": "^8.6.2",
     "helmet": "^8.2.0",
     "joi": "^18.2.3",
-    "morgan": "^1.11.0"
+    "morgan": "^1.11.0",
+    "socket.io": "^4.8.3"
   },
   "devDependencies": {
     "@types/compression": "^1.8.1",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
     "@types/helmet": "^4.0.0",
+    "@types/jest": "^30.0.0",
     "@types/joi": "^17.2.3",
     "@types/morgan": "^1.9.10",
     "@types/node": "^20.0.0",
+    "axios": "^1.18.1",
+    "jest": "^30.4.2",
+    "socket.io-client": "^4.8.3",
+    "ts-jest": "^29.4.12",
     "typescript": "^5.3.3"
   }
 }
