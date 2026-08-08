@@ -11,10 +11,12 @@ import {
   MatchConfig,
   MatchState,
 } from './engine.types';
+import { gamePersistenceService } from './game-persistence.service';
 
 export class EngineService {
   private matchStates: Map<string, MatchState> = new Map();
   private activeMatches: Set<string> = new Set();
+  private persistenceEnabled: boolean = true;
 
   /**
    * Creates a new match with the given configuration
@@ -79,6 +81,11 @@ export class EngineService {
     this.matchStates.set(matchId, matchState);
     this.activeMatches.add(matchId);
 
+    // Persist to database (fire-and-forget; falls back to memory if DB unavailable)
+    if (this.persistenceEnabled) {
+      void gamePersistenceService.saveMatchState(matchState);
+    }
+
     return matchState;
   }
 
@@ -87,6 +94,41 @@ export class EngineService {
    */
   getMatchState(matchId: string): MatchState | undefined {
     return this.matchStates.get(matchId);
+  }
+
+  /**
+   * Loads a match state from the database (or memory fallback).
+   * If found, it is restored into the in-memory store.
+   */
+  async loadMatchState(matchId: string): Promise<MatchState | undefined> {
+    // Check memory first
+    const cached = this.matchStates.get(matchId);
+    if (cached) {
+      return cached;
+    }
+
+    // Try to load from persistence layer
+    const restored = await gamePersistenceService.loadMatchState(matchId);
+    if (restored) {
+      this.matchStates.set(matchId, restored);
+      this.activeMatches.add(matchId);
+    }
+    return restored;
+  }
+
+  /**
+   * Enables or disables database persistence.
+   * When disabled, the engine operates purely in-memory.
+   */
+  setPersistenceEnabled(enabled: boolean): void {
+    this.persistenceEnabled = enabled;
+  }
+
+  /**
+   * Returns whether persistence is currently enabled.
+   */
+  isPersistenceEnabled(): boolean {
+    return this.persistenceEnabled;
   }
 
   /**
@@ -106,6 +148,12 @@ export class EngineService {
     match.startedAt = new Date();
 
     this.matchStates.set(matchId, match);
+
+    // Persist updated state
+    if (this.persistenceEnabled) {
+      void gamePersistenceService.saveMatchState(match);
+    }
+
     return match;
   }
 
@@ -150,6 +198,12 @@ export class EngineService {
     });
 
     this.matchStates.set(matchId, match);
+
+    // Persist updated state
+    if (this.persistenceEnabled) {
+      void gamePersistenceService.saveMatchState(match);
+    }
+
     return match;
   }
 
@@ -240,6 +294,12 @@ export class EngineService {
     // This is a placeholder - full trick logic goes in turn manager
 
     this.matchStates.set(matchId, match);
+
+    // Persist updated state
+    if (this.persistenceEnabled) {
+      void gamePersistenceService.saveMatchState(match);
+    }
+
     return match;
   }
 
@@ -258,6 +318,11 @@ export class EngineService {
 
     this.activeMatches.delete(matchId);
     this.matchStates.set(matchId, match);
+
+    // Persist final state
+    if (this.persistenceEnabled) {
+      void gamePersistenceService.saveMatchState(match);
+    }
 
     return match;
   }
