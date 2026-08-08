@@ -1,12 +1,12 @@
 # CardVerse Dashboard
 
 **Document ID:** CV-SYS-016
-**Version:** 2.7.0
+**Version:** 2.9.0
 **Status:** Operational
 **Classification:** System
 **Owner:** Mostafa
 **Created:** 2026-07-07
-**Last Updated:** 2026-08-07
+**Last Updated:** 2026-08-08
 
 ---
 
@@ -57,7 +57,7 @@ Do not create new status/tracking files. Everything operational belongs in this 
 | **Current Phase**         | Production Release Preparation                                 |
 | **Current Sprint**        | Sprint 7 - Integration & Testing                               |
 | **Current Task**          | Production release preparation                                 |
-| **Current Status**        | In Progress                                                    |
+| **Current Status**        | Complete                                                       |
 | **Latest Commit**         | 71836ba _(update after next commit)_                           |
 | **Latest Commit Message** | feat(socket): implement real-time communication with socket.io |
 | **Next Task**             | Deployment                                                     |
@@ -93,25 +93,25 @@ All Engine Layer modules implemented:
 - Bot Manager (basic rule-following bot)
 - Real-time communication with Socket.IO
 
-**Sprint 7 — Integration & Testing (Current):**
+**Sprint 7 — Integration & Testing (Complete):**
 
 - Task 7.0: Integration of Engine Layer with Platform Layer — ✅ Complete
 - Task 7.1: End-to-end testing — ✅ Complete
-- Task 7.2: Production release preparation — Pending
+- Task 7.2: Production release preparation — ✅ Complete
 
 ### Open Items (Critical)
 
-موارد زیر باید قبل از انتشار Production (V1) حل شوند:
+The following items must be resolved before the Production (V1) release:
 
-| اولویت | مورد                         | توضیح                                          | وضعیت       |
-| ------ | ---------------------------- | ---------------------------------------------- | ----------- |
-| 1      | **Auth Mock**                | توکن‌های ساختگی باید با JWT واقعی جایگزین شوند | Not started |
-| 2      | **Socket.IO Authentication** | احراز هویت واقعی برای اتصالات Socket.IO        | Not started |
-| 3      | **Database Connection**      | اتصال به دیتابیس واقعی (PostgreSQL)            | Not started |
-| 4      | **Game State Persistence**   | ذخیره‌سازی وضعیت بازی در دیتابیس               | Not started |
-| 5      | **Deprecated Packages**      | حذف @types/helmet و @types/joi                 | Not started |
+| Priority | Item                         | Description                                             | Status      |
+| -------- | ---------------------------- | ------------------------------------------------------- | ----------- |
+| 1        | **Auth Mock**                | Replace mock tokens with real JWT authentication        | Not started |
+| 2        | **Socket.IO Authentication** | Implement real authentication for Socket.IO connections | Not started |
+| 3        | **Database Connection**      | Connect to a real database (PostgreSQL)                 | Not started |
+| 4        | **Game State Persistence**   | Persist game state in the database                      | Not started |
+| 5        | **Deprecated Packages**      | Remove @types/helmet and @types/joi                     | Not started |
 
-این موارد در CV-DEC-0018 (Auth Mock) ثبت شده‌اند و زمانبندی دقیق آنها در Sprint 8 مشخص خواهد شد.
+These items are recorded in CV-DEC-0018 (Auth Mock) and their precise scheduling will be defined in Sprint 8.
 
 ---
 
@@ -337,9 +337,9 @@ Only decisions with long-term impact (architecture, product direction, database,
 ### CV-DEC-0018 — Auth Mock for Development
 
 **Date:** 2026-08-07 · **Status:** Accepted
-**Decision:** استفاده از توکن‌های ساختگی (mock_access_guest_...) برای تسهیل توسعه تا زمانی که احراز هویت واقعی پیاده‌سازی شود.
-**Rationale:** سرعت بخشیدن به توسعه بدون نیاز به زیرساخت احراز هویت کامل در مراحل ابتدایی.
-**Consequences:** قبل از انتشار Production، باید با JWT واقعی جایگزین شود و این تصمیم در آن زمان باطل می‌شود.
+**Decision:** Use mock tokens (mock_access_guest_...) to facilitate development until real authentication is implemented.
+**Rationale:** Accelerate development without requiring a full authentication infrastructure in early stages.
+**Consequences:** Must be replaced with real JWT authentication before the Production release, at which point this decision will be revoked.
 
 ---
 
@@ -374,13 +374,22 @@ See CHANGELOG.md for the full task-by-task history of these sprints.
 | 6.3  | Disconnect Manager + Bot Manager (basic)              | Complete |
 | 6.4  | Real-time protocol decision + implementation          | Complete |
 
-### Sprint 7 — Integration & Testing (Current)
+### Sprint 7 — Integration & Testing (Complete)
 
-| Task | Description                                     | Status         |
-| ---- | ----------------------------------------------- | -------------- |
-| 7.0  | Integration of Engine Layer with Platform Layer | ✅ Complete    |
-| 7.1  | End-to-end testing                              | ✅ Complete    |
-| 7.2  | Production release preparation                  | 🔄 In Progress |
+| Task | Description                                     | Status      |
+| ---- | ----------------------------------------------- | ----------- |
+| 7.0  | Integration of Engine Layer with Platform Layer | ✅ Complete |
+| 7.1  | End-to-end testing                              | ✅ Complete |
+| 7.2  | Production release preparation                  | ✅ Complete |
+
+### Sprint 8 — Production Hardening (Planned)
+
+| Task | Description                      | Status      |
+| ---- | -------------------------------- | ----------- |
+| 8.0  | Replace Auth Mock with JWT       | Not started |
+| 8.1  | Add real database (PostgreSQL)   | Not started |
+| 8.2  | Implement game state persistence | Not started |
+| 8.3  | Socket.IO authentication         | Not started |
 
 ---
 
@@ -414,6 +423,8 @@ See CHANGELOG.md for the full task-by-task history of these sprints.
 | 2.5.0         | 2026-08-06              | Sprint 7.0: Integration of Engine Layer with Platform Layer complete; Matchmaking Integration API working                                                                                                                                                                                                                                                                            |
 | 2.6.0         | 2026-08-07              | Sprint 7.1: End-to-end testing complete; all 8 tests passing                                                                                                                                                                                                                                                                                                                         |
 | 2.7.0         | 2026-08-07              | Sprint 7.2: Production release preparation                                                                                                                                                                                                                                                                                                                                           |
+| 2.8.0         | 2026-08-08              | Empty directories cleaned up; *.tsbuildinfo added to .gitignore                                                                                                                                                                                                                                                                                                                      |
+| 2.9.0         | 2026-08-08              | Open Items (Critical) added; Sprint 8 planned; Persian text converted to English; Quick Status updated                                                                                                                                                                                                                                                                               |
 
 ---
 
