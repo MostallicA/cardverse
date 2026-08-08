@@ -69,6 +69,39 @@ export interface SocketData {
   matchId?: string;
 }
 
+/**
+ * Extracts a userId from a JWT token.
+ *
+ * NOTE: This is a temporary mock implementation that will be replaced
+ * with real JWT verification (e.g., jsonwebtoken) in Sprint 8.
+ * The token format mirrors the auth middleware mock tokens:
+ *   mock_access_guest_<userId>_<random>_<timestamp>
+ *   mock_access_google_<userId>_<random>_<timestamp>
+ */
+function extractUserIdFromToken(token: string): string | null {
+  if (!token || typeof token !== 'string') {
+    return null;
+  }
+
+  // Mock guest token: mock_access_guest_<userId>_<random>_<timestamp>
+  if (token.startsWith('mock_access_guest_')) {
+    const parts = token.split('_');
+    if (parts.length >= 5) {
+      return `${parts[2]}_${parts[3]}_${parts[4]}`;
+    }
+  }
+
+  // Mock google token: mock_access_google_<userId>_<random>_<timestamp>
+  if (token.startsWith('mock_access_google_')) {
+    const parts = token.split('_');
+    if (parts.length >= 5) {
+      return `${parts[2]}_${parts[3]}_${parts[4]}`;
+    }
+  }
+
+  return null;
+}
+
 export class SocketManager {
   private io: SocketServer<
     ClientToServerEvents,
@@ -95,13 +128,33 @@ export class SocketManager {
 
   private setupMiddleware(): void {
     // Authentication middleware
+    // Accepts a JWT token (temporary mock validation) via handshake.auth.token.
+    // Falls back to a direct userId (legacy) for backward compatibility
+    // with existing Socket.IO clients during development.
     this.io.use((socket: Socket, next: (err?: Error) => void) => {
-      const userId = socket.handshake.auth.userId;
-      if (!userId) {
-        return next(new Error('Authentication required'));
+      // 1. Get token from handshake auth
+      const token = socket.handshake.auth.token;
+
+      if (token && typeof token === 'string') {
+        // 2. Extract userId from the token
+        const userId = extractUserIdFromToken(token);
+        if (!userId) {
+          return next(new Error('Authentication failed'));
+        }
+        // 3. Store userId in socket data
+        socket.data.userId = userId;
+        return next();
       }
-      socket.data.userId = userId;
-      next();
+
+      // 4. Backward compatibility: accept direct userId when no token is provided
+      const directUserId = socket.handshake.auth.userId;
+      if (directUserId) {
+        socket.data.userId = directUserId;
+        return next();
+      }
+
+      // 5. No valid authentication
+      return next(new Error('Authentication failed'));
     });
   }
 
