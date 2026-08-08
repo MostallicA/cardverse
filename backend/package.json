@@ -12,6 +12,8 @@
   },
   "dependencies": {
     "@cardverse/shared": "workspace:*",
+    "@prisma/adapter-pg": "^7.9.1",
+    "@prisma/client": "^7.9.1",
     "compression": "^1.8.1",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
@@ -31,6 +33,7 @@
     "@types/node": "^20.0.0",
     "axios": "^1.18.1",
     "jest": "^30.4.2",
+    "prisma": "^7.9.1",
     "socket.io-client": "^4.8.3",
     "ts-jest": "^29.4.12",
     "typescript": "^5.3.3"

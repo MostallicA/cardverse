@@ -1,0 +1,83 @@
+// CardVerse Prisma Schema
+// Follows DATABASE.md naming conventions (snake_case tables/columns, soft delete)
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// Represents a player account (DATABASE.md §4.1 User)
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  username     String   @unique
+  passwordHash String? @map("password_hash")
+  accountType  String   @default("guest") @map("account_type") // guest | google
+  isActive     Boolean  @default(true) @map("is_active")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+  deletedAt    DateTime? @map("deleted_at")
+
+  sessions Session[]
+  matches  MatchPlayer[]
+
+  @@map("users")
+}
+
+// Represents an active game session (DATABASE.md §4.4 Match / §4.5 Room)
+model Session {
+  id        String   @id @default(cuid())
+  userId    String   @map("user_id") // host user
+  status    String   @default("active") // active | completed | abandoned
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  user    User         @relation(fields: [userId], references: [id])
+  match   Match?
+  players MatchPlayer[]
+
+  @@map("sessions")
+}
+
+// Stores match history (DATABASE.md §4.4 Match)
+model Match {
+  id          String    @id @default(cuid())
+  sessionId   String    @unique @map("session_id")
+  gameMode    String    @default("RANKED") @map("game_mode")
+  status      String    @default("pending") // pending | playing | completed
+  winnerTeam  Int?      @map("winner_team")
+  startedAt   DateTime? @map("started_at")
+  completedAt DateTime? @map("completed_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  deletedAt   DateTime? @map("deleted_at")
+
+  session Session @relation(fields: [sessionId], references: [id])
+  players MatchPlayer[]
+
+  @@map("matches")
+}
+
+// Junction table linking players to matches (DATABASE.md §3.3 Junction Tables)
+model MatchPlayer {
+  id        String  @id @default(cuid())
+  matchId   String  @map("match_id")
+  sessionId String  @map("session_id")
+  userId    String  @map("user_id")
+  seatIndex Int     @map("seat_index")
+  teamId    Int     @map("team_id")
+  isBot     Boolean @default(false) @map("is_bot")
+  isWinner  Boolean @default(false) @map("is_winner")
+
+  match   Match   @relation(fields: [matchId], references: [id])
+  session Session @relation(fields: [sessionId], references: [id])
+  user    User    @relation(fields: [userId], references: [id])
+
+  @@unique([matchId, userId])
+  @@map("match_players")
+}
