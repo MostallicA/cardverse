@@ -99,6 +99,20 @@ All Engine Layer modules implemented:
 - Task 7.1: End-to-end testing — ✅ Complete
 - Task 7.2: Production release preparation — Pending
 
+### Open Items (Critical)
+
+موارد زیر باید قبل از انتشار Production (V1) حل شوند:
+
+| اولویت | مورد                         | توضیح                                          | وضعیت       |
+| ------ | ---------------------------- | ---------------------------------------------- | ----------- |
+| 1      | **Auth Mock**                | توکن‌های ساختگی باید با JWT واقعی جایگزین شوند | Not started |
+| 2      | **Socket.IO Authentication** | احراز هویت واقعی برای اتصالات Socket.IO        | Not started |
+| 3      | **Database Connection**      | اتصال به دیتابیس واقعی (PostgreSQL)            | Not started |
+| 4      | **Game State Persistence**   | ذخیره‌سازی وضعیت بازی در دیتابیس               | Not started |
+| 5      | **Deprecated Packages**      | حذف @types/helmet و @types/joi                 | Not started |
+
+این موارد در CV-DEC-0018 (Auth Mock) ثبت شده‌اند و زمانبندی دقیق آنها در Sprint 8 مشخص خواهد شد.
+
 ---
 
 ## 5. Implementation Status
