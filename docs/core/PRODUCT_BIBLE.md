@@ -1,52 +1,42 @@
 # CardVerse Product Bible
 
 **Document ID:** CV-1001
-**Version:** 0.1.0
+**Version:** 0.4.0
 **Status:** Frozen
 **Classification:** Business
-**Owner:** Mostafa & ChatGPT
+**Owner:** Mostafa
 **Created:** 2026-06-26
-**Last Updated:** 2026-07-01
+**Last Updated:** 2026-08-09
 
 ---
 
-# Table of Contents
+## Table of Contents
 
 0. Product Scope
-
 1. Project Identity
-
 2. Game Modes
-
 3. Player Identity & Progression
-
 4. Social System
-
 5. Economy
-
 6. Game Flow
-
 7. Future Roadmap
-
 8. Glossary
-
 9. References
-
 10. Version History
 
 ---
 
-# 0. Product Scope
+## 0. Product Scope
 
-## Purpose
+### Purpose
 
 This document defines the business vision, product requirements, gameplay features and long-term direction of CardVerse. Every architectural, database and implementation decision must remain consistent with this document.
 
 ---
 
-## Version 1.0 (In Scope)
+### Version 1.0 (In Scope)
 
-### Core Platform
+#### Core Platform
 
 - User Authentication
 - Google Sign-In
@@ -57,16 +47,16 @@ This document defines the business vision, product requirements, gameplay featur
 - Notifications
 - Match History
 
-### Gameplay
+#### Gameplay
 
-- Hokm
+- Hokm (including Sars, Nars, Tak Nars sub-modes)
 - Practice Mode
 - Friendly Match
 - Ranked Match
-- AI Bot Replacement
+- AI Bot Replacement (with team disconnection rules)
 - Reconnect System
 
-### Competitive
+#### Competitive
 
 - Ranking System
 - Matchmaking
@@ -75,7 +65,7 @@ This document defines the business vision, product requirements, gameplay featur
 - XP & Level
 - Seasonal Rating
 
-### Economy
+#### Economy
 
 - Coins
 - Cosmetic Shop
@@ -85,7 +75,7 @@ This document defines the business vision, product requirements, gameplay featur
 
 ---
 
-## Planned
+### Planned
 
 These features are already part of the product vision but are not included in Version 1.0.
 
@@ -98,22 +88,28 @@ These features are already part of the product vision but are not included in Ve
 
 ---
 
-## Future
+### Future
 
-Future expansions may include:
+Future card games, in priority order:
 
-- Shelem
-- Haft Khabis
-- Nars
-- Tak Nars
-- Sars
+1. Bidel
+2. Shelem
+3. Haft Khabis
+4. Bank (21)
+5. Pasur (11)
+6. Poker
+
+**Note:** Nars, Tak Nars, and Sars are **not** separate games — they are rule sub-modes selectable by the Hakem within Hokm itself. See RULEBOOK.md Section 6.
+
+Other future expansions:
+
 - Guild System
 - Cross Game Progression
 - Mobile Native Applications
 
 ---
 
-## Out of Scope
+### Out of Scope
 
 The following features are intentionally excluded from Version 1.0.
 
@@ -125,27 +121,27 @@ The following features are intentionally excluded from Version 1.0.
 
 ---
 
-# 1. Project Identity
+## 1. Project Identity
 
-## Product Name
+### Product Name
 
 CardVerse
 
 ---
 
-## Vision
+### Vision
 
 Build a scalable, modular and extensible online card game platform capable of supporting multiple traditional card games while delivering a competitive, enjoyable and fair multiplayer experience.
 
 ---
 
-## Mission
+### Mission
 
 Create a long-term gaming platform that begins with Hokm and evolves into a complete ecosystem where every card game shares the same infrastructure, account system, social features, matchmaking and backend services.
 
 ---
 
-## Product Philosophy
+### Product Philosophy
 
 CardVerse is a platform, not a single game.
 
@@ -155,7 +151,7 @@ New games must reuse existing infrastructure whenever possible instead of introd
 
 ---
 
-## Core Principles
+### Core Principles
 
 - Performance First
 - Security by Design
@@ -170,39 +166,31 @@ New games must reuse existing infrastructure whenever possible instead of introd
 
 ---
 
-## Product Pillars
+### Product Pillars
 
-### Fair Competition
+#### Fair Competition
 
 Winning must always depend on player skill rather than purchased advantages.
 
----
-
-### Fast Multiplayer Experience
+#### Fast Multiplayer Experience
 
 Players should reach gameplay with minimum waiting time while maintaining matchmaking quality.
 
----
-
-### Social Experience
+#### Social Experience
 
 CardVerse is designed around playing with friends as much as playing competitively.
 
----
-
-### Long-term Progression
+#### Long-term Progression
 
 Players should always have meaningful progression through levels, rankings, achievements and cosmetics.
 
----
-
-### Extensible Architecture
+#### Extensible Architecture
 
 Every new game should require minimal backend changes by reusing existing platform services.
 
 ---
 
-## Success Metrics
+### Success Metrics
 
 The platform should continuously measure:
 
@@ -219,7 +207,7 @@ The platform should continuously measure:
 
 ---
 
-## Product Constraints
+### Product Constraints
 
 CardVerse must never sacrifice fairness, maintainability or security in order to deliver short-term features.
 
@@ -232,21 +220,21 @@ Every new feature must satisfy the following conditions:
 
 ---
 
-# 2. Game Modes
+## 2. Game Modes
 
-## Purpose
+### Purpose
 
 This chapter defines every supported gameplay mode available in CardVerse Version 1.0 and establishes the rules that govern player participation, matchmaking and rewards.
 
 ---
 
-## 2.1 Guest Mode
+### 2.1 Guest Mode
 
 **Status:** V1
 
 Guest Mode allows players to experience CardVerse without creating a permanent account.
 
-### Characteristics
+#### Characteristics
 
 - No permanent progression
 - No ranked matchmaking
@@ -259,13 +247,13 @@ Guest players may upgrade to a Google Account at any time. After upgrading, all 
 
 ---
 
-## 2.2 Practice Mode
+### 2.2 Practice Mode
 
 **Status:** V1
 
 Practice Mode allows players to improve their skills by competing against AI-controlled opponents.
 
-### Characteristics
+#### Characteristics
 
 - Single Player
 - Adjustable AI Difficulty
@@ -278,13 +266,13 @@ Practice matches are intended for learning and testing strategies.
 
 ---
 
-## 2.3 Friendly Match
+### 2.3 Friendly Match
 
 **Status:** V1
 
 Friendly Matches allow players to create private rooms and play with invited friends.
 
-### Characteristics
+#### Characteristics
 
 - Private Lobby
 - Invite System
@@ -297,13 +285,13 @@ Future versions may support spectators.
 
 ---
 
-## 2.4 Ranked Match
+### 2.4 Ranked Match
 
 **Status:** V1
 
 Ranked Match is the primary competitive mode of CardVerse.
 
-### Characteristics
+#### Characteristics
 
 - Automatic Matchmaking
 - Skill-Based Pairing
@@ -317,13 +305,13 @@ Only Ranked Matches affect competitive rankings.
 
 ---
 
-## 2.5 Tournament
+### 2.5 Tournament
 
 **Status:** Planned
 
 Tournament Mode provides organized competitive events.
 
-Planned Features
+#### Planned Features
 
 - Scheduled Events
 - Bracket Management
@@ -336,22 +324,62 @@ Tournament rules will be defined in a future version.
 
 ---
 
-## 2.6 Bot Replacement
+### 2.6 Bot Replacement
 
 **Status:** V1
 
-To preserve match integrity, disconnected players are temporarily replaced by AI.
+To preserve match integrity, inactive or disconnected players are temporarily replaced by AI.
 
-Rules
+#### Team Disconnection Rules
 
-- AI immediately occupies the disconnected player's seat.
-- The original player may reconnect within the allowed timeout.
-- Control automatically returns after successful reconnection.
-- If the timeout expires, the AI completes the match.
+In CardVerse, Hokm is a team game (2 vs 2). When a player disconnects:
+
+1. **Notification:** The teammate receives a notification:
+
+   > "Your teammate has left the game. Do you want to continue?"
+
+2. **Teammate Decision:** The teammate can choose:
+   - **Continue:** A bot replaces the disconnected player.
+   - **Forfeit:** The match ends immediately. The opposing team wins.
+
+3. **Bot Assignment:** If the teammate chooses to continue:
+   - A bot takes over the disconnected player's seat.
+   - The bot follows the same rules as the original player.
+   - The bot's avatar must be hidden (no "BOT" label).
+
+#### Bot Scenarios
+
+| Scenario | Real Players | Bots | Description                             |
+| -------- | ------------ | ---- | --------------------------------------- |
+| 1        | 4            | 0    | Full human game                         |
+| 2        | 3            | 1    | One player disconnected                 |
+| 3        | 2            | 2    | Each team has one bot                   |
+| 4        | 1            | 3    | Early phase - one human with three bots |
+| 5        | 0            | 4    | Development/testing only                |
+
+#### Bot Limits
+
+- Maximum bots per match: **3 bots** (when only 1 human player)
+- Bots **never share a team** with each other (maximum 1 bot per team)
+- Bots are **per-match instances** (no global limit)
+- Bots must be **invisible** to users in scenarios 2-4
+
+#### Invisible Bots
+
+In early phases (low player count), bots may replace real players.
+
+**Requirements:**
+
+- No "BOT" label or indicator
+- No grayscale avatar
+- Natural player names
+- Realistic response delays
+- Human-like behavior (occasional mistakes)
+- Users must NOT know they are playing with bots
 
 ---
 
-## Matchmaking Rules
+### Matchmaking Rules
 
 The matchmaking service attempts to create fair and balanced matches using the following priority:
 
@@ -365,7 +393,7 @@ If a suitable match cannot be found, search criteria gradually expand while main
 
 ---
 
-## General Rules
+### General Rules
 
 All multiplayer modes must comply with the following principles:
 
@@ -380,23 +408,21 @@ These principles apply regardless of the selected game mode.
 
 ---
 
-# 3. Player Identity & Progression
+## 3. Player Identity & Progression
 
-## Purpose
+### Purpose
 
 This chapter defines player identity, account management, progression systems and long-term player development throughout the CardVerse platform.
 
 ---
 
-## 3.1 Account Types
+### 3.1 Account Types
 
 **Status:** V1
 
 CardVerse supports the following account types.
 
-### Guest Account
-
-Characteristics
+#### Guest Account
 
 - Instant access
 - No registration required
@@ -404,11 +430,7 @@ Characteristics
 - Local data storage
 - Can be upgraded to a permanent account
 
----
-
-### Google Account
-
-Characteristics
+#### Google Account
 
 - Cloud synchronization
 - Permanent progression
@@ -418,17 +440,15 @@ Characteristics
 - Statistics
 - Cross-device access
 
----
-
 Guest accounts can be upgraded without losing supported progress.
 
 ---
 
-## 3.2 Player Profile
+### 3.2 Player Profile
 
 Every player owns a unique profile.
 
-### Profile Information
+#### Profile Information
 
 - Player ID
 - Username
@@ -444,11 +464,9 @@ Every player owns a unique profile.
 
 ---
 
-## Username Rules
+### Username Rules
 
 **Status:** V1
-
-Requirements
 
 - Unique across the platform
 - 3–20 characters
@@ -462,63 +480,37 @@ Usernames may become changeable in future versions.
 
 ---
 
-## 3.3 Progression
+### 3.3 Progression
 
 Player progression consists of several independent systems.
 
-### Experience (XP)
+#### Experience (XP)
 
-Players earn XP through gameplay.
+Players earn XP through gameplay. XP increases Player Level and Profile Progress. XP never decreases.
 
-XP increases:
+#### Level
 
-- Player Level
-- Profile Progress
+Represents overall player experience. Level does not affect gameplay balance. Level rewards may include: Cosmetics, Titles, Profile Frames, Coins.
 
-XP never decreases.
-
----
-
-### Level
-
-Represents overall player experience.
-
-Level does not affect gameplay balance.
-
-Level rewards may include:
-
-- Cosmetics
-- Titles
-- Profile Frames
-- Coins
-
----
-
-### Competitive Rank
+#### Competitive Rank
 
 **Status:** V1
 
-Competitive Rank represents player skill.
+Competitive Rank represents player skill. Only Ranked Matches modify Competitive Rank.
 
-Only Ranked Matches modify Competitive Rank.
-
----
-
-### Seasonal Rating
+#### Seasonal Rating
 
 **Status:** V1
 
-Each competitive season maintains an independent rating.
-
-Season resets do not affect lifetime statistics.
+Each competitive season maintains an independent rating. Season resets do not affect lifetime statistics.
 
 ---
 
-## 3.4 Player Statistics
+### 3.4 Player Statistics
 
 Statistics are permanently stored.
 
-### General Statistics
+#### General Statistics
 
 - Total Matches
 - Wins
@@ -527,9 +519,7 @@ Statistics are permanently stored.
 - Disconnect Rate
 - Average Match Duration
 
----
-
-### Hokm Statistics
+#### Hokm Statistics
 
 - Hokm Kooti
 - Kooti
@@ -541,13 +531,13 @@ Additional games introduce their own statistics.
 
 ---
 
-## 3.5 Achievements
+### 3.5 Achievements
 
 **Status:** V1
 
 Achievements reward important milestones.
 
-Examples
+Examples:
 
 - First Victory
 - 10 Wins
@@ -558,35 +548,26 @@ Examples
 - First Ranked Win
 - Daily Login Streak
 
-Achievements may unlock:
-
-- Coins
-- Badges
-- Titles
-- Cosmetic Items
+Achievements may unlock: Coins, Badges, Titles, Cosmetic Items.
 
 ---
 
-## 3.6 Fair Play Score
+### 3.6 Fair Play Score
 
 **Status:** V1
 
-Every player owns a Fair Play Score.
-
-Default Score
-
-100
+Every player owns a Fair Play Score. Default Score: 100
 
 The score changes based on player behavior.
 
-Positive Actions
+**Positive Actions:**
 
 - Completing Matches
 - Fair Conduct
 - Successful Reconnection
 - No Reports
 
-Negative Actions
+**Negative Actions:**
 
 - Rage Quit
 - AFK
@@ -604,7 +585,7 @@ Fair Play never affects gameplay mechanics.
 
 ---
 
-## 3.7 Rewards
+### 3.7 Rewards
 
 Players may receive rewards from:
 
@@ -615,21 +596,15 @@ Players may receive rewards from:
 - Seasonal Rewards
 - Events
 
-Rewards may include:
-
-- XP
-- Coins
-- Badges
-- Cosmetics
-- Titles
+Rewards may include: XP, Coins, Badges, Cosmetics, Titles.
 
 ---
 
-## 3.8 Player Status
+### 3.8 Player Status
 
 The platform tracks the player's current state.
 
-Available States
+Available States:
 
 - Online
 - Offline
@@ -642,9 +617,9 @@ Player status is synchronized across supported platform services.
 
 ---
 
-## General Principles
+### General Principles
 
-Player identity systems must satisfy the following requirements.
+Player identity systems must satisfy the following requirements:
 
 - Secure
 - Persistent
@@ -657,21 +632,21 @@ No progression system may provide competitive gameplay advantages.
 
 ---
 
-# 4. Social System
+## 4. Social System
 
-## Purpose
+### Purpose
 
 This chapter defines all player-to-player social interactions available within the CardVerse platform.
 
 ---
 
-## 4.1 Friends System
+### 4.1 Friends System
 
 **Status:** V1
 
 Players can build and manage a personal friends list.
 
-### Features
+#### Features
 
 - Send Friend Request
 - Accept Request
@@ -681,9 +656,7 @@ Players can build and manage a personal friends list.
 - Search Players
 - Favorite Friends (Planned)
 
----
-
-## Friend Rules
+#### Friend Rules
 
 - Friendship requires mutual acceptance.
 - Duplicate requests are not allowed.
@@ -692,13 +665,13 @@ Players can build and manage a personal friends list.
 
 ---
 
-## 4.2 Player Profile
+### 4.2 Player Profile
 
 **Status:** V1
 
 Every player profile displays public information.
 
-### Public Information
+#### Public Information
 
 - Avatar
 - Avatar Frame
@@ -709,16 +682,14 @@ Every player profile displays public information.
 - Player ID
 - Online Status
 
-### Planned Information
+#### Planned Information
 
 - Bio
 - Favorite Game
 - Showcase Achievements
 - Profile Themes
 
----
-
-## Profile Actions
+#### Profile Actions
 
 Players may:
 
@@ -730,21 +701,19 @@ Players may:
 
 ---
 
-## 4.3 Private Chat
+### 4.3 Private Chat
 
 **Status:** V1
 
 Private chat is available only between friends.
 
-### Features
+#### Features
 
 - Text Messages
 - Emoji Support
 - Sticker Support (Future)
 
----
-
-## Chat Restrictions
+#### Chat Restrictions
 
 Chat is disabled:
 
@@ -755,32 +724,25 @@ Future versions may introduce optional voice messaging.
 
 ---
 
-## 4.4 Presence System
+### 4.4 Presence System
 
 **Status:** V1
 
 Player presence is updated in real time.
 
-### Available States
-
-- Online
-- Offline
-- Away
-- In Lobby
-- Matchmaking
-- In Match
+Available States: Online, Offline, Away, In Lobby, Matchmaking, In Match.
 
 Presence information is visible only according to the user's privacy settings.
 
 ---
 
-## 4.5 Notifications
+### 4.5 Notifications
 
 **Status:** V1
 
 The platform delivers real-time notifications.
 
-### Notification Types
+#### Notification Types
 
 - Friend Request
 - Friend Accepted
@@ -790,12 +752,14 @@ The platform delivers real-time notifications.
 - Mission Completed
 - Season Reward
 - System Announcement
+- Teammate Disconnection
+- Match Forfeit
 
 Players may individually enable or disable supported notification categories.
 
 ---
 
-## 4.6 Invite System
+### 4.6 Invite System
 
 **Status:** V1
 
@@ -813,7 +777,7 @@ Expired invitations are automatically removed.
 
 ---
 
-## 4.7 Block System
+### 4.7 Block System
 
 **Status:** V1
 
@@ -830,13 +794,13 @@ Blocking does not affect existing match history.
 
 ---
 
-## 4.8 Report System
+### 4.8 Report System
 
 **Status:** V1
 
 Players may report inappropriate behavior.
 
-### Report Categories
+#### Report Categories
 
 - Cheating
 - Offensive Username
@@ -851,7 +815,7 @@ False reporting may negatively affect the reporter's Fair Play Score.
 
 ---
 
-## Privacy Principles
+### Privacy Principles
 
 CardVerse respects player privacy.
 
@@ -866,7 +830,7 @@ Additional privacy controls may be introduced in future releases.
 
 ---
 
-## General Principles
+### General Principles
 
 The social system must remain:
 
@@ -881,15 +845,15 @@ Social features must enhance community interaction without affecting competitive
 
 ---
 
-# 5. Economy
+## 5. Economy
 
-## Purpose
+### Purpose
 
 This chapter defines the economic systems of CardVerse, including currencies, rewards, cosmetic content and monetization principles.
 
 ---
 
-## 5.1 Economy Philosophy
+### 5.1 Economy Philosophy
 
 CardVerse follows a **Free-to-Play** model.
 
@@ -899,9 +863,9 @@ Competitive fairness always has higher priority than monetization.
 
 ---
 
-## 5.2 Currencies
+### 5.2 Currencies
 
-### Coins
+#### Coins
 
 **Status:** V1
 
@@ -919,9 +883,7 @@ Sources of Coins:
 - Events
 - Tournament Rewards (Future)
 
----
-
-### Gems
+#### Gems
 
 **Status:** Planned
 
@@ -937,13 +899,13 @@ Gems are never required to remain competitive.
 
 ---
 
-## 5.3 Shop
+### 5.3 Shop
 
 **Status:** V1
 
 The in-game shop offers cosmetic items.
 
-### Categories
+#### Categories
 
 - Avatars
 - Avatar Frames
@@ -953,7 +915,7 @@ The in-game shop offers cosmetic items.
 - Emotes
 - Titles
 
-Future Categories
+#### Future Categories
 
 - Sticker Packs
 - Sound Packs
@@ -961,7 +923,7 @@ Future Categories
 
 ---
 
-## 5.4 Cosmetic Rules
+### 5.4 Cosmetic Rules
 
 Cosmetic items may change:
 
@@ -979,82 +941,57 @@ Cosmetics must never affect:
 
 ---
 
-## 5.5 Daily Rewards
+### 5.5 Daily Rewards
 
 **Status:** V1
 
 Players receive login rewards once per day.
 
-Possible Rewards
-
-- Coins
-- XP
-- Cosmetic Items
-- Limited-Time Bonuses
+Possible Rewards: Coins, XP, Cosmetic Items, Limited-Time Bonuses.
 
 Future versions may introduce login streak bonuses.
 
 ---
 
-## 5.6 Missions
+### 5.6 Missions
 
 **Status:** V1
 
 Mission System encourages continuous engagement.
 
-Mission Types
-
-### Daily Missions
+#### Daily Missions
 
 Reset every day.
 
-### Weekly Missions
+#### Weekly Missions
 
 Reset every week.
 
-### Seasonal Missions
+#### Seasonal Missions
 
 Available during active seasons.
 
----
-
-Mission Rewards
-
-- Coins
-- XP
-- Cosmetics
-- Titles
+Mission Rewards: Coins, XP, Cosmetics, Titles.
 
 ---
 
-## 5.7 Achievements
+### 5.7 Achievements
 
 Achievements reward important milestones.
 
-Examples
+Examples: First Victory, 100 Wins, Fair Player, Ranked Champion, Veteran Player.
 
-- First Victory
-- 100 Wins
-- Fair Player
-- Ranked Champion
-- Veteran Player
-
-Achievement rewards may include:
-
-- Coins
-- Badges
-- Titles
-- Exclusive Cosmetics
+Achievement rewards may include: Coins, Badges, Titles, Exclusive Cosmetics.
 
 ---
 
-## 5.8 Battle Pass
+### 5.8 Battle Pass
 
 **Status:** Planned
 
 Battle Pass provides seasonal progression.
 
-Possible Features
+Possible Features:
 
 - Free Track
 - Premium Track
@@ -1066,7 +1003,7 @@ Battle Pass content remains cosmetic only.
 
 ---
 
-## 5.9 Seasonal Rewards
+### 5.9 Seasonal Rewards
 
 At the end of each season, players may receive rewards based on:
 
@@ -1075,27 +1012,20 @@ At the end of each season, players may receive rewards based on:
 - Fair Play Score
 - Participation
 
-Rewards may include:
-
-- Coins
-- Titles
-- Frames
-- Exclusive Cosmetics
+Rewards may include: Coins, Titles, Frames, Exclusive Cosmetics.
 
 ---
 
-## 5.10 Monetization Principles
+### 5.10 Monetization Principles
 
-CardVerse monetization follows these rules.
-
-Allowed
+**Allowed:**
 
 - Cosmetic Purchases
 - Optional Premium Features
 - Battle Pass
 - Profile Customization
 
-Not Allowed
+**Not Allowed:**
 
 - Pay-to-Win
 - Gameplay Advantages
@@ -1105,7 +1035,7 @@ Not Allowed
 
 ---
 
-## Economy Balance Principles
+### Economy Balance Principles
 
 The economy must remain:
 
@@ -1119,9 +1049,9 @@ Players who never spend real money must still be able to enjoy the complete comp
 
 ---
 
-## General Principles
+### General Principles
 
-Every economic feature must satisfy the following requirements.
+Every economic feature must satisfy the following requirements:
 
 - Competitive Fairness
 - Transparent Rewards
@@ -1133,15 +1063,15 @@ The economy exists to support player engagement and platform sustainability—no
 
 ---
 
-# 6. Game Flow
+## 6. Game Flow
 
-## Purpose
+### Purpose
 
 This chapter defines the complete lifecycle of a match, from player login to reward distribution and post-match actions.
 
 ---
 
-## 6.1 High-Level Flow
+### 6.1 High-Level Flow
 
 The standard player journey is:
 
@@ -1161,20 +1091,17 @@ The standard player journey is:
 
 ---
 
-## 6.2 Authentication
+### 6.2 Authentication
 
 **Status:** V1
 
-Supported methods:
-
-- Guest Login
-- Google Sign-In
+Supported methods: Guest Login, Google Sign-In.
 
 After authentication, player data is synchronized before entering the main menu.
 
 ---
 
-## 6.3 Main Menu
+### 6.3 Main Menu
 
 The Main Menu provides access to:
 
@@ -1190,23 +1117,17 @@ Future versions may introduce additional sections.
 
 ---
 
-## 6.4 Match Creation
+### 6.4 Match Creation
 
-### Ranked Match
+**Ranked Match:** The matchmaking service automatically searches for suitable opponents.
 
-The matchmaking service automatically searches for suitable opponents.
+**Friendly Match:** The host creates a private lobby and invites friends.
 
-### Friendly Match
-
-The host creates a private lobby and invites friends.
-
-### Practice Match
-
-A local or server-managed AI match is created immediately.
+**Practice Match:** A local or server-managed AI match is created immediately.
 
 ---
 
-## 6.5 Matchmaking
+### 6.5 Matchmaking
 
 **Status:** V1
 
@@ -1222,7 +1143,7 @@ Search parameters gradually expand to reduce queue times while maintaining fairn
 
 ---
 
-## 6.6 Lobby
+### 6.6 Lobby
 
 Before the match begins, players enter a lobby.
 
@@ -1238,7 +1159,7 @@ The lobby is authoritative and synchronized by the server.
 
 ---
 
-## 6.7 Ready Check
+### 6.7 Ready Check
 
 All participants must confirm readiness.
 
@@ -1249,7 +1170,7 @@ If a player does not respond before the timeout:
 
 ---
 
-## 6.8 Gameplay
+### 6.8 Gameplay
 
 During gameplay, the platform is responsible for:
 
@@ -1264,22 +1185,22 @@ Game-specific rules are defined in the corresponding RuleBook.
 
 ---
 
-## 6.9 Reconnection
+### 6.9 Reconnection
 
 **Status:** V1
 
 If a player disconnects:
 
-- Their seat is reserved.
-- A temporary AI replaces them.
-- The player may reconnect within the configured timeout.
-- Control returns automatically after reconnection.
+- Their seat is reserved (if teammate chooses to continue)
+- A temporary AI replaces them
+- The player may reconnect within the configured timeout
+- Control returns automatically after reconnection
 
-If the timeout expires, the AI completes the match.
+If the timeout expires or teammate forfeits, the AI completes the match.
 
 ---
 
-## 6.10 Match Completion
+### 6.10 Match Completion
 
 When the match ends, the platform:
 
@@ -1291,23 +1212,17 @@ Game-specific scoring is handled by the game engine.
 
 ---
 
-## 6.11 Reward Processing
+### 6.11 Reward Processing
 
 After validation, eligible rewards are distributed.
 
-Possible rewards include:
-
-- XP
-- Coins
-- Achievement Progress
-- Mission Progress
-- Seasonal Progress
+Possible rewards include: XP, Coins, Achievement Progress, Mission Progress, Seasonal Progress.
 
 Only valid matches generate rewards.
 
 ---
 
-## 6.12 Statistics Update
+### 6.12 Statistics Update
 
 The platform updates:
 
@@ -1322,7 +1237,7 @@ Statistics are stored permanently.
 
 ---
 
-## 6.13 Post-Match Options
+### 6.13 Post-Match Options
 
 Players may choose to:
 
@@ -1332,15 +1247,11 @@ Players may choose to:
 - View Match Results
 - Open Player Profiles
 
-Future versions may support:
-
-- Rematch Voting
-- Replay Viewer
-- Match Sharing
+Future versions may support: Rematch Voting, Replay Viewer, Match Sharing.
 
 ---
 
-## General Principles
+### General Principles
 
 The complete game flow must be:
 
@@ -1355,9 +1266,9 @@ Every multiplayer session must produce a single validated result that is recorde
 
 ---
 
-# 7. Future Roadmap
+## 7. Future Roadmap
 
-## Purpose
+### Purpose
 
 This chapter outlines the long-term vision of CardVerse beyond Version 1.0.
 
@@ -1365,9 +1276,9 @@ The roadmap serves as strategic guidance only and does not define implementation
 
 ---
 
-## Version 1.0
+### Version 1.0
 
-### Platform
+**Platform:**
 
 - Authentication
 - Google Sign-In
@@ -1377,16 +1288,16 @@ The roadmap serves as strategic guidance only and does not define implementation
 - Player Profiles
 - Notifications
 
-### Gameplay
+**Gameplay:**
 
-- Hokm
+- Hokm (including Sars, Nars, Tak Nars)
 - Practice Mode
 - Friendly Match
 - Ranked Match
-- AI Replacement
+- AI Replacement (with team disconnection)
 - Reconnect System
 
-### Progression
+**Progression:**
 
 - XP
 - Level
@@ -1395,7 +1306,7 @@ The roadmap serves as strategic guidance only and does not define implementation
 - Fair Play Score
 - Achievements
 
-### Economy
+**Economy:**
 
 - Coins
 - Cosmetic Shop
@@ -1404,47 +1315,37 @@ The roadmap serves as strategic guidance only and does not define implementation
 
 ---
 
-## Planned Releases
+### Planned Releases
 
-The following features are planned after Version 1.0.
-
-### Competitive
+#### Competitive
 
 - Tournament System
 - Spectator Mode
 - Replay System
 - Match History Viewer
 
----
-
-### Social
+#### Social
 
 - Voice Messages
 - Guild System
 - Team System
 - Community Events
 
----
-
-### Customization
+#### Customization
 
 - Avatar Builder
 - Animated Cosmetics
 - Premium Themes
 - Advanced Profiles
 
----
-
-### Economy
+#### Economy
 
 - Gems
 - Battle Pass
 - Seasonal Shop
 - Limited-Time Events
 
----
-
-### Platform Expansion
+#### Platform Expansion
 
 - Native Android Application
 - Native iOS Application
@@ -1457,19 +1358,20 @@ The following features are planned after Version 1.0.
 
 The CardVerse platform is designed to support multiple traditional card games.
 
-Planned games include:
+Planned games, in priority order:
 
-- Shelem
-- Haft Khabis
-- Nars
-- Tak Nars
-- Sars
+1. **Bidel**
+2. **Shelem**
+3. **Haft Khabis**
+4. **Bank (21)**
+5. **Pasur (11)**
+6. **Poker** (requires its own dedicated engine — see ARCHITECTURE.md)
 
-Additional games may be added without fundamental architectural changes.
+Additional games may be added without fundamental architectural changes, provided they follow the same Platform-First rule (PROJECT_DNA.md).
 
 ---
 
-## Product Principles
+### Product Principles
 
 Future development must continue to follow the project's core principles.
 
@@ -1483,180 +1385,111 @@ Every new feature must:
 
 ---
 
-# 8. Glossary
+## 8. Glossary
 
-## Platform Terms
+### Platform Terms
 
-### CardVerse
+**CardVerse** — The complete gaming platform ecosystem. Includes all games, services, infrastructure and documentation.
 
-The complete gaming platform ecosystem. Includes all games, services, infrastructure and documentation.
+**Platform** — The shared infrastructure and services that support all games. Includes authentication, profiles, friends, matchmaking, economy, etc.
 
-### Platform
+**Game** — A specific card game implemented on the platform (e.g., Hokm, Shelem).
 
-The shared infrastructure and services that support all games. Includes authentication, profiles, friends, matchmaking, economy, etc.
+**Module** — A self-contained component with a single responsibility. Modules communicate through well-defined interfaces.
 
-### Game
-
-A specific card game implemented on the platform (e.g., Hokm, Shelem).
-
-### Module
-
-A self-contained component with a single responsibility. Modules communicate through well-defined interfaces.
-
-### Monorepo
-
-A single repository containing multiple projects and modules.
+**Monorepo** — A single repository containing multiple projects and modules.
 
 ---
 
-## Gameplay Terms
+### Gameplay Terms
 
-### Match
+**Match** — A complete competitive session consisting of one or more Hands.
 
-A complete competitive session consisting of one or more Hands.
+**Hand** — A single round of a card game. In Hokm, a Hand consists of up to 13 Tricks.
 
-### Hand
+**Trick** — One complete cycle in which every player plays exactly one card.
 
-A single round of a card game. In Hokm, a Hand consists of up to 13 Tricks.
+**Leading Suit** — The suit of the first card played in a Trick. All subsequent players must follow this suit if possible.
 
-### Trick
+**Trump Suit (Hokm)** — The suit selected by the Hakem that outranks all other suits for the duration of the Hand.
 
-One complete cycle in which every player plays exactly one card.
+**Dealer** — The player responsible for dealing the cards to all players.
 
-### Leading Suit
+**Hakem** — The player responsible for selecting the Trump Suit. The Hakem has special authority in the game.
 
-The suit of the first card played in a Trick. All subsequent players must follow this suit if possible.
+**Hand Point** — The score awarded after winning a Hand.
 
-### Trump Suit (Hokm)
+**Kooti** — A victory in which the losing team wins zero Tricks. Worth 2 Hand Points.
 
-The suit selected by the Hakem that outranks all other suits for the duration of the Hand.
+**Hakem Kooti** — A Kooti achieved by the Hakem's team. Worth 3 Hand Points.
 
-### Dealer
+**Bam** — A victory achieved by winning all thirteen Tricks in a Hand. Immediately ends the Match.
 
-The player responsible for dealing the cards to all players.
-
-### Hakem
-
-The player responsible for selecting the Trump Suit. The Hakem has special authority in the game.
-
-### Hand Point
-
-The score awarded after winning a Hand.
-
-### Kooti
-
-A victory in which the losing team wins zero Tricks. Worth 2 Hand Points.
-
-### Hakem Kooti
-
-A Kooti achieved by the Hakem's team. Worth 3 Hand Points.
-
-### Bam
-
-A victory achieved by winning all thirteen Tricks in a Hand. Immediately ends the Match.
-
-### AI Replacement
-
-A temporary AI-controlled player that replaces a disconnected player until they reconnect or the timeout expires.
+**AI Replacement** — A temporary AI-controlled player that replaces a disconnected player until they reconnect or the timeout expires.
 
 ---
 
-## Technical Terms
+### Technical Terms
 
-### Frozen Document
+**Frozen Document** — A document that has been reviewed, approved and should not be modified without formal approval. Changes require updating the Version History.
 
-A document that has been reviewed, approved and should not be modified without formal approval. Changes require updating the Version History.
+**Operational Document** — A document that is expected to evolve throughout the project lifecycle. Examples: DASHBOARD.md.
 
-### Operational Document
+**Technical Debt** — The cost of additional rework caused by choosing an easy solution now instead of a better approach that would take longer.
 
-A document that is expected to evolve throughout the project lifecycle. Examples: DASHBOARD.md, DECISION_LOG.md.
+**Single Source of Truth** — The principle that every concept should have exactly one authoritative document.
 
-### Technical Debt
+**Documentation First** — The principle that documentation must be created before implementation begins.
 
-The cost of additional rework caused by choosing an easy solution now instead of a better approach that would take longer.
-
-### Single Source of Truth
-
-The principle that every concept should have exactly one authoritative document.
-
-### Documentation First
-
-The principle that documentation must be created before implementation begins.
-
-### Server Authoritative
-
-The principle that the server is the only trusted source of game state. Clients never determine gameplay outcomes.
+**Server Authoritative** — The principle that the server is the only trusted source of game state. Clients never determine gameplay outcomes.
 
 ---
 
-## Architecture Terms
+### Architecture Terms
 
-### Modular Monolith
+**Modular Monolith** — A single deployment containing multiple modules that are logically independent but share the same runtime.
 
-A single deployment containing multiple modules that are logically independent but share the same runtime.
+**Microservice Ready** — Architecture designed so that modules can be extracted into independent services in the future without significant redesign.
 
-### Microservice Ready
+**Domain-Driven Design (DDD)** — An approach that models software to match business domains.
 
-Architecture designed so that modules can be extracted into independent services in the future without significant redesign.
+**Hexagonal Architecture** — An architecture that isolates business logic from infrastructure and external services.
 
-### Domain-Driven Design (DDD)
+**Layer** — A logical grouping of modules with similar responsibilities. CardVerse has four layers: Platform, Engine, Game and Shared.
 
-An approach that models software to match business domains.
-
-### Hexagonal Architecture
-
-An architecture that isolates business logic from infrastructure and external services.
-
-### Layer
-
-A logical grouping of modules with similar responsibilities. CardVerse has four layers: Platform, Engine, Game and Shared.
-
-### Domain Event
-
-A significant business occurrence that other modules may react to.
-
-| Term            | Definition                                        |
-| --------------- | ------------------------------------------------- |
-| Platform        | The complete CardVerse ecosystem.                 |
-| Game            | A specific card game implemented on the platform. |
-| Match           | A single playable session.                        |
-| Lobby           | The waiting room before a match starts.           |
-| Ranked Match    | Competitive match affecting player rating.        |
-| Friendly Match  | Private match without competitive ranking.        |
-| Practice Match  | Match against AI for learning purposes.           |
-| Fair Play Score | Behavior score reflecting player conduct.         |
-| Seasonal Rating | Competitive rating for the current season.        |
-| XP              | Experience Points earned through gameplay.        |
-| Level           | Long-term player progression.                     |
-| Coins           | Primary in-game currency.                         |
-| Gems            | Planned premium currency.                         |
-| Cosmetic        | Visual customization with no gameplay advantage.  |
-| AI Replacement  | Temporary bot controlling a disconnected player.  |
+**Domain Event** — A significant business occurrence that other modules may react to.
 
 ---
 
-# 9. References
+## 9. References
 
 Related documents:
-README.md
-ARCHITECTURE.md
-DATABASE.md
-API.md
-RULEBOOK.md
-PROJECT_RULES.md
-PROJECT_DNA.md
+
+- README.md
+- ARCHITECTURE.md
+- DATABASE.md
+- API.md
+- RULEBOOK.md
+- PROJECT_RULES.md
+- PROJECT_DNA.md
+- CARDVERSE_INDEX.md
+- DASHBOARD.md
 
 ---
 
-# 10. Version History
+## 10. Version History
 
-| Version | Date       | Description                                             |
-| ------- | ---------- | ------------------------------------------------------- |
-| 0.1.0   | 2026-06-30 | Initial Enterprise Foundation                           |
-| 0.1.0   | 2026-07-01 | Documentation Freeze completed                          |
-| 0.2.0   | 2026-07-07 | Updated Glossary section with comprehensive terminology |
+| Version | Date       | Description                                                                                                                                                                                                                                          |
+| ------- | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 0.1.0   | 2026-06-30 | Initial Enterprise Foundation                                                                                                                                                                                                                        |
+| 0.1.0   | 2026-07-01 | Documentation Freeze completed                                                                                                                                                                                                                       |
+| 0.2.0   | 2026-07-07 | Updated Glossary section with comprehensive terminology                                                                                                                                                                                              |
+| 0.3.0   | 2026-07-12 | corrected future game roadmap to priority order (Bidel, Shelem, Haft Khabis, Bank/21, Pasur/11, Poker); clarified Nars/Tak Nars/Sars are Hokm sub-modes, not separate games; aligned Bot Replacement section with finalized RULEBOOK.md online rules |
+| 0.4.0   | 2026-08-09 | Added team disconnection rules, bot scenarios (0-3 bots), invisible bots for early phases, bot limits (max 3 per match, never share a team), teammate decision flow, and updated notification types                                                  |
 
 ---
+
+**Document Status:** Frozen
 
 This document is the authoritative business specification for CardVerse.
 

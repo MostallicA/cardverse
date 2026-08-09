@@ -493,6 +493,7 @@ The following actions are strictly prohibited:
 - AI_DEVELOPER_GUIDE.md
 - README.md
 - CHANGELOG.md
+- POSTGRESQL_PLAN.md
 
 ---
 

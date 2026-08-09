@@ -386,10 +386,10 @@ See CHANGELOG.md for the full task-by-task history of these sprints.
 
 | Task | Description                      | Status      |
 | ---- | -------------------------------- | ----------- |
-| 8.0  | Replace Auth Mock with JWT       | Not started |
-| 8.1  | Add real database (PostgreSQL)   | Not started |
-| 8.2  | Implement game state persistence | Not started |
-| 8.3  | Socket.IO authentication         | Not started |
+| 8.0  | Replace Auth Mock with JWT       | ✅ Complete |
+| 8.1  | Add real database (PostgreSQL)   | ✅ Complete |
+| 8.2  | Implement game state persistence | ✅ Complete |
+| 8.3  | Socket.IO authentication         | ✅ Complete |
 
 ---
 
@@ -406,6 +406,7 @@ See CHANGELOG.md for the full task-by-task history of these sprints.
 - CARDVERSE_INDEX.md
 - AI_DEVELOPER_GUIDE.md
 - CHANGELOG.md
+- POSTGRESQL_PLAN.md
 
 ---
 

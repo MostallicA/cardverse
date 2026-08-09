@@ -1,12 +1,12 @@
 # CardVerse Documentation Index
 
 **Document ID:** CV-SYS-004
-**Version:** 0.2.0
+**Version:** 0.4.0
 **Status:** Frozen
 **Classification:** System
 **Owner:** Mostafa & ChatGPT
 **Created:** 2026-06-30
-**Last Updated:** 2026-07-04
+**Last Updated:** 2026-08-09
 
 ---
 
@@ -70,36 +70,38 @@ Following this order ensures a complete understanding of the project before impl
 | RULEBOOK.md           | Game rules                        |
 | AI_DEVELOPER_GUIDE.md | AI development workflow           |
 | CHANGELOG.md          | Version history                   |
+| POSTGRESQL_PLAN.md    | Database integration plan         |
 
 ---
 
 ## 4. Topic Index
 
-| Topic                   | Primary Document      | Related Documents       |
-| ----------------------- | --------------------- | ----------------------- |
-| Product Vision          | PRODUCT_BIBLE.md      | PROJECT_DNA.md          |
-| Project Philosophy      | PROJECT_DNA.md        | PROJECT_RULES.md        |
-| Engineering Rules       | PROJECT_RULES.md      | AI_DEVELOPER_GUIDE.md   |
-| Architecture            | ARCHITECTURE.md       | DATABASE.md, API.md     |
-| Platform Modules        | ARCHITECTURE.md       | PRODUCT_BIBLE.md        |
-| Matchmaking             | PRODUCT_BIBLE.md      | ARCHITECTURE.md, API.md |
-| Authentication          | API.md                | ARCHITECTURE.md         |
-| User Profile            | PRODUCT_BIBLE.md      | DATABASE.md             |
-| Friends System          | PRODUCT_BIBLE.md      | DATABASE.md, API.md     |
-| Wallet                  | DATABASE.md           | PRODUCT_BIBLE.md        |
-| Shop                    | PRODUCT_BIBLE.md      | DATABASE.md             |
-| Statistics              | PRODUCT_BIBLE.md      | DATABASE.md             |
-| Seasons                 | PRODUCT_BIBLE.md      | DATABASE.md             |
-| Ranking                 | PRODUCT_BIBLE.md      | DATABASE.md, API.md     |
-| AI Bots                 | ARCHITECTURE.md       | RULEBOOK.md             |
-| Game Rules              | RULEBOOK.md           | PRODUCT_BIBLE.md        |
-| API Standards           | API.md                | PROJECT_RULES.md        |
-| Database Design         | DATABASE.md           | ARCHITECTURE.md         |
-| Documentation Structure | DASHBOARD.md          | PROJECT_RULES.md        |
-| Development Setup       | README.md             | DASHBOARD.md            |
-| Implementation Status   | DASHBOARD.md          | README.md               |
-| Development Workflow    | AI_DEVELOPER_GUIDE.md | PROJECT_RULES.md        |
-| Engineering Decisions   | DASHBOARD.md          | ARCHITECTURE.md         |
+| Topic                   | Primary Document      | Related Documents            |
+| ----------------------- | --------------------- | ---------------------------- |
+| Product Vision          | PRODUCT_BIBLE.md      | PROJECT_DNA.md               |
+| Project Philosophy      | PROJECT_DNA.md        | PROJECT_RULES.md             |
+| Engineering Rules       | PROJECT_RULES.md      | AI_DEVELOPER_GUIDE.md        |
+| Architecture            | ARCHITECTURE.md       | DATABASE.md, API.md          |
+| Platform Modules        | ARCHITECTURE.md       | PRODUCT_BIBLE.md             |
+| Matchmaking             | PRODUCT_BIBLE.md      | ARCHITECTURE.md, API.md      |
+| Authentication          | API.md                | ARCHITECTURE.md              |
+| User Profile            | PRODUCT_BIBLE.md      | DATABASE.md                  |
+| Friends System          | PRODUCT_BIBLE.md      | DATABASE.md, API.md          |
+| Wallet                  | DATABASE.md           | PRODUCT_BIBLE.md             |
+| Shop                    | PRODUCT_BIBLE.md      | DATABASE.md                  |
+| Statistics              | PRODUCT_BIBLE.md      | DATABASE.md                  |
+| Seasons                 | PRODUCT_BIBLE.md      | DATABASE.md                  |
+| Ranking                 | PRODUCT_BIBLE.md      | DATABASE.md, API.md          |
+| AI Bots                 | ARCHITECTURE.md       | RULEBOOK.md                  |
+| Game Rules              | RULEBOOK.md           | PRODUCT_BIBLE.md             |
+| API Standards           | API.md                | PROJECT_RULES.md             |
+| Database Design         | DATABASE.md           | ARCHITECTURE.md              |
+| Documentation Structure | DASHBOARD.md          | PROJECT_RULES.md             |
+| Development Setup       | README.md             | DASHBOARD.md                 |
+| Implementation Status   | DASHBOARD.md          | README.md                    |
+| Development Workflow    | AI_DEVELOPER_GUIDE.md | PROJECT_RULES.md             |
+| Engineering Decisions   | DASHBOARD.md          | ARCHITECTURE.md              |
+| PostgreSQL Integration  | POSTGRESQL_PLAN.md    | DATABASE.md, ARCHITECTURE.md |
 
 ## 5. Document Responsibilities
 
@@ -142,22 +144,24 @@ This approach reduces duplicated work and prevents inconsistent interpretations.
 
 ## 7. References
 
-- PROJECT_STATUS.md
+## 7. References
+
+- DASHBOARD.md
 - PROJECT_RULES.md
 - PROJECT_DNA.md
-- REPOSITORY_SNAPSHOT.md
-- SYSTEM_START_HERE.md
+- README.md
 
 ---
 
 ## 8. Version History
 
-| Version | Date       | Description                                          |
-| ------- | ---------- | ---------------------------------------------------- |
-| 0.1.0   | 2026-06-30 | Initial documentation index established              |
-| 0.1.0   | 2026-07-01 | Documentation Freeze completed                       |
-| 0.2.0   | 2026-07-04 | Added new system documents to index                  |
-| 0.3.0   | 2026-07-07 | Updated with new documentation structure (DASHBOARD) |
+| Version | Date       | Description                                                                                                  |
+| ------- | ---------- | ------------------------------------------------------------------------------------------------------------ |
+| 0.1.0   | 2026-06-30 | Initial documentation index established                                                                      |
+| 0.1.0   | 2026-07-01 | Documentation Freeze completed                                                                               |
+| 0.2.0   | 2026-07-04 | Added new system documents to index                                                                          |
+| 0.3.0   | 2026-07-07 | Updated with new documentation structure (DASHBOARD)                                                         |
+| 0.4.0   | 2026-08-09 | Updated References to remove deleted files (PROJECT_STATUS.md, REPOSITORY_SNAPSHOT.md, SYSTEM_START_HERE.md) |
 
 ---
 

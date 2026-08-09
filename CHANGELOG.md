@@ -8,7 +8,40 @@ The format is inspired by **Keep a Changelog** and follows **Semantic Versioning
 
 ## [Unreleased]
 
-### Added
+### Added (2026-08-09 — Sprint 8: Production Hardening)
+
+- JWT authentication service (`jwt.service.ts`) with generateToken and verifyToken
+- Real JWT authentication replacing mock tokens in auth middleware
+- Socket.IO authentication with JWT token validation
+- PostgreSQL database integration with Prisma ORM
+- Database schema for Users, Sessions, Matches, and MatchPlayers
+- Game state persistence service with database fallback to memory
+- Environment validation with Joi for production safety
+- Rate limiting, CORS whitelist, and request timeout for production
+
+### Changed (2026-08-09)
+
+- Updated `.env` and `.env.example` with JWT_SECRET and DATABASE_URL
+- Updated `socket/index.ts` to use JWT verification
+- Updated `auth.middleware.ts` to use real JWT instead of mock tokens
+- Updated `engine.service.ts` with persistence integration
+- Updated all core documentation (RULEBOOK, ARCHITECTURE, PRODUCT_BIBLE, API)
+
+### Removed (2026-08-09)
+
+- Removed mock token logic (`mock_access_guest_*`, `mock_access_google_*`)
+- Removed deprecated packages: `@types/helmet`, `@types/joi`
+
+### Security (2026-08-09)
+
+- Added JWT-based authentication for all protected endpoints
+- Added real authentication for Socket.IO connections
+- Added environment variable validation
+- Added rate limiting and CORS whitelist for production
+
+---
+
+### Added (2026-07-12 — Documentation Consolidation)
 
 - Repository Standards (ESLint, Prettier, Husky, Commitlint)
 - TypeScript Foundation (tsconfig.base.json)
@@ -35,13 +68,13 @@ The format is inspired by **Keep a Changelog** and follows **Semantic Versioning
 - Frontend UI Components (ProtectedRoute, authentication styles)
 - Frontend Routing (react-router-dom integration)
 
-### Changed
+### Changed (2026-07-12)
 
 - Restructured documentation: merged operational docs into DASHBOARD.md
 - Updated README.md with setup instructions
 - Updated PRODUCT_BIBLE.md with comprehensive glossary
 
-### Removed
+### Removed (2026-07-12)
 
 - REPOSITORY_SNAPSHOT.md (replaced by targeted query method)
 - SYSTEM_START_HERE.md (merged into DASHBOARD.md)
@@ -51,7 +84,7 @@ The format is inspired by **Keep a Changelog** and follows **Semantic Versioning
 - DECISION_LOG.md (merged into DASHBOARD.md)
 - GLOSSARY.md (merged into PRODUCT_BIBLE.md)
 
-### Fixed
+### Fixed (2026-07-12)
 
 - Documentation cross-reference consistency
 - Version alignment across all documents

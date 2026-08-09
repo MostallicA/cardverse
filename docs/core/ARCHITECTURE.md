@@ -1,40 +1,35 @@
 # CardVerse Architecture
 
 **Document ID:** CV-3001
-**Version:** 0.1.0
+**Version:** 0.3.0
 **Status:** Frozen
 **Classification:** Technical
-**Owner:** Mostafa & ChatGPT
+**Owner:** Mostafa
 **Created:** 2026-06-26
-**Last Updated:** 2026-07-01
+**Last Updated:** 2026-08-09
 
 ---
 
-# Table of Contents
+## Table of Contents
 
 1. Architecture Overview
-
 2. System Layers
-
 3. System Modules
-
 4. Module Communication
-
 5. Architectural Principles
-
 6. Scalability Strategy
-
-7. Future Evolution
-
-8. References
-
-9. Version History
+7. Real-Time Communication
+8. Performance Requirements
+9. Open Architectural Items
+10. Future Evolution
+11. References
+12. Version History
 
 ---
 
-# 1. Architecture Overview
+## 1. Architecture Overview
 
-## Purpose
+### Purpose
 
 This document defines the technical architecture of the CardVerse platform.
 
@@ -44,119 +39,57 @@ Every implementation, database schema and API must remain consistent with this a
 
 ---
 
-## Architecture Goals
+### Architecture Goals
 
-The architecture must provide:
-
-- High Performance
-- Scalability
-- Maintainability
-- Testability
-- Security
-- Extensibility
-- Reliability
-- Long-term Evolution
+The architecture must provide: High Performance, Scalability, Maintainability, Testability, Security, Extensibility, Reliability, Long-term Evolution.
 
 ---
 
-## Architecture Style
+### Architecture Style
 
-CardVerse adopts the following architectural patterns.
-
-### Domain-Driven Design (DDD)
+#### Domain-Driven Design (DDD)
 
 Business domains remain isolated and communicate only through well-defined contracts.
 
----
-
-### Hexagonal Architecture
+#### Hexagonal Architecture
 
 Business logic remains independent from infrastructure, frameworks and external services.
 
-Infrastructure can evolve without affecting domain logic.
+#### Modular Monolith
+
+Version 1.0 is implemented as a Modular Monolith. Each module remains logically independent while sharing a single deployment.
+
+#### Microservice Ready
+
+Major modules can be extracted into independent services in future versions without significant redesign.
 
 ---
 
-### Modular Monolith
+### Architecture Philosophy
 
-Version 1.0 is implemented as a Modular Monolith.
-
-Each module remains logically independent while sharing a single deployment.
-
----
-
-### Microservice Ready
-
-The architecture is designed so that major modules can be extracted into independent services in future versions without significant redesign.
-
----
-
-## Architecture Philosophy
-
-The platform is designed around reusable platform services.
-
-Games consume platform capabilities rather than implementing their own infrastructure.
-
-Examples include:
-
-- Authentication
-- Profiles
-- Friends
-- Chat
-- Matchmaking
-- Statistics
-- Achievements
-- Shop
-- Notifications
+The platform is designed around reusable platform services. Games consume platform capabilities rather than implementing their own infrastructure (Authentication, Profiles, Friends, Chat, Matchmaking, Statistics, Achievements, Shop, Notifications, Wallet).
 
 Every new game should reuse these services instead of creating duplicate implementations.
 
 ---
 
-# 2. System Layers
+## 2. System Layers
 
 CardVerse is organized into four primary layers.
 
----
+### 2.1 Platform Layer
 
-## 2.1 Platform Layer
+Reusable business services shared across every game: Authentication, User Management, Player Profiles, Friends, Presence, Chat, Notifications, Wallet, Shop, Inventory, Statistics, Achievements, Rankings, Seasons, Reports, Moderation, Analytics, Settings.
 
-The Platform Layer contains reusable business services shared across every game.
+The Platform Layer contains no game-specific logic. **Status: Complete for Version 1 (see DASHBOARD.md).**
 
-Responsibilities include:
+### 2.2 Engine Layer
 
-- Authentication
-- User Management
-- Player Profiles
-- Friends
-- Presence
-- Chat
-- Notifications
-- Wallet
-- Shop
-- Inventory
-- Statistics
-- Achievements
-- Rankings
-- Seasons
-- Reports
-- Moderation
-- Analytics
-- Settings
+The Engine Layer provides generic gameplay infrastructure shared by trick-taking games (Hokm, and future Bidel/Shelem/Haft Khabis). **Status: Complete (see DASHBOARD.md Sprint 6).**
 
-Tournament services are planned for future versions.
+**Responsibilities:**
 
-The Platform Layer contains no game-specific logic.
-
----
-
-## 2.2 Engine Layer
-
-The Engine Layer provides generic gameplay infrastructure.
-
-Responsibilities include:
-
-- Matchmaking
+- Matchmaking (actual match creation, not just the queue)
 - Lobby Management
 - Room Management
 - Session Management
@@ -170,541 +103,213 @@ Responsibilities include:
 - Anti-Cheat
 - Game Logging
 
-Replay System is planned for a future release.
+Replay System is planned for a future release. The Engine Layer never contains rules specific to Hokm or any other individual game — game-specific rules live in the Game Layer and are loaded/executed by the Rule Executor.
 
-The Engine Layer never contains rules specific to Hokm or any other game.
+**Important scope note:** Poker does not use this Engine. See Section 3.2.1.
 
----
+### 2.3 Game Layer
 
-## 2.3 Game Layer
+Every card game is implemented as an isolated module. Each game owns: Rules, Scoring, Card Logic, AI Logic, Match Configuration, Validation.
 
-Every card game is implemented as an isolated module.
+Games never communicate directly with one another. Adding a new game must not require modifying existing game modules. **Status: Not started for Hokm; rules are fully specified in RULEBOOK.md v0.3.0 and ready for implementation.**
 
-Each game owns:
+### 2.4 Shared Layer
 
-- Rules
-- Scoring
-- Card Logic
-- AI Logic
-- Match Configuration
-- Validation
-
-Games never communicate directly with one another.
-
-Adding a new game must not require modifying existing game modules.
+Reusable technical components: Utilities, Constants, Configuration, Logging, Error Handling, Localization, Shared Types, Caching, Feature Flags. Must remain independent from business and gameplay logic.
 
 ---
 
-## 2.4 Shared Layer
+## 3. System Modules
 
-The Shared Layer contains reusable technical components.
+### 3.1 Platform Modules
 
-Examples include:
+(Unchanged from prior version — Authentication, User Management, Profiles, Friends, Presence, Chat, Notifications, Wallet, Shop, Inventory, Statistics, Achievements, Rankings, Seasons, Reports, Moderation, Analytics, Settings. See DATABASE.md Section 4 for entity-level detail.)
 
-- Utilities
-- Constants
-- Configuration
-- Logging
-- Error Handling
-- Localization
-- Shared Types
-- Caching
-- Feature Flags
+### 3.2 Engine Modules
 
-The Shared Layer must remain independent from business and gameplay logic.
+The Engine coordinates gameplay execution independently of individual games, for the trick-taking game family (Hokm and future Bidel/Shelem/Haft Khabis).
 
----
+#### Matchmaker
 
-# 3. System Modules
+Turns a queue entry (from the Platform Layer's Matchmaking Foundation) into an actual Room with 4 seated players.
 
-## Purpose
+#### Lobby Manager / Room Manager
 
-This chapter defines the responsibilities and boundaries of every major module within the CardVerse platform.
+Manages pre-match state: seating, ready checks, host settings. **Team seating rule (fixed for all trick-taking games in this Engine):** teammates are always seated directly opposite one another (seats 1&3 vs seats 2&4).
 
-Each module must follow the Single Responsibility Principle and expose well-defined interfaces.
+#### Session Manager
 
----
+Owns the lifecycle of one Match from start to finish, including reconnection state.
 
-## 3.1 Platform Modules
+#### Turn Manager
 
-Platform modules provide reusable services shared by all games.
+Enforces per-action timers and turn order (counter-clockwise, per RULEBOOK.md). For Hokm specifically:
 
-### Authentication
+- **Hokm declaration timer:** ~20 seconds. On timeout, a mode/suit is chosen at random on the Hakem's behalf.
+- **Turn (play-a-card) timer:** ~8 seconds. On timeout, the system auto-plays a random _valid_ card (respecting follow-suit rules).
 
-Responsible for:
+These values are game-specific configuration read by the Turn Manager, not hardcoded — future games may need different timer values.
 
-- User authentication
-- Session validation
-- Identity management
+#### Card Engine + Rule Executor
 
----
+Loads the rule set of the active game (e.g. Hokm's 4 ranking modes from RULEBOOK.md Section 7) and determines: legal moves, trick winners, round/set completion, and match completion. Must be data-driven enough that adding a new trick-taking game does not require modifying this module — only adding a new rule-set definition consumed by it.
 
-### User Management
+#### Disconnect Manager
 
-Responsible for:
+Implements the inactivity/auto-kick rules from RULEBOOK.md Section 12 and Section 13:
 
-- Player accounts
-- User preferences
-- Account lifecycle
+- Tracks **consecutive** missed turns per player (resets on any turn played before the limit).
+- After 3 consecutive missed turns, the player is removed from the seat on the 4th miss.
+- The seat is taken over by a Bot Manager-controlled bot.
+- The removed player may reconnect and reclaim the same seat later in the same Match, replacing the bot.
+- For team disconnection: the teammate is notified and can choose to continue (bot replacement) or forfeit.
 
----
+#### Bot Manager
 
-### Profiles
+Provides a fallback player for: (a) seats vacated via Disconnect Manager, and (b) any other bot-filled seat.
 
-Responsible for:
+**Bot Scenarios:**
 
-- Player profiles
-- Avatars
-- Levels
-- Public information
+- 4 human players: 0 bots
+- 3 human players: 1 bot
+- 2 human players: 2 bots (one per team)
+- 1 human player: 3 bots (early phase, invisible)
+- 0 human players: 4 bots (testing only)
 
----
+**Bot Limits:**
 
-### Friends
+- Maximum 3 bots per match
+- Bots never share a team with each other
+- Bots are per-match instances (no global limit)
 
-Responsible for:
+**Invisible Bots (Early Phase):**
 
-- Friend requests
-- Friend lists
-- Relationship management
+- No "BOT" label
+- No grayscale avatar
+- Natural player names
+- Realistic response delays
+- Users must NOT know they are playing with bots
 
----
+Version 1 scope is a basic rule-following bot (always plays a legal card). Advanced "professional play" heuristics (e.g. not overplaying a winning card when a partner already holds the trick) are explicitly deferred — see RULEBOOK.md Section 14 and the planned `BOT_AI_SPEC.md` (not yet created).
 
-### Presence
+#### Anti-Cheat
 
-Responsible for:
+Server-authoritative validation of every move against the Rule Executor's legal-move set; no client-supplied game state is ever trusted (see PROJECT_DNA.md — Server Authoritative).
 
-- Online status
-- Last seen
-- Player availability
+#### Game Logger
 
----
+Records match events for auditing and future Replay System support (planned, not Version 1).
 
-### Chat
+### 3.2.1 Poker Engine (Separate From the Card Engine)
 
-Responsible for:
+Poker (lowest priority in the roadmap — see PRODUCT_BIBLE.md) is **architecturally distinct** from the trick-taking Card Engine above. It requires its own engine with:
 
-- Private messaging
-- Future communication features
+- Betting round management (pre-flop/flop/turn/river or equivalent)
+- Hand ranking evaluation
+- Pot and side-pot management
+- All-in handling
 
----
+This Poker Engine will be designed as its own document/section when Poker development begins. It must not be forced into the Card Engine's abstractions — attempting to do so would violate the Single Responsibility principle in PROJECT_DNA.md.
 
-### Notifications
+### 3.3 Game Modules
 
-Responsible for:
+Each supported card game is implemented as an independent domain: Rule Engine, Scoring Logic, AI Logic, Card Definitions, Validation Rules, Match Configuration. Game modules must never depend on other game modules.
 
-- System notifications
-- Match invitations
-- Friend requests
-- Reward notifications
+### 3.4 Shared Modules
+
+Utilities, Configuration, Logging, Constants, Localization, Shared Models, Error Handling, Caching, Feature Flags. Must not contain business logic.
 
 ---
 
-### Wallet
+## 4. Module Communication
 
-Responsible for:
+### Communication Principles
 
-- Coins
-- Future premium currencies
+Modules communicate only through public interfaces. Direct access to another module's internal implementation is prohibited.
 
----
+### Dependency Direction
 
-### Shop
+Dependencies always point inward toward business logic. Infrastructure depends on Domain. Domain never depends on Infrastructure.
 
-Responsible for:
+### Event-Driven Communication
 
-- Cosmetic purchases
-- Product catalog
-- Transactions
+Modules communicate through domain events where appropriate (e.g. Match Finished, Player Connected, Achievement Unlocked, Reward Granted, Player Auto-Kicked, Player Reconnected, Teammate Decision).
 
----
+### Shared Contracts
 
-### Inventory
+Modules exchange only shared contracts and data models. Internal objects must never be exposed outside their owning module.
 
-Responsible for:
+### Circular Dependencies
 
-- Owned cosmetics
-- Unlockable content
+Strictly prohibited. Every module must remain independently testable.
 
----
+### Game Isolation
 
-### Statistics
-
-Responsible for:
-
-- Match history
-- Lifetime statistics
-- Seasonal statistics
+Game modules communicate with Platform and Engine only, never directly with other games.
 
 ---
 
-### Achievements
+## 5. Architectural Principles
 
-Responsible for:
-
-- Achievement tracking
-- Reward unlocking
+SOLID, DRY, KISS, YAGNI, Composition Over Inheritance, Convention Over Configuration, Separation of Concerns, Interface First, Server Authority. (Unchanged from prior version — see PROJECT_DNA.md for the philosophy behind these.)
 
 ---
 
-### Rankings
+## 6. Scalability Strategy
 
-Responsible for:
+### Version 1.0
 
-- Competitive rating
-- Leaderboards
+Modular Monolith, Single Database, Shared Runtime.
 
----
+### Future Growth
 
-### Seasons
+Candidate modules for future extraction: Authentication, Matchmaking, Chat, Notifications, Analytics.
 
-Responsible for:
+### Scalability Goals
 
-- Seasonal progression
-- Seasonal rewards
+Support increased concurrent players, additional card games, new gameplay features, cross-platform clients, independent module evolution.
 
 ---
 
-### Reports
+## 7. Real-Time Communication
 
-Responsible for:
+**Status: Decided — Socket.IO selected (see DASHBOARD.md CV-DEC-0017).**
 
-- Player reports
-- Abuse submissions
+Socket.IO was selected as the real-time communication protocol for in-match gameplay. It provides auto-reconnection, built-in room management, fallback support, and excellent integration with the existing Node.js/TypeScript stack.
 
----
-
-### Moderation
-
-Responsible for:
-
-- Rule enforcement
-- Player penalties
+**Consequences:** Socket.IO was added as a dependency. All Engine Layer modules (Turn Manager, Disconnect Manager, etc.) emit events through Socket.IO rooms. REST API (API.md) remains for all non-gameplay operations.
 
 ---
 
-### Analytics
+## 8. Performance Requirements
 
-Responsible for:
+User-perceived performance is a Day 1 architectural requirement, not a later optimization pass (see PROJECT_DNA.md — Performance by Design).
 
-- Anonymous platform metrics
-- Performance monitoring
-
----
-
-### Settings
-
-Responsible for:
-
-- User preferences
-- Privacy settings
-- Gameplay preferences
+- All card and table visual assets must be preloaded before a Match begins. No visible progressive/lazy loading of card faces during play.
+- Sprite-sheet-style asset bundling is preferred over one network request per card image.
+- Gameplay must feel instant and smooth once a Match starts — this applies to card animations, table rendering, and trick resolution alike.
+- Purchasable/customizable assets (table backgrounds, avatars — see DATABASE.md Inventory entity) that are not required for the current Match may be lazy-loaded; only in-match-critical assets are subject to the preload requirement above.
 
 ---
 
-## 3.2 Engine Modules
+## 9. Open Architectural Items
 
-The Engine coordinates gameplay execution independently of individual games.
+Recorded explicitly so they are addressed deliberately rather than assumed or forgotten:
 
-Modules include:
-
-- Matchmaker
-- Lobby Manager
-- Room Manager
-- Session Manager
-- Turn Manager
-- Timer Manager
-- Card Engine
-- Rule Executor
-- Event Dispatcher
-- Disconnect Manager
-- Bot Manager
-- Anti-Cheat
-- Game Logger
-
-Planned:
-
-- Replay System
-
-The Engine must remain completely game-agnostic.
+1. ~~Real-time communication protocol~~ — **Resolved:** Socket.IO selected.
+2. Bot AI decision-making algorithm — Version 1 needs only a legal-move-following bot (see Section 3.2, Bot Manager); a full strategic/professional-play specification is deferred to a future `BOT_AI_SPEC.md`.
+3. Exact coin penalty for auto-kick — see RULEBOOK.md Section 14.
+4. Poker Engine detailed design — deferred until Poker's turn in the roadmap (see PRODUCT_BIBLE.md); Section 3.2.1 only establishes that it must be architecturally separate.
 
 ---
 
-## 3.3 Game Modules
+## 10. Future Evolution
 
-Each supported card game is implemented as an independent domain.
-
-Every game owns:
-
-- Rule Engine
-- Scoring Logic
-- AI Logic
-- Card Definitions
-- Validation Rules
-- Match Configuration
-
-Game modules must never depend on other game modules.
+Microservices, Distributed Caching, Event Streaming, Replay Service, Tournament Service, Dedicated AI Service, Dedicated Analytics Pipeline. Must preserve the architectural principles defined in this document.
 
 ---
 
-## 3.4 Shared Modules
-
-Shared modules provide reusable technical functionality.
-
-Examples include:
-
-- Utilities
-- Configuration
-- Logging
-- Constants
-- Localization
-- Shared Models
-- Error Handling
-- Caching
-- Feature Flags
-
-Shared modules must not contain business logic.
-
----
-
-# 4. Module Communication
-
-## Purpose
-
-This chapter defines how modules communicate while maintaining low coupling and high maintainability.
-
----
-
-## Communication Principles
-
-Modules communicate only through public interfaces.
-
-Direct access to another module's internal implementation is prohibited.
-
----
-
-## Dependency Direction
-
-Dependencies always point inward toward business logic.
-
-Infrastructure depends on Domain.
-
-Domain never depends on Infrastructure.
-
----
-
-## Event-Driven Communication
-
-Whenever appropriate, modules communicate through domain events.
-
-Examples include:
-
-- Match Finished
-- Player Connected
-- Achievement Unlocked
-- Reward Granted
-
-Events reduce coupling between modules.
-
----
-
-## Shared Contracts
-
-Modules exchange only shared contracts and data models.
-
-Internal objects must never be exposed outside their owning module.
-
----
-
-## Circular Dependencies
-
-Circular dependencies are strictly prohibited.
-
-Every module must remain independently testable.
-
----
-
-## Game Isolation
-
-Game modules communicate with Platform and Engine only.
-
-Game modules never communicate directly with other games.
-
-This rule ensures that adding a new game does not impact existing implementations.
-
----
-
-# 5. Architectural Principles
-
-## Purpose
-
-This chapter defines the architectural rules that every implementation within CardVerse must follow.
-
-These principles are mandatory for all platform components.
-
----
-
-## SOLID Principles
-
-The platform follows the SOLID principles.
-
-- Single Responsibility Principle (SRP)
-- Open/Closed Principle (OCP)
-- Liskov Substitution Principle (LSP)
-- Interface Segregation Principle (ISP)
-- Dependency Inversion Principle (DIP)
-
----
-
-## DRY
-
-**Don't Repeat Yourself**
-
-Reusable logic must exist only once.
-
-Duplicate implementations are prohibited.
-
----
-
-## KISS
-
-**Keep It Simple, Stupid**
-
-Prefer the simplest solution that satisfies the requirements.
-
-Avoid unnecessary complexity.
-
----
-
-## YAGNI
-
-**You Aren't Gonna Need It**
-
-Features should only be implemented when they are required by the product roadmap.
-
-Avoid speculative development.
-
----
-
-## Composition Over Inheritance
-
-Composition is preferred over deep inheritance hierarchies.
-
-Shared behavior should be implemented through composition whenever practical.
-
----
-
-## Convention Over Configuration
-
-Reasonable defaults should minimize configuration.
-
-Developers should spend more time building features than configuring the framework.
-
----
-
-## Separation of Concerns
-
-Every module must have a clearly defined responsibility.
-
-Business logic, infrastructure and presentation must remain independent.
-
----
-
-## Interface First
-
-Modules communicate through interfaces rather than concrete implementations.
-
-This improves testability and future scalability.
-
----
-
-## Server Authority
-
-The server is the authoritative source of truth.
-
-Clients are responsible only for presentation and user input.
-
-Game state validation always occurs on the server.
-
----
-
-# 6. Scalability Strategy
-
-## Purpose
-
-This chapter describes how CardVerse is expected to evolve as the platform grows.
-
----
-
-## Version 1.0
-
-Deployment model:
-
-- Modular Monolith
-- Single Database
-- Shared Runtime
-
-This approach maximizes development speed while maintaining modularity.
-
----
-
-## Future Growth
-
-As platform complexity increases, selected modules may be extracted into independent services.
-
-Candidate modules include:
-
-- Authentication
-- Matchmaking
-- Chat
-- Notifications
-- Analytics
-
-Extraction must not require redesigning business logic.
-
----
-
-## Scalability Goals
-
-The architecture must support:
-
-- Increased concurrent players
-- Additional card games
-- New gameplay features
-- Cross-platform clients
-- Independent module evolution
-
----
-
-## Backward Compatibility
-
-Architectural evolution should minimize breaking changes.
-
-Existing clients and services should remain functional whenever possible.
-
----
-
-# 7. Future Evolution
-
-The architecture is intentionally designed for long-term expansion.
-
-Future improvements may include:
-
-- Microservices
-- Distributed Caching
-- Event Streaming
-- Replay Service
-- Tournament Service
-- AI Service
-- Dedicated Analytics Pipeline
-
-These improvements must preserve the architectural principles defined in this document.
-
----
-
-# 8. References
-
-Related documents:
+## 11. References
 
 - CARDVERSE_INDEX.md
 - DASHBOARD.md
@@ -718,17 +323,19 @@ Related documents:
 
 ---
 
-# 9. Version History
+## 12. Version History
 
-| Version | Date       | Description                        |
-| ------- | ---------- | ---------------------------------- |
-| 0.1.0   | 2026-06-30 | Enterprise architecture foundation |
-| 0.1.0   | 2026-07-01 | Documentation Freeze completed     |
+| Version | Date       | Description                                                                                                                                                                                                                                                                                                   |
+| ------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 0.1.0   | 2026-06-30 | Enterprise architecture foundation                                                                                                                                                                                                                                                                            |
+| 0.1.0   | 2026-07-01 | Documentation Freeze completed                                                                                                                                                                                                                                                                                |
+| 0.2.0   | 2026-07-12 | added full Engine Layer module detail (Turn/Disconnect/Bot Manager per RULEBOOK.md v0.2.0); added Section 3.2.1 separating the Poker Engine from the shared Card Engine; added Section 7 (Real-Time Communication, open) and Section 8 (Performance Requirements); added Section 9 (Open Architectural Items) |
+| 0.3.0   | 2026-08-09 | Updated Bot Manager with bot scenarios (0-3 bots), invisible bots for early phases, bot limits (max 3 per match, never share a team); added teammate decision event; resolved Real-Time Communication with Socket.IO selection                                                                                |
 
 ---
 
-This document defines the official technical architecture of the CardVerse platform.
+**Document Status:** Frozen
 
-All database schemas, APIs and implementations must remain consistent with this architecture.
+This document defines the official technical architecture of the CardVerse platform. All database schemas, APIs and implementations must remain consistent with this architecture.
 
 Changes to this document require updating the Version History.

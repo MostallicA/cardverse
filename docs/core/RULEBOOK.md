@@ -1,818 +1,343 @@
-# CardVerse RuleBook
+# CardVerse RuleBook — Hokm
 
-**Document ID:** CV-8001  
-**Version:** 0.1.0  
-**Status:** Frozen  
-**Classification:** Technical  
-**Owner:** Mostafa & ChatGPT  
-**Created:** 2026-06-26  
-**Last Updated:** 2026-07-01
-
----
-
-# Table of Contents
-
-1. RuleBook Overview
-
-2. General Rule Principles
-
-3. Hokm Classic
-
-4. Match Rules
-
-5. Illegal Actions
-
-6. AI Rule Compliance
-
-7. Future Games
-
-8. Glossary
-
-9. References
-
-10. Version History
+**Document ID:** CV-2001
+**Version:** 0.3.0
+**Status:** Frozen
+**Classification:** Core
+**Owner:** Mostafa
+**Created:** 2026-06-27
+**Last Updated:** 2026-08-09
 
 ---
 
-# 1. RuleBook Overview
+## Table of Contents
 
-## Purpose
-
-This document defines the official gameplay rules implemented by the CardVerse platform.
-
-It acts as the single authoritative source for every game rule, scoring rule, gameplay restriction and validation requirement used by the Game Engine.
-
-Any implementation related to gameplay must remain fully consistent with this document.
-
----
-
-## Scope
-
-This document defines:
-
-* Official gameplay rules
-* Match flow rules
-* Hand rules
-* Trick rules
-* Scoring rules
-* Validation rules
-* Illegal move handling
-* AI gameplay compliance
-
-Implementation details of the game engine are documented separately in **ARCHITECTURE.md**.
+1. Overview
+2. Players & Table Layout
+3. The Deck
+4. Determining the First Hakem
+5. Dealing Procedure
+6. Hokm Declaration
+7. Card Ranking (All Modes)
+8. Gameplay Rules
+9. Scoring Hierarchy (Trick → Set → Match)
+10. Special Round Outcomes (Kooti, Hakem Kooti, Bam)
+11. Hakem Rotation
+12. Online-Specific Rules (Timers, Disconnection)
+13. Team Play & Bot Scenarios
+14. Open Items (Not Yet Decided)
+15. References
+16. Version History
 
 ---
 
-## Rule Authority
+## 1. Overview
 
-Whenever a gameplay conflict occurs, this document has higher priority than implementation.
+### Purpose
 
-If implementation and this document disagree, the implementation must be updated.
+This document defines the complete, authoritative rules of Hokm — including its three sub-modes (Saras, Naras, Tak Naras) — as implemented on the CardVerse platform.
 
----
+This is the single source of truth for gameplay rules. Any implementation must conform exactly to this document. If code behavior and this document disagree, this document is correct and the code must be fixed.
 
-# 2. General Rule Principles
+### Scope
 
-The following principles apply to every game implemented within CardVerse.
+CardVerse Version 1 ships with **Hokm only**. Hokm includes four sub-modes selectable by the Hakem:
 
----
+- Hokm (classic, trump suit)
+- Saras
+- Naras
+- Tak Naras
 
-## Server Authority
+Other card games (Bidel, Shelem, Haft Khabis, Bank/21, Pasur/11, Poker) are planned for future releases and are out of scope for this document. Each future game will receive its own dedicated rulebook chapter or document when development begins.
 
-The server is the only authoritative source of game state.
+### Players
 
-Clients never validate gameplay.
-
----
-
-## Rule Validation
-
-Every move is validated by the Game Engine before being accepted.
-
-Invalid moves are rejected.
+Hokm is played by exactly 4 players in CardVerse Version 1. Two-player and three-player variants exist traditionally but are not supported in Version 1.
 
 ---
 
-## Deterministic Gameplay
+## 2. Players & Table Layout
 
-Given the same game state and player actions, every match must always produce the same result.
+### Teams
 
----
+Players form two fixed teams of 2 players each for the duration of a Match.
 
-## Fair Play
+### Seating
 
-Rules must never favor a specific player.
+Teammates always sit **directly opposite** one another at the table (e.g. seats 1 & 3 are one team, seats 2 & 4 are the other team). Opponents sit adjacent to each other.
 
-Randomness exists only where officially required.
+### Turn Direction
 
----
-
-## AI Compliance
-
-AI players follow exactly the same gameplay rules as human players.
-
-Bots never receive hidden information or special privileges.
+All turn order — dealing, bidding/declaring Hokm, and playing cards — proceeds **counter-clockwise**, without exception. This includes the rotation of the Hakem role between rounds.
 
 ---
 
-## Future Compatibility
+## 3. The Deck
 
-Additional card games must extend this document without modifying the rules of existing games.
+A standard 52-card deck is used, with 4 suits:
 
----
+- Khesht (Diamonds) — red
+- Pik (Spades) — black
+- Del (Hearts) — red
+- Khaj (Clubs) — black
 
-# 3. Hokm Classic
+Each suit has 13 cards: 2, 3, 4, 5, 6, 7, 8, 9, 10, J (Sarbaz), Q (Bibi), K (Shah), A (Ace).
 
-## Purpose
-
-This chapter defines the official rules of Hokm as implemented by the CardVerse platform.
-
-All gameplay logic, validation rules, AI behavior and match execution must follow these rules exactly.
-
----
-
-## 3.1 Overview
-
-Hokm is a four-player partnership trick-taking card game played with a standard 52-card deck.
-
-Two teams compete to win Hands by capturing Tricks.
-
-The game continues until one team reaches the required number of Hands to win the Match.
+Each player receives exactly 13 cards per round (52 ÷ 4 players).
 
 ---
 
-## 3.2 Objective
+## 4. Determining the First Hakem
 
-The objective of each Hand is to win at least seven Tricks.
+Because CardVerse is an online platform, the first Hakem of a Match is selected **fully at random** by the system (there is no physical card-cutting step). Traditional in-person methods — such as dealing one card to each player and giving the role to whoever draws the first Ace — are replaced by this randomization.
 
-Winning additional Tricks beyond seven has no additional value except where defined by special scoring rules.
-
----
-
-## 3.3 Players
-
-Each match consists of exactly four players.
-
-The game cannot begin with fewer or more than four participants.
-
-Supported participants include:
-
-* Human Players
-* AI Players
-* AI Replacement Players
+For all subsequent rounds within the same Match, the Hakem role is determined by the rotation rule in **Section 11**, not by random selection.
 
 ---
 
-## 3.4 Teams
+## 5. Dealing Procedure
 
-Players form two permanent partnerships.
+Dealing happens in two blocked phases, always counter-clockwise starting from the Hakem.
 
-Team A
+### Phase 1 — Initial 5 Cards
 
-* South
-* North
+Each player receives **5 cards at once** (not one at a time), in this order:
 
-Team B
+1. Hakem — 5 cards
+2. Player to Hakem's right — 5 cards
+3. Next player (counter-clockwise) — 5 cards
+4. Last player — 5 cards
 
-* East
-* West
+### Hokm Declaration Window
 
-Partners always sit opposite each other.
+After Phase 1, the Hakem has **~20 seconds** to declare Hokm (see Section 6) based only on these 5 cards. If the Hakem does not declare within this window, the system selects a mode/suit at random on the Hakem's behalf.
 
-Partnerships remain unchanged throughout the Match.
+### Phase 2 — Remaining 8 Cards
 
----
+After Hokm is declared, two more blocked rounds of **4 cards each** are dealt (same counter-clockwise order, starting from the Hakem again), for a total of 8 additional cards per player.
 
-## 3.5 Seating
+**Total per player: 5 + 4 + 4 = 13 cards.**
 
-Player seating follows a fixed clockwise order.
-
-Clockwise Order:
-
-South
--> West
--> North
--> East
--> South
-
-Turn order always follows this clockwise rotation.
+Cards are always presented sorted in the player's hand.
 
 ---
 
-## 3.6 Deck
+## 6. Hokm Declaration
 
-Hokm uses one standard 52-card deck.
+The Hakem **declares** Hokm (does not "play" or "bid" it) by selecting exactly one of the following 7 options:
 
-No Jokers are used.
+- Khesht (trump suit)
+- Pik (trump suit)
+- Del (trump suit)
+- Khaj (trump suit)
+- Saras
+- Naras
+- Tak Naras
 
-### Suit Types
-
-* Spades
-* Hearts
-* Diamonds
-* Clubs
-
-### Card Ranking (Highest to Lowest)
-
-A
-K
-Q
-J
-10
-9
-8
-7
-6
-5
-4
-3
-2
-
-Suit ranking does not exist outside the selected Trump Suit.
+The choice is entirely up to the Hakem's judgment and strategy — typically the suit in which the Hakem holds the strongest/most cards, if choosing a trump suit.
 
 ---
 
-## 3.7 Match Structure
+## 7. Card Ranking (All Modes)
 
-A Match consists of one or more Hands.
+### 7.1 Classic Hokm (trump suit declared)
 
-Each Hand consists of thirteen Tricks.
+Within any non-trump suit, from highest to lowest:
 
-Each Trick consists of exactly four played cards.
+**A, K, Q(Bibi), J(Sarbaz), 10, 9, 8, 7, 6, 5, 4, 3, 2**
 
-Every card is played exactly once during a Hand.
+The trump suit outranks all other suits entirely: **every card of the trump suit beats every card of every non-trump suit**, even the trump suit's own 2 beats the Ace of any non-trump suit. Within the trump suit itself, the same ranking order applies (A highest ... 2 lowest, but all of them above any non-trump card).
 
----
+### 7.2 Saras
 
-## 3.8 Winning the Match
+Identical ranking to classic Hokm (A, K, Q, J, 10...2, highest to lowest) — but **no trump suit exists**. No suit outranks another; only the led suit matters for winning a trick.
 
-A Match ends when one team reaches the required number of Hands according to the official scoring rules defined in Chapter 7.
+### 7.3 Naras
 
----
+Ranking is fully reversed from classic: **2 is the highest card, then 3, 4, 5, 6, 7, 8, 9, 10, J, Q, K, and A is the lowest.** No trump suit exists.
 
-## 3.9 Dealer Selection
+### 7.4 Tak Naras
 
-The first Dealer of a Match is selected randomly.
+Same reversed order as Naras, except the Ace moves to the top: **A is highest, then 2, 3, 4, 5, 6, 7, 8, 9, 10, J, Q, and K is the lowest.** No trump suit exists.
 
-For every subsequent Hand, the Dealer rotates clockwise unless modified by the official Hokm rules.
+### Summary Table
 
-The Dealer is responsible only for dealing the cards.
-
-The Dealer does not automatically become the Hakem except where explicitly defined by the game rules.
-
----
-
-## 3.10 Hakem Selection
-
-At the beginning of a new Match, the first Dealer also becomes the first Hakem.
-
-The Hakem remains Hakem until their team loses a Hand.
-
-When the Hakem's team loses a Hand, the Hakem role transfers to the opposing team according to the official Hokm rules.
-
-The new Hakem becomes the player seated to the right of the previous Hakem.
+| Mode           | Ranking (highest → lowest)                            | Trump suit exists? |
+| -------------- | ----------------------------------------------------- | ------------------ |
+| Hokm (classic) | Trump suit beats all; within any suit: A,K,Q,J,10...2 | Yes                |
+| Saras          | A,K,Q,J,10...2 (same as classic, no trump)            | No                 |
+| Naras          | 2,3,4...10,J,Q,K,A                                    | No                 |
+| Tak Naras      | A,2,3,4...10,J,Q,K                                    | No                 |
 
 ---
 
-## 3.11 Initial Deal
+## 8. Gameplay Rules
 
-Before selecting the Trump Suit, the Dealer distributes five cards to each player.
+### Starting a Trick
 
-Cards are dealt clockwise, beginning with the player to the Dealer's right.
+The Hakem leads the first trick of the round by playing any card of their choice. After that, whoever won the previous trick leads the next one.
 
-After receiving the initial five cards, only the Hakem may inspect their cards.
+### Turn Order Within a Trick
 
-No other player may view additional cards before the Trump Suit has been selected.
+Play proceeds counter-clockwise starting from whoever leads.
 
----
+### Following Suit
 
-## 3.12 Trump Selection
+Players must follow the led suit if they hold a card of that suit.
 
-After reviewing the initial five cards, the Hakem selects one suit as the Trump Suit (Hokm).
+### When a Player Cannot Follow Suit
 
-The selected Trump Suit remains active for the entire Hand.
+- **In classic Hokm (trump suit exists):** the player may either "cut" (play a trump-suit card, which will win the trick unless another player cuts with a higher trump card) or discard (play any other irrelevant card, which cannot win).
+- **In Saras / Naras / Tak Naras (no trump suit exists):** cutting is not possible at all. A player without the led suit may only discard any other card; that card can never win the trick regardless of its rank. Only cards of the led suit can ever win a trick in these modes.
 
-The Trump Suit cannot be changed after the remaining cards have been dealt.
+### Winning a Trick
 
----
-
-## 3.13 Main Deal
-
-After the Trump Suit has been selected, the Dealer distributes the remaining cards.
-
-Each player must finish the deal with exactly thirteen cards.
-
-No player may receive additional cards after the deal has been completed.
-
-The dealing procedure must always preserve the original clockwise order.
+The highest-ranked card of the led suit wins, unless a trump card was played (classic Hokm only), in which case the highest trump card played wins instead. The 4 cards of the trick are collected by whichever team played the winning card — this group of 4 cards is called a **Trick**.
 
 ---
 
-## 3.14 Beginning the First Trick
+## 9. Scoring Hierarchy (Trick → Set → Match)
 
-The Hakem plays the first card of the first Trick.
+CardVerse uses three nested units of scoring. This hierarchy must be used consistently across all documentation and code — do not use "Trick," "Set/Round," and "Match" interchangeably.
 
-Play continues clockwise.
+Trick = 4 cards, won by one team (13 Tricks make up one Round)
+↓
+Set/Round = a team reaches 7 Tricks won (a team needs 7 Sets to win)
+↓
+Match = a team reaches 7 Sets/Rounds (this ends the game)
 
-Every subsequent Trick begins with the player who won the previous Trick.
-
----
-
-## 3.15 Turn Order
-
-Players take turns in clockwise order.
-
-Each player plays exactly one card per Trick.
-
-A player cannot skip a turn.
-
-A player cannot play more than one card during the same Trick.
+- A **Trick** is the 4 cards played in a single turn cycle, won by one team.
+- A **Set** (also called a **Round**) is complete once one team has won 7 of the 13 Tricks available in that Round. The winning team is awarded Set points as defined in Section 10.
+- A **Match** is won by whichever team is first to accumulate 7 Sets.
 
 ---
 
-## 3.16 Following Suit
+## 10. Special Round Outcomes (Kooti, Hakem Kooti, Bam)
 
-The first card played in a Trick determines the Leading Suit.
-
-Every subsequent player must follow the Leading Suit if they hold at least one card of that suit.
-
-Following Suit is mandatory.
-
----
-
-## 3.17 Unable to Follow Suit
-
-If a player has no card belonging to the Leading Suit, they may play:
-
-* Any card from another suit.
-* A Trump card.
-
-The player is free to choose either option.
+| Outcome         | Condition                                                                                              | Sets Awarded                                                                                |
+| --------------- | ------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------- |
+| **Normal win**  | A team wins 7 Tricks; the opposing team has won at least 1 Trick                                       | 1 Set                                                                                       |
+| **Kooti**       | The Hakem's team wins 7 Tricks while the opposing team wins 0 Tricks (7–0)                             | 2 Sets                                                                                      |
+| **Hakem Kooti** | The team opposing the Hakem wins 7 Tricks while the Hakem's team wins 0 Tricks (7–0 against the Hakem) | 3 Sets                                                                                      |
+| **Bam**         | One team wins all 13 Tricks in the Round (13–0)                                                        | The Match ends immediately; that team wins the entire Match, regardless of prior Set scores |
 
 ---
 
-## 3.18 Trump Rules
+## 11. Hakem Rotation
 
-The selected Trump Suit has priority over every non-trump suit.
-
-If one or more Trump cards are played during a Trick:
-
-* The highest-ranked Trump card wins the Trick.
-
-If no Trump card is played:
-
-* The highest-ranked card of the Leading Suit wins the Trick.
+- If the Hakem's team **wins** the Round (Set), the same player remains Hakem for the next Round.
+- If the Hakem's team **loses** the Round (Set), the Hakem role passes to the player counter-clockwise to the right of the current Hakem, who then declares Hokm for the next Round.
 
 ---
 
-## 3.19 Winning a Trick
+## 12. Online-Specific Rules (Timers, Disconnection)
 
-The winner of each Trick:
+These rules exist because CardVerse is played online and must handle inactivity, disconnection, and abuse gracefully. They are gameplay-adjacent but are implemented by Engine-layer modules (see ARCHITECTURE.md — Timer Manager, Disconnect Manager, Bot Manager) rather than by the core rule engine itself. They are recorded here so the full player-facing behavior is documented in one place.
 
-* Collects the four played cards.
-* Receives one Trick.
-* Starts the next Trick.
+### Hokm Declaration Timer
 
-Exactly one player wins every Trick.
+The Hakem has ~20 seconds to declare Hokm after receiving their first 5 cards. If this timer expires, the system randomly selects a mode/suit on the Hakem's behalf.
 
----
+### Turn Timer
 
-## 3.20 Trick Completion
+Each player has ~8 seconds to play a card on their turn. If the timer expires, the system automatically plays a random **valid** card on the player's behalf (i.e. respecting follow-suit rules).
 
-A Trick ends immediately after the fourth valid card has been played.
+### Inactivity / Auto-Kick
 
-No additional actions may occur before the Trick winner has been determined.
-
-The Game Engine validates the Trick before the next Trick begins.
+- A counter tracks **consecutive** missed turns (turns where the timer expired) per player.
+- The counter is **consecutive, not cumulative** — if a player plays their turn before the counter reaches the limit, the counter resets to zero.
+- If a player misses **3 consecutive turns**, they are removed from the table on the 4th missed turn.
 
 ---
 
-## 3.21 Hand Completion
+## 13. Team Play & Bot Scenarios
 
-A Hand ends when one of the following conditions is met:
+### 13.1 Team Disconnection Rules
 
-* All thirteen Tricks have been completed.
-* A Bam victory condition has been achieved.
+In CardVerse, Hokm is a team game (2 vs 2). When a player disconnects:
 
-The Hand result is validated before scoring is calculated.
+1. **Notification:** The teammate receives a notification:
 
----
+   > "Your teammate has left the game. Do you want to continue?"
 
-# 4. Match Rules
+2. **Teammate Decision:** The teammate can choose:
+   - **Continue:** A bot replaces the disconnected player.
+   - **Forfeit:** The match ends immediately. The opposing team wins.
 
-## 4.1 Hand Victory
+3. **Bot Assignment:** If the teammate chooses to continue:
+   - A bot takes over the disconnected player's seat.
+   - The bot follows the same rules as the original player.
+   - The bot's avatar must be hidden (no "BOT" label).
 
-A team wins a Hand immediately after winning seven Tricks.
+### 13.2 Bot Scenarios
 
-The remaining Tricks are not played.
+| Scenario | Real Players | Bots | Description                             |
+| -------- | ------------ | ---- | --------------------------------------- |
+| 1        | 4            | 0    | Full human game                         |
+| 2        | 3            | 1    | One player disconnected                 |
+| 3        | 2            | 2    | Each team has one bot                   |
+| 4        | 1            | 3    | Early phase - one human with three bots |
+| 5        | 0            | 4    | Development/testing only                |
 
-The Hand ends immediately and scoring is calculated.
+### 13.3 Bot Limits
 
----
+- Maximum bots per match: **3 bots** (when only 1 human player)
+- Bots **never share a team** with each other (maximum 1 bot per team)
+- Bots are **per-match instances** (no global limit)
+- Bots must be **invisible** to users in scenarios 2-4
 
-## 4.2 Standard Victory
+### 13.4 Invisible Bots
 
-If both teams win at least one Trick before the Hand ends:
+In early phases (low player count), bots may replace real players.
 
-* The winning team receives one Hand Point.
+**Requirements:**
 
-This is the standard scoring outcome.
-
----
-
-## 4.3 Kooti
-
-A Kooti occurs when the losing team fails to win any Trick.
-
-Conditions:
-
-* Winning Team: 7 Tricks
-* Losing Team: 0 Tricks
-
-The winning team receives:
-
-* Two Hand Points.
-
----
-
-## 4.4 Hakem Kooti
-
-A Hakem Kooti occurs when:
-
-* The Hakem's team wins the Hand.
-* The opposing team wins zero Tricks.
-
-The winning team receives:
-
-* Three Hand Points.
-
-Hakem Kooti replaces the normal Kooti score.
-
-Both scores are never awarded simultaneously.
+- No "BOT" label or indicator
+- No grayscale avatar
+- Natural player names
+- Realistic response delays
+- Human-like behavior (occasional mistakes)
+- Users must NOT know they are playing with bots
 
 ---
 
-## 4.5 Bam
+## 14. Open Items (Not Yet Decided)
 
-A Bam occurs when one team wins all thirteen Tricks.
+The following details are intentionally left open for now, per a deliberate decision to avoid speculative development before the core game is playable. They should be resolved via playtesting/trial-and-error before Version 1 ships, and this section must be updated (moved into the relevant section above) once decided:
 
-The Match immediately ends regardless of the current Match score.
-
-A Bam is the highest possible victory.
-
-Statistics for Bam must be recorded permanently.
+1. Does a Hokm-declaration timeout count toward the Hakem's own consecutive-inactivity counter, or is it tracked separately?
+2. Exact coin penalty amount for being auto-kicked from a table.
+3. Any additional "unwritten" professional-play conventions for bots (e.g. a bot should not play a stronger card than necessary when its partner is already winning the Trick). A full Bot AI behavior specification is planned as a separate document (see AI/Bot section of ARCHITECTURE.md) once core gameplay exists.
 
 ---
 
-## 4.6 Match Victory
-
-A Match ends when one team reaches the configured Match score.
-
-The default Match score is defined by the game configuration.
-
-The winning team is declared the Match Winner.
-
----
-
-## 4.7 Statistics Recording
-
-After every completed Hand, the platform records:
-
-* Hand Winner
-* Tricks Won
-* Hand Points Earned
-* Kooti (if applicable)
-* Hakem Kooti (if applicable)
-* Bam (if applicable)
-
-After every completed Match, the platform records:
-
-* Match Winner
-* Match Duration
-* Player Statistics
-* Team Statistics
-* Fair Play Metrics
-
-Only validated Matches may update permanent statistics.
-
----
-
-# 5. Illegal Actions
-
-## Purpose
-
-This chapter defines actions that violate the official rules of Hokm.
-
-Illegal actions are rejected by the Game Engine before they can affect the game state.
-
----
-
-## 5.1 Playing Out of Turn
-
-A player may play a card only during their assigned turn.
-
-Attempting to play before or after the assigned turn is prohibited.
-
-The action is rejected.
-
----
-
-## 5.2 Failure to Follow Suit
-
-If a player possesses at least one card of the Leading Suit, they must play one of those cards.
-
-Playing a different suit while still holding the Leading Suit is illegal.
-
-The action is rejected.
-
----
-
-## 5.3 Playing an Invalid Card
-
-A player may only play a card currently held in their hand.
-
-Playing:
-
-* A non-existent card
-* A duplicated card
-* A previously played card
-
-is prohibited.
-
-The action is rejected.
-
----
-
-## 5.4 Multiple Card Submission
-
-A player may submit only one card during a single turn.
-
-Submitting multiple cards is prohibited.
-
-The Game Engine accepts only one valid action.
-
----
-
-## 5.5 Late Actions
-
-Actions received after the player's turn has expired are ignored.
-
-The Game Engine determines the appropriate continuation according to the timeout rules.
-
----
-
-## 5.6 Client Manipulation
-
-Clients are not permitted to alter:
-
-* Game State
-* Card Ownership
-* Trick Results
-* Match Results
-* Turn Order
-
-The server validates every action independently.
-
-Client-side modifications have no authority.
-
----
-
-## 5.7 Invalid Match State
-
-Player actions are accepted only while the Match is in a valid playable state.
-
-Actions submitted during:
-
-* Match Initialization
-* Match Completion
-* Disconnection Recovery
-* Server Validation
-
-are rejected unless explicitly allowed by the Game Engine.
-
----
-
-## Rule Enforcement
-
-Every illegal action must:
-
-* Be rejected.
-* Leave the game state unchanged.
-* Be recorded in the server logs when appropriate.
-
-Illegal actions must never modify the official Match state.
-
----
-
-# 6. AI Rule Compliance
-
-## Purpose
-
-This chapter defines how AI-controlled players must behave within the CardVerse platform.
-
-AI players must follow exactly the same gameplay rules as human players.
-
-The AI never receives gameplay advantages.
-
----
-
-## 6.1 Rule Compliance
-
-AI players must comply with every rule defined in this RuleBook.
-
-The AI may never:
-
-* Ignore turn order.
-* Ignore the Leading Suit.
-* Access hidden information.
-* Play unavailable cards.
-* Modify game state.
-
----
-
-## 6.2 Information Access
-
-AI players have access only to information that would be visible to a human player.
-
-Visible information includes:
-
-* Their own hand
-* Previously played cards
-* Current Trick
-* Completed Tricks
-* Public Match State
-
-The AI must never access:
-
-* Opponents' hands
-* Future card order
-* Internal server state
-* Hidden game information
-
----
-
-## 6.3 Decision Making
-
-AI decisions must always be based on legal game information.
-
-Difficulty levels may influence strategy, but never the game rules.
-
-All AI difficulty levels follow identical gameplay rules.
-
----
-
-## 6.4 AI Replacement
-
-When a player disconnects, the Game Engine may temporarily assign an AI Replacement.
-
-The AI immediately assumes control of the disconnected player's hand.
-
-If the player reconnects within the allowed timeout:
-
-* Control returns to the original player.
-* The AI immediately stops making decisions.
-
-If the timeout expires:
-
-* The AI completes the remainder of the Hand.
-
----
-
-## 6.5 Fairness
-
-AI players must never receive:
-
-* Better cards
-* Hidden information
-* Modified probabilities
-* Special game rules
-
-Every AI decision must remain subject to the same validation rules as human players.
-
----
-
-## General Principles
-
-AI behavior must always remain:
-
-* Fair
-* Predictable
-* Rule-Compliant
-* Server-Validated
-
-The AI is another player�not another game mode.
-
----
-
-# 7. Future Games
-
-## Purpose
-
-This chapter defines how additional card games will be incorporated into the CardVerse platform.
-
-The architectural principles defined in this RuleBook apply to every supported game.
-
-Each game introduces its own gameplay rules while reusing the shared platform infrastructure.
-
----
-
-## Planned Games
-
-Future supported games include:
-
-* Shelem
-* Haft Khabis
-* Nars
-* Tak Nars
-* Sars
-
-Additional games may be introduced in future releases.
-
----
-
-## Rule Isolation
-
-Each game maintains its own independent rule set.
-
-Game-specific rules must never modify or interfere with the rules of another game.
-
-Every game should be implemented as an isolated module within the platform architecture.
-
----
-
-## Shared Platform Rules
-
-All games reuse the same platform services, including:
-
-* Authentication
-* Matchmaking
-* Player Profiles
-* Friends
-* Statistics
-* Achievements
-* Economy
-* Notifications
-
-Only gameplay rules differ between games.
-
----
-
-## Long-Term Goal
-
-CardVerse is designed as a multi-game platform.
-
-Adding a new card game should require only a new game module and its corresponding RuleBook chapter, without modifying the existing platform infrastructure.
-
----
-
-# 8. Glossary
-
-| Term              | Definition                                                            |
-| ----------------- | --------------------------------------------------------------------- |
-| Match             | A complete competitive session consisting of one or more Hands.       |
-| Hand              | A single round of Hokm that ends when its victory conditions are met. |
-| Trick             | One complete cycle in which every player plays one card.              |
-| Leading Suit      | The suit of the first card played in a Trick.                         |
-| Trump Suit (Hokm) | The suit selected by the Hakem that outranks all other suits.         |
-| Dealer            | The player responsible for dealing the cards.                         |
-| Hakem             | The player responsible for selecting the Trump Suit.                  |
-| Hand Point        | The score awarded after winning a Hand.                               |
-| Kooti             | A victory in which the losing team wins zero Tricks.                  |
-| Hakem Kooti       | A Kooti achieved by the Hakem's team.                                 |
-| Bam               | A victory achieved by winning all thirteen Tricks.                    |
-| AI Replacement    | A temporary AI-controlled player replacing a disconnected player.     |
-
----
-
-# 9. References
+## 15. References
 
 Related documents:
 
-* README.md
-* CARDVERSE_INDEX.md
-* PRODUCT_BIBLE.md
-* ARCHITECTURE.md
-* DATABASE.md
-* API.md
-* PROJECT_RULES.md
-* PROJECT_DNA.md
-* DECISION_LOG.md
+- CARDVERSE_INDEX.md
+- PRODUCT_BIBLE.md
+- ARCHITECTURE.md
+- DATABASE.md
+- API.md
+- PROJECT_RULES.md
+- PROJECT_DNA.md
 
 ---
 
-# 10. Version History
+## 16. Version History
 
-| Version | Date       | Description                    |
-| ------- | ---------- | ------------------------------ |
-| 0.1.0   | 2026-06-30 | Initial Enterprise Foundation  |
-| 0.1.0   | 2026-07-01 | Documentation Freeze completed |
+| Version | Date       | Description                                                                                                                                                                                                                                                                                                       |
+| ------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 0.1.0   | 2026-06-30 | Initial RuleBook foundation                                                                                                                                                                                                                                                                                       |
+| 0.1.0   | 2026-07-01 | Documentation Freeze completed                                                                                                                                                                                                                                                                                    |
+| 0.2.0   | 2026-07-12 | Full rewrite: corrected card ranking for all 4 modes, corrected dealing math (5+4+4=13), clarified Trick/Set/Match hierarchy, moved Saras/Naras/Tak Naras from "Future Games" into Hokm sub-modes, added Online-Specific Rules section (timers, disconnection, auto-kick, bot takeover), added Open Items section |
+| 0.3.0   | 2026-08-09 | Added Team Play & Bot Scenarios section: team disconnection rules, teammate notification, continue/forfeit decision, bot scenarios (0-3 bots), invisible bots for early phases, bot limits (max 3 per match, never share a team)                                                                                  |
 
 ---
 
-This document defines the official gameplay rules for every card game implemented within the CardVerse platform.
+**Document Status:** Frozen
 
-All gameplay implementations, AI behavior, multiplayer synchronization and match validation must remain consistent with this RuleBook.
+This document defines the official and complete rules of Hokm (including Saras, Naras, and Tak Naras) for the CardVerse platform. All game engine and rule-execution code must remain consistent with this document.
 
 Changes to this document require updating the Version History.
-
-Before changing any gameplay rule, consult **DECISION_LOG.md** and record the decision if it affects existing behavior or future compatibility.

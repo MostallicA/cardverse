@@ -1,12 +1,12 @@
 ﻿# CardVerse
 
 **Document ID:** CV-0001
-**Version:** 0.2.0
+**Version:** 0.4.0
 **Status:** Frozen
 **Classification:** Core
-**Owner:** Mostafa & ChatGPT
+**Owner:** Mostafa
 **Created:** 2026-06-26
-**Last Updated:** 2026-07-07
+**Last Updated:** 2026-08-09
 
 ---
 
@@ -60,22 +60,26 @@ Current project status, milestones and development progress are maintained in **
 
 ---
 
-# Planned Games
+## Planned Games
 
-## Phase 1
-
-- Hokm
+Future card games, in priority order (Hokm is the only game in Version 1 — see PRODUCT_BIBLE.md):
 
 ## Phase 2
 
+- Bidel
 - Shelem
-- Haft Khabis
 
 ## Phase 3
 
-- Nars
-- Tak Nars
-- Sars
+- Haft Khabis
+- Bank (21)
+
+## Phase 4
+
+- Pasur (11)
+- Poker (requires its own dedicated engine — see ARCHITECTURE.md Section 3.2.1)
+
+Note: Sars, Nars, and Tak Nars are not separate games — they are rule sub-modes within Hokm itself (see RULEBOOK.md).
 
 ---
 
@@ -144,6 +148,8 @@ pnpm run dev
 
 **CHANGELOG.md (Operational)**
 
+**POSTGRESQL_PLAN.md (Draft)**
+
 ---
 
 # Engineering Principles
@@ -194,11 +200,13 @@ All rights reserved.
 
 # Version History
 
-| Version | Date       | Description                                              |
-|---------|------------|----------------------------------------------------------|
-| 0.1.0   | 2026-06-30 | Initial project README established                       |
-| 0.1.0   | 2026-07-01 | Documentation Freeze completed                           |
-| 0.2.0   | 2026-07-07 | Updated with new documentation structure and setup guide |
+| Version | Date       | Description                                                                                                                                                     |
+|---------|------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| 0.1.0   | 2026-06-30 | Initial project README established                                                                                                                              |
+| 0.1.0   | 2026-07-01 | Documentation Freeze completed                                                                                                                                  |
+| 0.2.0   | 2026-07-07 | Updated with new documentation structure and setup guide                                                                                                        |
+| 0.3.0   | 2026-07-12 | corrected Planned Games to the confirmed priority order (Bidel, Shelem, Haft Khabis, Bank/21, Pasur/11, Poker); clarified Sars/Nars/Tak Nars are Hokm sub-modes |
+| 0.4.0   | 2026-08-09 | Updated References to use DASHBOARD.md; improved documentation structure                                                                                        |
 
 
 ```
