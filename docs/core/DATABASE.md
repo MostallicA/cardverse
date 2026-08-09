@@ -1,12 +1,12 @@
 # CardVerse Database
 
 **Document ID:** CV-9001
-**Version:** 0.1.0
+**Version:** 0.2.0
 **Status:** Frozen
 **Classification:** Technical
 **Owner:** Mostafa & ChatGPT
 **Created:** 2026-06-27
-**Last Updated:** 2026-07-01
+**Last Updated:** 2026-08-09
 
 ---
 
@@ -54,14 +54,14 @@ Business rules, gameplay logic and application workflows are implemented outside
 
 This document defines:
 
-* Database philosophy
-* Entity ownership
-* Naming conventions
-* Relationships
-* Constraints
-* Indexing strategy
-* Performance guidelines
-* Scalability strategy
+- Database philosophy
+- Entity ownership
+- Naming conventions
+- Relationships
+- Constraints
+- Indexing strategy
+- Performance guidelines
+- Scalability strategy
 
 Implementation details such as SQL scripts and migrations are documented separately.
 
@@ -71,19 +71,19 @@ Implementation details such as SQL scripts and migrations are documented separat
 
 The database stores persistent platform data including:
 
-* Users
-* Profiles
-* Friends
-* Wallets
-* Inventory
-* Statistics
-* Matches
-* Rooms
-* Seasons
-* Notifications
-* Achievements
-* Reports
-* Configuration
+- Users
+- Profiles
+- Friends
+- Wallets
+- Inventory
+- Statistics
+- Matches
+- Rooms
+- Seasons
+- Notifications
+- Achievements
+- Reports
+- Configuration
 
 The database never contains business logic or game rules.
 
@@ -93,13 +93,13 @@ The database never contains business logic or game rules.
 
 The database must provide:
 
-* Data Integrity
-* High Performance
-* Scalability
-* Reliability
-* Maintainability
-* Auditability
-* Vendor Independence
+- Data Integrity
+- High Performance
+- Scalability
+- Reliability
+- Maintainability
+- Auditability
+- Vendor Independence
 
 ---
 
@@ -129,7 +129,7 @@ Business entities should use soft deletion whenever historical information may b
 
 Deletion timestamps are stored in:
 
-* deleted_at
+- deleted_at
 
 Physical deletion is reserved for exceptional cases.
 
@@ -169,9 +169,9 @@ snake_case
 
 Examples:
 
-* users
-* player_profiles
-* friend_requests
+- users
+- player_profiles
+- friend_requests
 
 ---
 
@@ -183,9 +183,9 @@ snake_case
 
 Examples:
 
-* display_name
-* current_rank
-* created_at
+- display_name
+- current_rank
+- created_at
 
 ---
 
@@ -207,9 +207,9 @@ Foreign keys follow the convention:
 
 Examples:
 
-* user_id
-* season_id
-* room_id
+- user_id
+- season_id
+- room_id
 
 ---
 
@@ -217,9 +217,9 @@ Examples:
 
 Standard timestamp fields:
 
-* created_at
-* updated_at
-* deleted_at
+- created_at
+- updated_at
+- deleted_at
 
 All timestamps use UTC.
 
@@ -231,9 +231,9 @@ Boolean columns begin with descriptive prefixes whenever appropriate.
 
 Examples:
 
-* is_active
-* is_verified
-* has_completed_tutorial
+- is_active
+- is_verified
+- has_completed_tutorial
 
 ---
 
@@ -243,9 +243,9 @@ Relationship tables combine entity names.
 
 Examples:
 
-* user_roles
-* player_achievements
-* match_players
+- user_roles
+- player_achievements
+- match_players
 
 ---
 
@@ -255,9 +255,9 @@ Indexes follow a consistent convention.
 
 Examples:
 
-* idx_users_email
-* idx_matches_status
-* idx_statistics_rank
+- idx_users_email
+- idx_matches_status
+- idx_statistics_rank
 
 ---
 
@@ -267,10 +267,10 @@ Constraints use descriptive names.
 
 Examples:
 
-* pk_users
-* fk_profiles_user
-* uq_users_email
-* ck_wallet_balance
+- pk_users
+- fk_profiles_user
+- uq_users_email
+- ck_wallet_balance
 
 ---
 
@@ -290,10 +290,10 @@ Represents a player account.
 
 Responsibilities:
 
-* Authentication
-* Identity
-* Account Status
-* Login Information
+- Authentication
+- Identity
+- Account Status
+- Login Information
 
 A User is the root entity for all player-related data.
 
@@ -307,12 +307,12 @@ Stores public player information.
 
 Contains:
 
-* Username
-* Avatar
-* Avatar Frame
-* Country
-* Bio
-* Player Level
+- Username
+- Avatar
+- Avatar Frame
+- Country
+- Bio
+- Player Level
 
 Each User owns exactly one Profile.
 
@@ -326,10 +326,10 @@ Stores friendship relationships.
 
 Supports:
 
-* Friend Requests
-* Accepted Friends
-* Blocking
-* Favorite Friends (Future)
+- Friend Requests
+- Accepted Friends
+- Blocking
+- Favorite Friends (Future)
 
 ---
 
@@ -341,11 +341,11 @@ Represents one gameplay session.
 
 Contains:
 
-* Participants
-* Teams
-* Match Status
-* Final Result
-* Statistics Reference
+- Participants
+- Teams
+- Match Status
+- Final Result
+- Statistics Reference
 
 Gameplay rules are not stored in this entity.
 
@@ -359,10 +359,10 @@ Represents a temporary multiplayer lobby.
 
 Contains:
 
-* Participants
-* Ready Status
-* Room Settings
-* Host Information
+- Participants
+- Ready Status
+- Room Settings
+- Host Information
 
 Rooms are temporary entities.
 
@@ -376,8 +376,8 @@ Stores player currencies.
 
 Supported currencies:
 
-* Coins
-* Gems (Planned)
+- Coins
+- Gems (Planned)
 
 Every balance modification must generate a transaction record.
 
@@ -391,11 +391,11 @@ Stores owned cosmetic items.
 
 Examples:
 
-* Avatars
-* Frames
-* Card Backs
-* Themes
-* Titles
+- Avatars
+- Frames
+- Card Backs
+- Themes
+- Titles
 
 Inventory never stores gameplay advantages.
 
@@ -409,10 +409,10 @@ Stores unlocked achievements and progression.
 
 Contains:
 
-* Achievement Identifier
-* Progress
-* Unlock Date
-* Reward Status
+- Achievement Identifier
+- Progress
+- Unlock Date
+- Reward Status
 
 ---
 
@@ -424,12 +424,12 @@ Stores permanent player statistics.
 
 Examples:
 
-* Total Matches
-* Wins
-* Losses
-* Win Rate
-* Fair Play Score
-* Game-specific Statistics
+- Total Matches
+- Wins
+- Losses
+- Win Rate
+- Fair Play Score
+- Game-specific Statistics
 
 ---
 
@@ -441,9 +441,9 @@ Stores seasonal progression.
 
 Contains:
 
-* Seasonal Rating
-* Seasonal Rank
-* Season Rewards
+- Seasonal Rating
+- Seasonal Rank
+- Season Rewards
 
 Lifetime statistics remain separate.
 
@@ -457,10 +457,10 @@ Stores pending player notifications.
 
 Examples:
 
-* Friend Requests
-* Match Invitations
-* Rewards
-* Announcements
+- Friend Requests
+- Match Invitations
+- Rewards
+- Announcements
 
 Notifications may expire automatically.
 
@@ -474,12 +474,48 @@ Stores player reports.
 
 Examples:
 
-* Cheating
-* Abuse
-* AFK
-* Offensive Username
+- Cheating
+- Abuse
+- AFK
+- Offensive Username
 
 Reports are immutable after submission.
+
+---
+
+## 4.13 Session
+
+**Owner Module:** Engine Layer
+
+Represents an active game session.
+
+Contains:
+
+- matchId (unique)
+- status (active | completed | abandoned)
+- players (reference to MatchPlayer)
+
+Sessions track live game state and are persisted in the database for recovery.
+
+---
+
+## 4.14 MatchPlayer
+
+**Owner Module:** Engine Layer
+
+Junction table linking players to matches.
+
+Contains:
+
+- matchId
+- sessionId
+- userId
+- seatIndex
+- teamId (1 or 2)
+- isBot
+- isWinner
+
+This entity enables querying which players participated in which matches.
 
 ---
 
@@ -495,17 +531,17 @@ This chapter defines logical relationships between core entities.
 
 A User owns:
 
-* One Profile
-* One Wallet
-* One Statistics Record
+- One Profile
+- One Wallet
+- One Statistics Record
 
 A User may own:
 
-* Multiple Inventory Items
-* Multiple Matches
-* Multiple Notifications
-* Multiple Achievements
-* Multiple Reports
+- Multiple Inventory Items
+- Multiple Matches
+- Multiple Notifications
+- Multiple Achievements
+- Multiple Reports
 
 ---
 
@@ -513,10 +549,10 @@ A User may own:
 
 A Match contains:
 
-* Multiple Players
-* One Room (Optional)
-* One Result
-* One Statistics Snapshot
+- Multiple Players
+- One Room (Optional)
+- One Result
+- One Statistics Snapshot
 
 ---
 
@@ -524,9 +560,9 @@ A Match contains:
 
 A Season relates to:
 
-* Rankings
-* Statistics
-* Rewards
+- Rankings
+- Statistics
+- Rewards
 
 Historical seasons remain immutable.
 
@@ -544,10 +580,10 @@ Items never belong to multiple users simultaneously.
 
 Relationships should:
 
-* Minimize duplication
-* Preserve integrity
-* Remain normalized
-* Support efficient queries
+- Minimize duplication
+- Preserve integrity
+- Remain normalized
+- Support efficient queries
 
 ---
 
@@ -581,9 +617,9 @@ Unique constraints protect business rules.
 
 Examples:
 
-* Username
-* Email
-* External Account Identifier
+- Username
+- Email
+- External Account Identifier
 
 ---
 
@@ -609,12 +645,12 @@ Either every change succeeds or none of them are persisted.
 
 Business entities should include:
 
-* created_at
-* updated_at
+- created_at
+- updated_at
 
 Soft-deletable entities also include:
 
-* deleted_at
+- deleted_at
 
 ---
 
@@ -656,10 +692,10 @@ Foreign key columns should be indexed whenever they are frequently used in joins
 
 Examples:
 
-* user_id
-* profile_id
-* match_id
-* season_id
+- user_id
+- profile_id
+- match_id
+- season_id
 
 ---
 
@@ -669,9 +705,9 @@ Unique indexes enforce business rules.
 
 Examples:
 
-* Email Address
-* Username
-* External Authentication Identifier
+- Email Address
+- Username
+- External Authentication Identifier
 
 ---
 
@@ -681,9 +717,9 @@ Composite indexes should be created only when query patterns justify them.
 
 Examples:
 
-* (season_id, rank)
-* (user_id, created_at)
-* (match_status, created_at)
+- (season_id, rank)
+- (user_id, created_at)
+- (match_status, created_at)
 
 ---
 
@@ -693,9 +729,9 @@ Frequently searched columns should be indexed.
 
 Examples:
 
-* Username
-* Display Name
-* Match Status
+- Username
+- Display Name
+- Match Status
 
 ---
 
@@ -703,10 +739,10 @@ Examples:
 
 Indexes should:
 
-* Improve read performance
-* Avoid redundancy
-* Match actual query patterns
-* Be reviewed regularly
+- Improve read performance
+- Avoid redundancy
+- Match actual query patterns
+- Be reviewed regularly
 
 Unnecessary indexes increase write costs and should be avoided.
 
@@ -724,10 +760,10 @@ This chapter defines database performance guidelines.
 
 Optimize frequently executed read queries by:
 
-* Proper indexing
-* Efficient filtering
-* Limiting returned columns
-* Avoiding unnecessary joins
+- Proper indexing
+- Efficient filtering
+- Limiting returned columns
+- Avoiding unnecessary joins
 
 ---
 
@@ -753,10 +789,10 @@ Cursor-based pagination may be introduced for large collections.
 
 Queries should:
 
-* Return only required columns
-* Avoid SELECT *
-* Minimize nested queries
-* Use indexes effectively
+- Return only required columns
+- Avoid SELECT *
+- Minimize nested queries
+- Use indexes effectively
 
 ---
 
@@ -780,9 +816,9 @@ This chapter defines how the database architecture will evolve as CardVerse grow
 
 Version 1.0 uses:
 
-* Single Database
-* Modular Monolith
-* Shared Schema
+- Single Database
+- Modular Monolith
+- Shared Schema
 
 This approach simplifies development while preserving modular boundaries.
 
@@ -792,11 +828,11 @@ This approach simplifies development while preserving modular boundaries.
 
 Future versions may introduce:
 
-* Read Replicas
-* Database Partitioning
-* Distributed Caching
-* Independent Data Stores
-* Dedicated Analytics Database
+- Read Replicas
+- Database Partitioning
+- Distributed Caching
+- Independent Data Stores
+- Dedicated Analytics Database
 
 Architectural evolution must preserve data integrity.
 
@@ -816,9 +852,9 @@ Every migration must be reversible whenever practical.
 
 Production databases must support:
 
-* Scheduled Backups
-* Point-in-Time Recovery
-* Restore Validation
+- Scheduled Backups
+- Point-in-Time Recovery
+- Restore Validation
 
 Backup procedures should be tested regularly.
 
@@ -828,9 +864,9 @@ Backup procedures should be tested regularly.
 
 Retention policies should balance:
 
-* Business requirements
-* Legal requirements
-* Storage costs
+- Business requirements
+- Legal requirements
+- Storage costs
 
 Historical gameplay data may be archived but should not be silently discarded.
 
@@ -842,11 +878,11 @@ The database is designed to support long-term platform growth.
 
 Future enhancements may include:
 
-* Sharding
-* Multi-Region Replication
-* Event Sourcing Support
-* Dedicated Reporting Database
-* Real-Time Analytics Pipeline
+- Sharding
+- Multi-Region Replication
+- Event Sourcing Support
+- Dedicated Reporting Database
+- Real-Time Analytics Pipeline
 
 These enhancements must preserve compatibility with the architectural principles defined in the Architecture document.
 
@@ -856,24 +892,26 @@ These enhancements must preserve compatibility with the architectural principles
 
 Related documents:
 
-* CARDVERSE_INDEX.md
-* PROJECT_STATUS.md
-* README.md
-* PRODUCT_BIBLE.md
-* ARCHITECTURE.md
-* API.md
-* RULEBOOK.md
-* PROJECT_RULES.md
-* PROJECT_DNA.md
+- CARDVERSE_INDEX.md
+- PROJECT_STATUS.md
+- README.md
+- PRODUCT_BIBLE.md
+- ARCHITECTURE.md
+- API.md
+- RULEBOOK.md
+- PROJECT_RULES.md
+- PROJECT_DNA.md
+- POSTGRESQL_PLAN.md
 
 ---
 
 # 12. Version History
 
-| Version | Date       | Description                    |
-| ------- | ---------- | ------------------------------ |
-| 0.1.0   | 2026-06-30 | Enterprise database foundation |
-| 0.1.0   | 2026-07-01 | Documentation Freeze completed |
+| Version | Date       | Description                                                                    |
+| ------- | ---------- | ------------------------------------------------------------------------------ |
+| 0.1.0   | 2026-06-30 | Enterprise database foundation                                                 |
+| 0.1.0   | 2026-07-01 | Documentation Freeze completed                                                 |
+| 0.2.0   | 2026-08-09 | Added Session and MatchPlayer entities; added POSTGRESQL_PLAN.md to References |
 
 ---
 
