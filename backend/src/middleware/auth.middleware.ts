@@ -8,6 +8,7 @@ import { Request, Response, NextFunction } from 'express';
 
 import { ResponseHelper } from '../utils/response.js';
 import { AuthService } from '../modules/auth/auth.service.js';
+import { verifyToken } from '../auth/jwt.service.js';
 
 /**
  * Authentication middleware - verifies token and sets req.user
@@ -29,29 +30,17 @@ export const authenticate = async (
     // 2. Extract token (Bearer <token>)
     const token = authHeader.startsWith('Bearer ') ? authHeader.substring(7) : authHeader;
 
-    // 3. Validate token and extract user
-    // For development: mock token validation
+    // 3. Validate token and extract user using JWT
     let userId: string | null = null;
 
-    // Mock guest token format: mock_access_guest_<userId>_<timestamp>
-    // userId format: guest_<timestamp>_<random>
-    if (token.startsWith('mock_access_guest_')) {
-      const parts = token.split('_');
-      if (parts.length >= 5) {
-        // parts: ['mock', 'access', 'guest', '1783701891264', '5wjoziubt', '1783701891265']
-        // userId = 'guest' + '_' + '1783701891264' + '_' + '5wjoziubt'
-        userId = `${parts[2]}_${parts[3]}_${parts[4]}`;
-        console.log('[AUTH] Extracted userId from guest token:', userId);
+    try {
+      const decoded = verifyToken(token);
+      if (decoded) {
+        userId = decoded.userId;
+        console.log('[AUTH] Extracted userId from JWT:', userId);
       }
-    }
-
-    // Mock google token format: mock_access_google_<userId>_<timestamp>
-    if (token.startsWith('mock_access_google_')) {
-      const parts = token.split('_');
-      if (parts.length >= 5) {
-        userId = `${parts[2]}_${parts[3]}_${parts[4]}`;
-        console.log('[AUTH] Extracted userId from google token:', userId);
-      }
+    } catch (error) {
+      console.log('[AUTH] JWT verification error:', error);
     }
 
     // 4. If token is invalid, return 401
@@ -102,17 +91,13 @@ export const optionalAuthenticate = async (
       const token = authHeader.startsWith('Bearer ') ? authHeader.substring(7) : authHeader;
       let userId: string | null = null;
 
-      if (token.startsWith('mock_access_guest_')) {
-        const parts = token.split('_');
-        if (parts.length >= 5) {
-          userId = `${parts[2]}_${parts[3]}_${parts[4]}`;
+      try {
+        const decoded = verifyToken(token);
+        if (decoded) {
+          userId = decoded.userId;
         }
-      }
-      if (token.startsWith('mock_access_google_')) {
-        const parts = token.split('_');
-        if (parts.length >= 5) {
-          userId = `${parts[2]}_${parts[3]}_${parts[4]}`;
-        }
+      } catch {
+        // Silent fail for optional auth
       }
 
       if (userId) {

@@ -12,6 +12,7 @@ import { TurnPhase } from '../engine/turn/turn.types';
 import { disconnectManager } from '../engine/disconnect/disconnect.manager';
 import { lobbyManager } from '../engine/lobby/lobby.manager';
 import { matchmakingIntegration } from '../modules/matchmaking-integration/matchmaking-integration.service';
+import { verifyToken } from '../auth/jwt.service.js';
 
 // Socket.IO event types
 export interface ServerToClientEvents {
@@ -78,29 +79,6 @@ export interface SocketData {
  *   mock_access_guest_<userId>_<random>_<timestamp>
  *   mock_access_google_<userId>_<random>_<timestamp>
  */
-function extractUserIdFromToken(token: string): string | null {
-  if (!token || typeof token !== 'string') {
-    return null;
-  }
-
-  // Mock guest token: mock_access_guest_<userId>_<random>_<timestamp>
-  if (token.startsWith('mock_access_guest_')) {
-    const parts = token.split('_');
-    if (parts.length >= 5) {
-      return `${parts[2]}_${parts[3]}_${parts[4]}`;
-    }
-  }
-
-  // Mock google token: mock_access_google_<userId>_<random>_<timestamp>
-  if (token.startsWith('mock_access_google_')) {
-    const parts = token.split('_');
-    if (parts.length >= 5) {
-      return `${parts[2]}_${parts[3]}_${parts[4]}`;
-    }
-  }
-
-  return null;
-}
 
 export class SocketManager {
   private io: SocketServer<
@@ -137,7 +115,7 @@ export class SocketManager {
 
       if (token && typeof token === 'string') {
         // 2. Extract userId from the token
-        const userId = extractUserIdFromToken(token);
+        const userId = verifyToken(token);
         if (!userId) {
           return next(new Error('Authentication failed'));
         }
