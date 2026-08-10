@@ -1,7 +1,7 @@
 # CardVerse Product Bible
 
 **Document ID:** CV-1001
-**Version:** 0.4.0
+**Version:** 0.5.0
 **Status:** Frozen
 **Classification:** Business
 **Owner:** Mostafa
@@ -49,7 +49,7 @@ This document defines the business vision, product requirements, gameplay featur
 
 #### Gameplay
 
-- Hokm (including Sars, Nars, Tak Nars sub-modes)
+- Hokm (including Saras, Naras, Tak Naras sub-modes)
 - Practice Mode
 - Friendly Match
 - Ranked Match
@@ -99,7 +99,7 @@ Future card games, in priority order:
 5. Pasur (11)
 6. Poker
 
-**Note:** Nars, Tak Nars, and Sars are **not** separate games — they are rule sub-modes selectable by the Hakem within Hokm itself. See RULEBOOK.md Section 6.
+**Note:** Naras, Tak Naras, and Saras are **not** separate games — they are rule sub-modes selectable by the Hakem within Hokm itself. See RULEBOOK.md Section 6.
 
 Other future expansions:
 
@@ -1290,7 +1290,7 @@ The roadmap serves as strategic guidance only and does not define implementation
 
 **Gameplay:**
 
-- Hokm (including Sars, Nars, Tak Nars)
+- Hokm (including Saras, Naras, Tak Naras)
 - Practice Mode
 - Friendly Match
 - Ranked Match
@@ -1486,6 +1486,7 @@ Related documents:
 | 0.2.0   | 2026-07-07 | Updated Glossary section with comprehensive terminology                                                                                                                                                                                              |
 | 0.3.0   | 2026-07-12 | corrected future game roadmap to priority order (Bidel, Shelem, Haft Khabis, Bank/21, Pasur/11, Poker); clarified Nars/Tak Nars/Sars are Hokm sub-modes, not separate games; aligned Bot Replacement section with finalized RULEBOOK.md online rules |
 | 0.4.0   | 2026-08-09 | Added team disconnection rules, bot scenarios (0-3 bots), invisible bots for early phases, bot limits (max 3 per match, never share a team), teammate decision flow, and updated notification types                                                  |
+| 0.5.0   | 2026-08-10 | Unified Hokm sub-mode naming to Saras/Naras/Tak Naras across documentation                                                                                                                                                                           |
 
 ---
 

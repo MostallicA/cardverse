@@ -11,8 +11,8 @@ export enum EngineStatus {
 export enum GameMode {
   HOKM = 'hokm',
   SARAS = 'saras',
-  NARS = 'nars',
-  TAK_NARS = 'tak_nars',
+  NARAS = 'naras',
+  TAK_NARAS = 'tak_naras',
 }
 
 export enum Suit {
@@ -117,7 +117,7 @@ export interface RoundResult {
 
 export interface BotConfig {
   difficulty: 'basic' | 'advanced'; // Advanced deferred per RULEBOOK.md Section 13
-  grayscaleAvatar: boolean; // Bot indicator
+  grayscaleAvatar: boolean; // Kept for config compatibility; bots are invisible per RULEBOOK.md §13.4
 }
 
 export interface DisconnectInfo {

@@ -51,6 +51,14 @@ export default [
       'no-unused-vars': 'off',
     },
   },
+  // 🔧 غیرفعال کردن قوانین برای پوشه Game (برای متغیرهای استفاده نشده)
+  {
+    files: ['backend/src/game/**/*.ts'],
+    rules: {
+      '@typescript-eslint/no-unused-vars': 'off',
+      'no-unused-vars': 'off',
+    },
+  },
   // 🔧 غیرفعال کردن قوانین برای پوشه Socket (برای متغیرهای استفاده نشده و any)
   {
     files: ['backend/src/socket/**/*.ts'],

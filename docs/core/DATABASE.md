@@ -1,7 +1,7 @@
 # CardVerse Database
 
 **Document ID:** CV-9001
-**Version:** 0.2.0
+**Version:** 0.3.0
 **Status:** Frozen
 **Classification:** Technical
 **Owner:** Mostafa & ChatGPT
@@ -893,7 +893,7 @@ These enhancements must preserve compatibility with the architectural principles
 Related documents:
 
 - CARDVERSE_INDEX.md
-- PROJECT_STATUS.md
+- DASHBOARD.md
 - README.md
 - PRODUCT_BIBLE.md
 - ARCHITECTURE.md
@@ -912,6 +912,7 @@ Related documents:
 | 0.1.0   | 2026-06-30 | Enterprise database foundation                                                 |
 | 0.1.0   | 2026-07-01 | Documentation Freeze completed                                                 |
 | 0.2.0   | 2026-08-09 | Added Session and MatchPlayer entities; added POSTGRESQL_PLAN.md to References |
+| 0.3.0   | 2026-08-10 | References updated: PROJECT_STATUS.md replaced with DASHBOARD.md               |
 
 ---
 

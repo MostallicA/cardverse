@@ -6,9 +6,9 @@ The format is inspired by **Keep a Changelog** and follows **Semantic Versioning
 
 ---
 
-## [Unreleased]
+## [1.0.0] - 2026-08-10 — Sprint 8: Production Hardening
 
-### Added (2026-08-09 — Sprint 8: Production Hardening)
+### Added
 
 - JWT authentication service (`jwt.service.ts`) with generateToken and verifyToken
 - Real JWT authentication replacing mock tokens in auth middleware
@@ -19,7 +19,7 @@ The format is inspired by **Keep a Changelog** and follows **Semantic Versioning
 - Environment validation with Joi for production safety
 - Rate limiting, CORS whitelist, and request timeout for production
 
-### Changed (2026-08-09)
+### Changed
 
 - Updated `.env` and `.env.example` with JWT_SECRET and DATABASE_URL
 - Updated `socket/index.ts` to use JWT verification
@@ -27,12 +27,12 @@ The format is inspired by **Keep a Changelog** and follows **Semantic Versioning
 - Updated `engine.service.ts` with persistence integration
 - Updated all core documentation (RULEBOOK, ARCHITECTURE, PRODUCT_BIBLE, API)
 
-### Removed (2026-08-09)
+### Removed
 
 - Removed mock token logic (`mock_access_guest_*`, `mock_access_google_*`)
 - Removed deprecated packages: `@types/helmet`, `@types/joi`
 
-### Security (2026-08-09)
+### Security
 
 - Added JWT-based authentication for all protected endpoints
 - Added real authentication for Socket.IO connections
@@ -41,7 +41,9 @@ The format is inspired by **Keep a Changelog** and follows **Semantic Versioning
 
 ---
 
-### Added (2026-07-12 — Documentation Consolidation)
+## [0.9.0] - 2026-08-07 — Documentation Consolidation
+
+### Added
 
 - Repository Standards (ESLint, Prettier, Husky, Commitlint)
 - TypeScript Foundation (tsconfig.base.json)
@@ -68,13 +70,13 @@ The format is inspired by **Keep a Changelog** and follows **Semantic Versioning
 - Frontend UI Components (ProtectedRoute, authentication styles)
 - Frontend Routing (react-router-dom integration)
 
-### Changed (2026-07-12)
+### Changed
 
 - Restructured documentation: merged operational docs into DASHBOARD.md
 - Updated README.md with setup instructions
 - Updated PRODUCT_BIBLE.md with comprehensive glossary
 
-### Removed (2026-07-12)
+### Removed
 
 - REPOSITORY_SNAPSHOT.md (replaced by targeted query method)
 - SYSTEM_START_HERE.md (merged into DASHBOARD.md)
@@ -84,7 +86,7 @@ The format is inspired by **Keep a Changelog** and follows **Semantic Versioning
 - DECISION_LOG.md (merged into DASHBOARD.md)
 - GLOSSARY.md (merged into PRODUCT_BIBLE.md)
 
-### Fixed (2026-07-12)
+### Fixed
 
 - Documentation cross-reference consistency
 - Version alignment across all documents

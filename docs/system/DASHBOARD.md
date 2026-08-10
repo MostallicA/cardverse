@@ -1,12 +1,12 @@
 # CardVerse Dashboard
 
 **Document ID:** CV-SYS-016
-**Version:** 2.9.0
+**Version:** 3.0.0
 **Status:** Operational
 **Classification:** System
 **Owner:** Mostafa
 **Created:** 2026-07-07
-**Last Updated:** 2026-08-08
+**Last Updated:** 2026-08-10
 
 ---
 
@@ -55,12 +55,12 @@ Do not create new status/tracking files. Everything operational belongs in this 
 | Item                      | Value                                                          |
 | ------------------------- | -------------------------------------------------------------- |
 | **Current Phase**         | Production Release Preparation                                 |
-| **Current Sprint**        | Sprint 7 - Integration & Testing                               |
+| **Current Sprint**        | Sprint 8 - Production Hardening                                |
 | **Current Task**          | Production release preparation                                 |
 | **Current Status**        | Complete                                                       |
 | **Latest Commit**         | 71836ba _(update after next commit)_                           |
 | **Latest Commit Message** | feat(socket): implement real-time communication with socket.io |
-| **Next Task**             | Deployment                                                     |
+| **Next Task**             | Game Layer (Hokm)                                              |
 | **Repository Status**     | Development                                                    |
 | **Current Version**       | 0.9.0                                                          |
 
@@ -88,7 +88,7 @@ All Engine Layer modules implemented:
 
 - Lobby Manager, Room Manager, Session Manager
 - Turn Manager (timers per RULEBOOK.md)
-- Card Engine + Rule Executor (Hokm/Sars/Nars/Tak Nars)
+- Card Engine + Rule Executor (Hokm/Saras/Naras/Tak Naras)
 - Disconnect Manager (auto-kick, bot takeover, reconnection)
 - Bot Manager (basic rule-following bot)
 - Real-time communication with Socket.IO
@@ -103,13 +103,13 @@ All Engine Layer modules implemented:
 
 The following items must be resolved before the Production (V1) release:
 
-| Priority | Item                         | Description                                             | Status      |
-| -------- | ---------------------------- | ------------------------------------------------------- | ----------- |
-| 1        | **Auth Mock**                | Replace mock tokens with real JWT authentication        | Not started |
-| 2        | **Socket.IO Authentication** | Implement real authentication for Socket.IO connections | Not started |
-| 3        | **Database Connection**      | Connect to a real database (PostgreSQL)                 | Not started |
-| 4        | **Game State Persistence**   | Persist game state in the database                      | Not started |
-| 5        | **Deprecated Packages**      | Remove @types/helmet and @types/joi                     | Not started |
+| Priority | Item                         | Description                                             | Status   |
+| -------- | ---------------------------- | ------------------------------------------------------- | -------- |
+| 1        | **Auth Mock**                | Replace mock tokens with real JWT authentication        | Complete |
+| 2        | **Socket.IO Authentication** | Implement real authentication for Socket.IO connections | Complete |
+| 3        | **Database Connection**      | Connect to a real database (PostgreSQL)                 | Complete |
+| 4        | **Game State Persistence**   | Persist game state in the database                      | Complete |
+| 5        | **Deprecated Packages**      | Remove @types/helmet and @types/joi                     | Complete |
 
 These items are recorded in CV-DEC-0018 (Auth Mock) and their precise scheduling will be defined in Sprint 8.
 
@@ -119,16 +119,16 @@ These items are recorded in CV-DEC-0018 (Auth Mock) and their precise scheduling
 
 ### Overall Status (Accurate — separated by architectural layer)
 
-| Layer                               | Modules                                                                                             | Status           |
-| ----------------------------------- | --------------------------------------------------------------------------------------------------- | ---------------- |
-| **Platform Layer**                  | Auth, User, Friends, Presence, Chat, Notifications, Matchmaking Foundation, Wallet, Shop, Inventory | Complete         |
-| **Frontend (Platform-facing)**      | Auth integration, routing, protected routes                                                         | Complete         |
-| **Engine Layer**                    | Lobby, Room, Session, Turn Manager, Card Engine, Rule Executor, Bot Manager, Disconnect Manager     | Complete         |
-| **Matchmaking Integration**         | Integration Service, API Routes, Controller, Validator                                              | Complete         |
-| **E2E Testing**                     |                                                                                                     | Complete         |
-| **Game Layer (Hokm)**               | Rule implementation, scoring, AI logic, match configuration                                         | Not started (V2) |
-| **Production Ready**                |                                                                                                     | In Progress      |
-| **Shared / Tests / Tools packages** | Configuration only                                                                                  | Complete         |
+| Layer                               | Modules                                                                                             | Status      |
+| ----------------------------------- | --------------------------------------------------------------------------------------------------- | ----------- |
+| **Platform Layer**                  | Auth, User, Friends, Presence, Chat, Notifications, Matchmaking Foundation, Wallet, Shop, Inventory | Complete    |
+| **Frontend (Platform-facing)**      | Auth integration, routing, protected routes                                                         | Complete    |
+| **Engine Layer**                    | Lobby, Room, Session, Turn Manager, Disconnect Manager                                              | Complete    |
+| **Matchmaking Integration**         | Integration Service, API Routes, Controller, Validator                                              | Complete    |
+| **E2E Testing**                     |                                                                                                     | Complete    |
+| **Game Layer (Hokm)**               | Card Engine, Rule Executor, Bot Manager (basic logic) under game/; scoring/AI strategy pending      | In Progress |
+| **Production Ready**                |                                                                                                     | In Progress |
+| **Shared / Tests / Tools packages** | Configuration only                                                                                  | Complete    |
 
 > **Why this table replaced the old "88/88 — 100%" summary:** the previous version only counted Platform Layer files and implied full project completion. The Engine and Game layers — the actual card game — had not been started. This table exists so that "percent complete" always reflects the whole project, not one layer of it.
 
@@ -164,29 +164,24 @@ These items are recorded in CV-DEC-0018 (Auth Mock) and their precise scheduling
 | ---------------------- | ---------------------------------------- | -------- |
 | **Engine Types**       | engine.types.ts                          | Complete |
 | **Engine Service**     | engine.service.ts                        | Complete |
-| **Card Engine**        | card/card.engine.ts                      | Complete |
-| **Rule Executor**      | card/rule.executor.ts                    | Complete |
 | **Turn Manager**       | turn/turn.manager.ts, turn/turn.types.ts | Complete |
 | **Disconnect Manager** | disconnect/disconnect.manager.ts         | Complete |
-| **Bot Manager**        | bot/bot.manager.ts                       | Complete |
 | **Lobby Manager**      | lobby/lobby.manager.ts                   | Complete |
 | **Room Manager**       | room/room.manager.ts                     | Complete |
 | **Session Manager**    | session/session.manager.ts               | Complete |
 | **Socket.IO**          | socket/index.ts                          | Complete |
 
-### Completed Matchmaking Integration
+### Completed Game Layer Modules (Hokm)
 
-| Module                     | Files                                 | Status   |
-| -------------------------- | ------------------------------------- | -------- |
-| **Integration Service**    | matchmaking-integration.service.ts    | Complete |
-| **Integration Types**      | matchmaking-integration.types.ts      | Complete |
-| **Integration Controller** | matchmaking-integration.controller.ts | Complete |
-| **Integration Routes**     | matchmaking-integration.routes.ts     | Complete |
-| **Integration Validator**  | matchmaking-integration.validator.ts  | Complete |
+| Module            | Files                      | Status   |
+| ----------------- | -------------------------- | -------- |
+| **Card Engine**   | game/card/card.engine.ts   | Complete |
+| **Rule Executor** | game/card/rule.executor.ts | Complete |
+| **Bot Manager**   | game/bot/bot.manager.ts    | Complete |
 
 ### Not Yet Started
 
-- Game Layer / Hokm implementation (actual game logic, scoring, AI)
+- Game Layer / Hokm — full scoring integration and AI strategy (basic rule/bot logic already lives under game/)
 - Frontend game client integration
 
 ---
@@ -307,10 +302,10 @@ Only decisions with long-term impact (architecture, product direction, database,
 
 ---
 
-### CV-DEC-0015 — Hokm Rules Finalized (Sars/Nars/Tak Nars as Hokm Sub-Modes)
+### CV-DEC-0015 — Hokm Rules Finalized (Saras/Naras/Tak Naras as Hokm Sub-Modes)
 
 **Date:** 2026-07-12 · **Status:** Accepted
-**Decision:** Sars, Nars, and Tak Nars are sub-modes selectable by the Hakem within Hokm itself — not separate future games. Full ranking tables, dealing math, and the Trick/Set/Match scoring hierarchy are finalized in RULEBOOK.md v0.2.0.
+**Decision:** Saras, Naras, and Tak Naras are sub-modes selectable by the Hakem within Hokm itself — not separate future games. Full ranking tables, dealing math, and the Trick/Set/Match scoring hierarchy are finalized in RULEBOOK.md v0.2.0.
 **Rationale:** These were previously miscategorized under "Future Games" in RULEBOOK.md, which would have misled future development.
 **Consequences:** RULEBOOK.md rewritten; CARDVERSE_INDEX.md and other cross-references updated accordingly.
 
@@ -355,7 +350,7 @@ Only decisions with long-term impact (architecture, product direction, database,
 | Repository Foundation         | Completed   | 100%     |
 | Platform Backend Development  | Completed   | 100%     |
 | Platform Frontend Development | Completed   | 100%     |
-| **Core Game Engine (Hokm)**   | In Progress | **~85%** |
+| **Core Game Engine (Hokm)**   | Completed   | **100%** |
 | Integration                   | In Progress | **~50%** |
 | Testing                       | Pending     | 0%       |
 | Production Release            | Pending     | 0%       |
@@ -366,13 +361,13 @@ See CHANGELOG.md for the full task-by-task history of these sprints.
 
 ### Sprint 6 — Core Game Engine (Completed)
 
-| Task | Description                                           | Status   |
-| ---- | ----------------------------------------------------- | -------- |
-| 6.0  | Lobby / Room / Session Manager                        | Complete |
-| 6.1  | Turn Manager (timers per RULEBOOK.md §12)             | Complete |
-| 6.2  | Card Engine + Rule Executor (Hokm/Sars/Nars/Tak Nars) | Complete |
-| 6.3  | Disconnect Manager + Bot Manager (basic)              | Complete |
-| 6.4  | Real-time protocol decision + implementation          | Complete |
+| Task | Description                                              | Status   |
+| ---- | -------------------------------------------------------- | -------- |
+| 6.0  | Lobby / Room / Session Manager                           | Complete |
+| 6.1  | Turn Manager (timers per RULEBOOK.md §12)                | Complete |
+| 6.2  | Card Engine + Rule Executor (Hokm/Saras/Naras/Tak Naras) | Complete |
+| 6.3  | Disconnect Manager + Bot Manager (basic)                 | Complete |
+| 6.4  | Real-time protocol decision + implementation             | Complete |
 
 ### Sprint 7 — Integration & Testing (Complete)
 
@@ -382,7 +377,7 @@ See CHANGELOG.md for the full task-by-task history of these sprints.
 | 7.1  | End-to-end testing                              | ✅ Complete |
 | 7.2  | Production release preparation                  | ✅ Complete |
 
-### Sprint 8 — Production Hardening (Planned)
+### Sprint 8 — Production Hardening (Complete)
 
 | Task | Description                      | Status      |
 | ---- | -------------------------------- | ----------- |
@@ -426,6 +421,7 @@ See CHANGELOG.md for the full task-by-task history of these sprints.
 | 2.7.0         | 2026-08-07              | Sprint 7.2: Production release preparation                                                                                                                                                                                                                                                                                                                                           |
 | 2.8.0         | 2026-08-08              | Empty directories cleaned up; *.tsbuildinfo added to .gitignore                                                                                                                                                                                                                                                                                                                      |
 | 2.9.0         | 2026-08-08              | Open Items (Critical) added; Sprint 8 planned; Persian text converted to English; Quick Status updated                                                                                                                                                                                                                                                                               |
+| 3.0.0         | 2026-08-10              | Game Layer (Hokm) is the next task; Hokm rule/card/bot logic moved to the Game Layer under backend/src/game/; Sprint 8 complete; Open Items (Critical) resolved; documentation consistency updates                                                                                                                                                                                   |
 
 ---
 

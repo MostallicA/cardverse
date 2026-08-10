@@ -1,6 +1,6 @@
 // Rule Executor - Implements Hokm rules per RULEBOOK.md
 
-import { Card, Suit, Rank, GameMode, SpecialOutcome } from '../engine.types';
+import { Card, Suit, Rank, GameMode, SpecialOutcome } from '../../engine/engine.types';
 
 export class RuleExecutor {
   /**
@@ -63,7 +63,7 @@ export class RuleExecutor {
           [Rank.TWO]: 1,
         };
 
-      case GameMode.NARS:
+      case GameMode.NARAS:
         // Reversed order: 2 > 3 > 4 > ... > Q > K > A
         return {
           [Rank.TWO]: 13,
@@ -81,7 +81,7 @@ export class RuleExecutor {
           [Rank.ACE]: 1,
         };
 
-      case GameMode.TAK_NARS:
+      case GameMode.TAK_NARAS:
         // Tak Nars: A > 2 > 3 > 4 > ... > Q > K
         return {
           [Rank.ACE]: 13,

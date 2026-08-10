@@ -62,16 +62,16 @@ CardVerse should remain understandable, extensible and reliable even after years
 
 Create a unified ecosystem where multiple card games share:
 
-* Authentication
-* Profiles
-* Friends
-* Chat
-* Matchmaking
-* Ranking
-* Economy
-* Shop
-* Statistics
-* Backend Infrastructure
+- Authentication
+- Profiles
+- Friends
+- Chat
+- Matchmaking
+- Ranking
+- Economy
+- Shop
+- Statistics
+- Backend Infrastructure
 
 Every new game should integrate into the platform instead of creating a parallel system.
 
@@ -85,10 +85,10 @@ Short-term convenience must never compromise long-term maintainability.
 
 Whenever multiple solutions exist, prefer the one that:
 
-* simplifies future development,
-* improves consistency,
-* reduces technical debt,
-* and remains understandable over time.
+- simplifies future development,
+- improves consistency,
+- reduces technical debt,
+- and remains understandable over time.
 
 ---
 
@@ -170,11 +170,11 @@ A correct, maintainable solution is preferred over a fast but fragile implementa
 
 Development should always prioritize:
 
-* Clarity over cleverness
-* Simplicity over unnecessary abstraction
-* Maintainability over premature optimization
-* Consistency over personal preference
-* Reliability over shortcuts
+- Clarity over cleverness
+- Simplicity over unnecessary abstraction
+- Maintainability over premature optimization
+- Consistency over personal preference
+- Reliability over shortcuts
 
 Every contributor should leave the project in a better state than they found it.
 
@@ -184,14 +184,14 @@ Every contributor should leave the project in a better state than they found it.
 
 The following principles must never be violated.
 
-* Never trust the client.
-* Never duplicate business logic.
-* Never bypass documented architecture.
-* Never introduce unnecessary technical debt.
-* Never break backward compatibility without versioning.
-* Never implement undocumented business rules.
-* Never optimize without measurable evidence.
-* Never sacrifice maintainability for short-term speed.
+- Never trust the client.
+- Never duplicate business logic.
+- Never bypass documented architecture.
+- Never introduce unnecessary technical debt.
+- Never break backward compatibility without versioning.
+- Never implement undocumented business rules.
+- Never optimize without measurable evidence.
+- Never sacrifice maintainability for short-term speed.
 
 ---
 
@@ -216,11 +216,11 @@ Lower priorities must never compromise higher priorities.
 
 CardVerse is considered successful when:
 
-* New games can be added with minimal architectural changes.
-* New developers can understand the project quickly.
-* Documentation remains synchronized with implementation.
-* The platform remains stable as it grows.
-* Every release improves quality without increasing unnecessary complexity.
+- New games can be added with minimal architectural changes.
+- New developers can understand the project quickly.
+- Documentation remains synchronized with implementation.
+- The platform remains stable as it grows.
+- Every release improves quality without increasing unnecessary complexity.
 
 ---
 
@@ -230,11 +230,11 @@ CardVerse is designed as a continuously evolving platform.
 
 Every release should move the project closer to:
 
-* Better architecture
-* Better documentation
-* Better developer experience
-* Better player experience
-* Better scalability
+- Better architecture
+- Better documentation
+- Better developer experience
+- Better player experience
+- Better scalability
 
 No feature should prevent future growth.
 
@@ -249,7 +249,7 @@ No feature should prevent future growth.
 
 ---
 
-**Document Status:** Review
+**Document Status:** Frozen
 
 This document defines the permanent identity, philosophy and engineering mindset of the CardVerse platform.
 

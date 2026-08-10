@@ -1,7 +1,7 @@
 # CardVerse Project Rules
 
 **Document ID:** CV-SYS-002
-**Version:** 0.2.0
+**Version:** 0.4.0
 **Status:** Frozen
 **Classification:** System
 **Owner:** Mostafa & ChatGPT
@@ -141,7 +141,7 @@ Every major document update must be recorded in its Version History section.
 
 ### Decision Recording
 
-Important architectural or engineering decisions must be recorded in DECISION_LOG.md.
+Important architectural or engineering decisions must be recorded in DASHBOARD.md (Section 6 — Decision Log).
 
 ---
 
@@ -387,7 +387,7 @@ feat(backend): add authentication middleware
 
 fix(frontend): resolve matchmaking timer bug
 
-docs(system): update PROJECT_STATUS.md
+docs(system): update DASHBOARD.md
 
 chore(repo): update pnpm to version 9.0.0
 
@@ -456,7 +456,7 @@ A task is considered complete only when all of the following conditions are sati
 - No unnecessary duplication exists.
 - No new technical debt has been introduced.
 - Relevant decisions have been recorded when necessary.
-- IMPLEMENTATION_STATUS.md has been updated if new files were added.
+- DASHBOARD.md has been updated if new files were added.
 
 Implementation alone does not mean completion.
 

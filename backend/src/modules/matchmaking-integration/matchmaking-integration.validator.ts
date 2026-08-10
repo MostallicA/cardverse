@@ -47,7 +47,7 @@ export const playCardSchema = Joi.object({
 export const declareHokmSchema = Joi.object({
   matchId: Joi.string().required(),
   userId: Joi.string().required(),
-  mode: Joi.string().valid('HOKM', 'SARAS', 'NARS', 'TAK_NARS').required(),
+  mode: Joi.string().valid('HOKM', 'SARAS', 'NARAS', 'TAK_NARAS').required(),
   suit: Joi.string().valid('KHESHT', 'PIK', 'DEL', 'KHAJ').optional(),
 });
 

@@ -79,7 +79,7 @@ Future card games, in priority order (Hokm is the only game in Version 1 — see
 - Pasur (11)
 - Poker (requires its own dedicated engine — see ARCHITECTURE.md Section 3.2.1)
 
-Note: Sars, Nars, and Tak Nars are not separate games — they are rule sub-modes within Hokm itself (see RULEBOOK.md).
+Note: Saras, Naras, and Tak Naras are not separate games — they are rule sub-modes within Hokm itself (see RULEBOOK.md).
 
 ---
 
@@ -106,11 +106,12 @@ cd C:\Dev\CardVerse
 pnpm install
 pnpm run build
 pnpm run dev
+```
 
 ## Development Commands
 
 | Command         | Purpose                   |
-|-----------------|---------------------------|
+| --------------- | ------------------------- |
 | pnpm install    | Install all dependencies  |
 | pnpm run dev    | Start development servers |
 | pnpm run build  | Build all packages        |
@@ -201,12 +202,13 @@ All rights reserved.
 # Version History
 
 | Version | Date       | Description                                                                                                                                                     |
-|---------|------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| ------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 0.1.0   | 2026-06-30 | Initial project README established                                                                                                                              |
 | 0.1.0   | 2026-07-01 | Documentation Freeze completed                                                                                                                                  |
 | 0.2.0   | 2026-07-07 | Updated with new documentation structure and setup guide                                                                                                        |
 | 0.3.0   | 2026-07-12 | corrected Planned Games to the confirmed priority order (Bidel, Shelem, Haft Khabis, Bank/21, Pasur/11, Poker); clarified Sars/Nars/Tak Nars are Hokm sub-modes |
 | 0.4.0   | 2026-08-09 | Updated References to use DASHBOARD.md; improved documentation structure                                                                                        |
 
+```
 
 ```

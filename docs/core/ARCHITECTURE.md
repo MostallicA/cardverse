@@ -1,7 +1,7 @@
 # CardVerse Architecture
 
 **Document ID:** CV-3001
-**Version:** 0.3.0
+**Version:** 0.4.0
 **Status:** Frozen
 **Classification:** Technical
 **Owner:** Mostafa
@@ -95,23 +95,28 @@ The Engine Layer provides generic gameplay infrastructure shared by trick-taking
 - Session Management
 - Turn Management
 - Timer Management
-- Rule Execution
-- Card Engine
 - Event Dispatcher
 - Disconnect Recovery
-- Bot Management
 - Anti-Cheat
 - Game Logging
 
-Replay System is planned for a future release. The Engine Layer never contains rules specific to Hokm or any other individual game — game-specific rules live in the Game Layer and are loaded/executed by the Rule Executor.
+Replay System is planned for a future release. The Engine Layer is **game-agnostic** — it never contains rules specific to Hokm or any other individual game. Game-specific logic lives in the Game Layer under `backend/src/game/` and is consumed by the Engine (see Section 2.3).
+
+As of the 2026-08-10 architecture decision, the following were moved from the Engine Layer to the Game Layer:
+
+- `card/rule.executor.ts` → `backend/src/game/card/rule.executor.ts` (Hokm rule/scoring logic)
+- `card/card.engine.ts` → `backend/src/game/card/card.engine.ts` (deck + Hokm 5+4+4 dealing)
+- `bot/bot.manager.ts` → `backend/src/game/bot/bot.manager.ts` (Hokm card-selection logic)
+
+The Engine Layer continues to own the generic infrastructure: Lobby, Room, Session, Turn, Timer, Disconnect, Event Dispatcher, and game-agnostic flow control.
 
 **Important scope note:** Poker does not use this Engine. See Section 3.2.1.
 
 ### 2.3 Game Layer
 
-Every card game is implemented as an isolated module. Each game owns: Rules, Scoring, Card Logic, AI Logic, Match Configuration, Validation.
+Every card game is implemented as an isolated module under `backend/src/game/`. Each game owns: Rules, Scoring, Card Logic, AI Logic, Match Configuration, Validation.
 
-Games never communicate directly with one another. Adding a new game must not require modifying existing game modules. **Status: Not started for Hokm; rules are fully specified in RULEBOOK.md v0.3.0 and ready for implementation.**
+Games never communicate directly with one another. Adding a new game must not require modifying existing game modules. **Status: In progress — Hokm's rule logic, card dealing, and bot card-selection now live under `backend/src/game/` (see Section 2.2); full scoring integration and AI strategy belong to the Game Layer phase.**
 
 ### 2.4 Shared Layer
 
@@ -331,6 +336,7 @@ Microservices, Distributed Caching, Event Streaming, Replay Service, Tournament 
 | 0.1.0   | 2026-07-01 | Documentation Freeze completed                                                                                                                                                                                                                                                                                |
 | 0.2.0   | 2026-07-12 | added full Engine Layer module detail (Turn/Disconnect/Bot Manager per RULEBOOK.md v0.2.0); added Section 3.2.1 separating the Poker Engine from the shared Card Engine; added Section 7 (Real-Time Communication, open) and Section 8 (Performance Requirements); added Section 9 (Open Architectural Items) |
 | 0.3.0   | 2026-08-09 | Updated Bot Manager with bot scenarios (0-3 bots), invisible bots for early phases, bot limits (max 3 per match, never share a team); added teammate decision event; resolved Real-Time Communication with Socket.IO selection                                                                                |
+| 0.4.0   | 2026-08-10 | Game Layer now owns Hokm logic: Card Engine, Rule Executor, and Bot Manager moved from Engine to backend/src/game/; Engine Layer clarified as game-agnostic                                                                                                                                                   |
 
 ---
 

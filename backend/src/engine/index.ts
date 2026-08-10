@@ -7,9 +7,8 @@ export * from './engine.types';
 // Main Service
 export { engineService, EngineService } from './engine.service';
 
-// Card Engine & Rule Executor
-export { cardEngine, CardEngine } from './card/card.engine';
-export { ruleExecutor, RuleExecutor } from './card/rule.executor';
+// Card Engine, Rule Executor, and Bot Manager moved to the Game Layer
+// (backend/src/game/) — see ARCHITECTURE.md Section 2.3.
 
 // Turn Manager
 export { turnManager, TurnManager } from './turn/turn.manager';
@@ -18,10 +17,6 @@ export * from './turn/turn.types';
 // Disconnect Manager
 export { disconnectManager, DisconnectManager } from './disconnect/disconnect.manager';
 export type { DisconnectConfig, DisconnectEvent } from './disconnect/disconnect.manager';
-
-// Bot Manager
-export { botManager, BotManager } from './bot/bot.manager';
-export type { BotManagerConfig } from './bot/bot.manager';
 
 // Lobby Manager
 export { lobbyManager, LobbyManager } from './lobby/lobby.manager';

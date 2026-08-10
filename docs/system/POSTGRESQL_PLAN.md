@@ -2,7 +2,7 @@
 
 **Document ID:** CV-SYS-019
 **Version:** 0.1.0
-**Status:** Draft (Planning)
+**Status:** Complete (Implementation)
 **Classification:** System
 **Owner:** Mostafa
 **Created:** 2026-08-08
@@ -279,9 +279,10 @@ Per DATABASE.md §9:
 - ARCHITECTURE.md (modular monolith, module ownership)
 - DASHBOARD.md (Sprint 8 — Task 8.1)
 - API.md (auth & user endpoints)
+- CHANGELOG.md (Sprint 8 implementation history)
 
 ---
 
-**Document Status:** Draft
+**Document Status:** Complete (Implementation)
 
-This is a planning document. Implementation will proceed in Sprint 8 (Task 8.1) after review and approval.
+This document was implemented in Sprint 8 (Tasks 8.1–8.2: real database + game state persistence). It is retained as the reference for the PostgreSQL / Prisma integration and schema design.

@@ -1,6 +1,6 @@
 // Card Engine - Manages deck operations and card utilities
 
-import { Card, Suit, Rank } from '../engine.types';
+import { Card, Suit, Rank } from '../../engine/engine.types';
 
 export class CardEngine {
   /**

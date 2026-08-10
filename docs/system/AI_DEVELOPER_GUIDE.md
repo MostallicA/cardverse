@@ -1,7 +1,7 @@
 # CardVerse AI Developer Guide
 
 **Document ID:** CV-SYS-007
-**Version:** 0.6.0
+**Version:** 0.7.0
 **Status:** Frozen
 **Classification:** System
 **Owner:** Mostafa & ChatGPT
@@ -203,10 +203,7 @@ Whenever behavior changes, determine whether the following documents require upd
 - DATABASE.md
 - API.md
 - RULEBOOK.md
-- DECISION_LOG.md
-- PROJECT_STATUS.md
-- IMPLEMENTATION_STATUS.md
-- REPOSITORY_SNAPSHOT.md
+- DASHBOARD.md
 
 Documentation should always reflect the current design.
 
@@ -223,11 +220,11 @@ Before making any significant engineering decision, the AI should determine:
 - Does it affect the public API?
 - Does it introduce technical debt?
 - Does it require updating documentation?
-- Does it affect PROJECT_STATUS.md?
+- Does it affect DASHBOARD.md (project status)?
 
 If the answer to any of these questions is "Yes", the corresponding documents should be reviewed before proceeding.
 
-Important decisions should be recorded in DECISION_LOG.md.
+Important decisions should be recorded in DASHBOARD.md (Section 6 — Decision Log).
 
 ---
 
@@ -261,8 +258,8 @@ A development task is complete only when all of the following conditions are sat
 - API documentation reflects contract changes.
 - Important decisions have been recorded.
 - Existing project conventions have been preserved.
-- PROJECT_STATUS.md has been updated if project status changed.
-- IMPLEMENTATION_STATUS.md has been updated if implementation changed.
+- DASHBOARD.md has been updated if project status changed.
+- DASHBOARD.md has been updated if the implementation changed.
 
 Implementation alone does not define completion.
 
@@ -355,8 +352,8 @@ Only after completing this checklist should the task be considered finished.
 
 ### Session Start Protocol
 
-1. **Review Documentation**: Before any development, review PROJECT_STATUS.md to understand current state.
-2. **Identify Current Task**: Determine the current task from PROJECT_STATUS.md.
+1. **Review Documentation**: Before any development, review DASHBOARD.md to understand current state.
+2. **Identify Current Task**: Determine the current task from DASHBOARD.md.
 3. **Execute Commands**: All commands are executed in CMD with step-by-step confirmation.
 4. **Verify Output**: After each command, verify output before proceeding.
 5. **Update Documentation**: After task completion, update all relevant documentation.
@@ -394,9 +391,9 @@ Session End Protocol
 
 **1. Review Changes: Verify all changes are committed.**
 
-**2. Update Status: Update PROJECT_STATUS.md and IMPLEMENTATION_STATUS.md.**
+**2. Update Status: Update DASHBOARD.md.**
 
-**3. Record Decisions: Document decisions in DECISION_LOG.md.**
+**3. Record Decisions: Document decisions in DASHBOARD.md (Section 6 — Decision Log).**
 
 **4. Final Commit: Create a commit with the completed task.**
 
@@ -408,7 +405,7 @@ Rules for Step-by-Step Development
 
 **3. Verify After Each Step: After executing commands, verify output before continuing.**
 
-**4. Document Decisions: Record important decisions in DECISION_LOG.md.**
+**4. Document Decisions: Record important decisions in DASHBOARD.md (Section 6 — Decision Log).**
 
 **5. Update Status: Always update project status after completing tasks.**
 
@@ -510,7 +507,7 @@ When starting a new chat session:
 
 1. Read all provided documentation
 
-2. Identify current task from PROJECT_STATUS.md
+2. Identify current task from DASHBOARD.md
 
 3. Resume from the LAST VERIFIED STEP
 
@@ -521,11 +518,7 @@ When starting a new chat session:
 Rule 8: Documentation Update at End
 Only after ALL steps of a task are completed and verified, the AI should propose updating:
 
-**IMPLEMENTATION_STATUS.md**
-
-**PROJECT_STATUS.md**
-
-**DECISION_LOG.md (if needed)**
+**DASHBOARD.md**
 
 ---
 
@@ -632,16 +625,16 @@ type docs\system\[filename].md
 
 Example Workflow:
 
-?? Step 1: Reading IMPLEMENTATION_STATUS.md
+?? Step 1: Reading DASHBOARD.md
 
 cd /d C:\Dev\CardVerse
-type docs\system\IMPLEMENTATION_STATUS.md
+type docs\system\DASHBOARD.md
 
 ?? User sends the output
 
 ?? Step 2: AI analyzes and identifies changes
 
-**Change 1 - Section: 2. Implementation Status Summary**
+**Change 1 - Section: 5. Implementation Status**
 - Old: `| Backend       | 19        | 0       | 19     |`
 - New: `| Backend       | 24        | 0       | 24     |`
 
@@ -654,7 +647,7 @@ type docs\system\IMPLEMENTATION_STATUS.md
 ?? Step 4: AI verifies
 
 cd /d C:\Dev\CardVerse
-type docs\system\IMPLEMENTATION_STATUS.md
+type docs\system\DASHBOARD.md
 
 ?? User sends the output for verification
 

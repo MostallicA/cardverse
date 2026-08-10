@@ -1,16 +1,9 @@
 // Engine Layer - Main Service
 // Manages the complete lifecycle of a Hokm match
 
-import {
-  EngineStatus,
-  Suit,
-  Rank,
-  Card,
-  Player,
-  Team,
-  MatchConfig,
-  MatchState,
-} from './engine.types';
+import { cardEngine } from '../game/card/card.engine';
+
+import { EngineStatus, Card, Player, Team, MatchConfig, MatchState } from './engine.types';
 import { gamePersistenceService } from './game-persistence.service';
 
 export class EngineService {
@@ -170,22 +163,16 @@ export class EngineService {
       throw new Error(`Match ${matchId} is not ready for dealing`);
     }
 
-    // Create a full 52-card deck
-    const deck = this.createDeck();
+    // Create, shuffle and deal a 52-card deck via the shared Card Engine (Game Layer)
+    const deck = cardEngine.createDeck();
+    const shuffled = cardEngine.shuffleDeck(deck);
+    const dealt = cardEngine.dealCards(shuffled, match.players.length);
 
-    // Shuffle the deck
-    this.shuffleDeck(deck);
-
-    // Deal 13 cards to each player
+    // Deal 13 cards to each player (5+4+4 per RULEBOOK.md)
     const handCards: Record<string, Card[]> = {};
-    const players = match.players;
-
-    for (let i = 0; i < players.length; i++) {
-      const playerId = players[i].id;
-      const startIndex = i * 13;
-      const endIndex = startIndex + 13;
-      handCards[playerId] = deck.slice(startIndex, endIndex);
-    }
+    match.players.forEach((player, i) => {
+      handCards[player.id] = dealt[i] || [];
+    });
 
     match.handCards = handCards;
     match.status = EngineStatus.PLAYING;
@@ -205,50 +192,6 @@ export class EngineService {
     }
 
     return match;
-  }
-
-  /**
-   * Creates a standard 52-card deck
-   */
-  private createDeck(): Card[] {
-    const suits = [Suit.KHESHT, Suit.PIK, Suit.DEL, Suit.KHAJ];
-    const ranks = [
-      Rank.TWO,
-      Rank.THREE,
-      Rank.FOUR,
-      Rank.FIVE,
-      Rank.SIX,
-      Rank.SEVEN,
-      Rank.EIGHT,
-      Rank.NINE,
-      Rank.TEN,
-      Rank.JACK,
-      Rank.QUEEN,
-      Rank.KING,
-      Rank.ACE,
-    ];
-
-    const deck: Card[] = [];
-    for (const suit of suits) {
-      for (const rank of ranks) {
-        deck.push({
-          suit,
-          rank,
-          id: `${rank}_${suit}`,
-        });
-      }
-    }
-    return deck;
-  }
-
-  /**
-   * Shuffles a deck using Fisher-Yates algorithm
-   */
-  private shuffleDeck(deck: Card[]): void {
-    for (let i = deck.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [deck[i], deck[j]] = [deck[j], deck[i]];
-    }
   }
 
   /**

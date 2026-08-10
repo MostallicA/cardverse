@@ -1,7 +1,7 @@
 // Bot Manager - Manages AI bot players for matches
 // Per ARCHITECTURE.md Section 3.2 and RULEBOOK.md Section 13
 
-import { Player, Card, Suit, MatchState, BotConfig, GameMode } from '../engine.types';
+import { Player, Card, Suit, MatchState, BotConfig, GameMode } from '../../engine/engine.types';
 
 export interface BotManagerConfig {
   defaultDifficulty: 'basic' | 'advanced';
@@ -30,7 +30,7 @@ export class BotManager {
     const bot: Player = {
       id: `bot_${userId}_${Date.now()}`,
       userId,
-      username: `${username} (Bot)`,
+      username: username, // invisible bot (per RULEBOOK §13.4)
       seatIndex,
       teamId,
       isActive: true,
@@ -50,12 +50,12 @@ export class BotManager {
 
   /**
    * Gets a bot's avatar configuration
-   * Per RULEBOOK.md Section 12: "bot's avatar is shown in grayscale"
+   * Per RULEBOOK.md Section 13.4: bots must be invisible — no grayscale avatar
    */
-  getBotAvatarConfig(playerId: string): BotConfig {
+  getBotAvatarConfig(_playerId: string): BotConfig {
     return {
       difficulty: this.config.defaultDifficulty,
-      grayscaleAvatar: this.botSeats.has(playerId),
+      grayscaleAvatar: false, // Bots are invisible per RULEBOOK.md §13.4
     };
   }
 
@@ -220,7 +220,7 @@ export class BotManager {
           '2': 1,
         };
 
-      case GameMode.NARS:
+      case GameMode.NARAS:
         return {
           '2': 13,
           '3': 12,
@@ -237,7 +237,7 @@ export class BotManager {
           ace: 1,
         };
 
-      case GameMode.TAK_NARS:
+      case GameMode.TAK_NARAS:
         return {
           ace: 13,
           '2': 12,
@@ -327,5 +327,5 @@ export class BotManager {
 // Export singleton instance with default config
 export const botManager = new BotManager({
   defaultDifficulty: 'basic',
-  grayscaleAvatar: true,
+  grayscaleAvatar: false, // Bots are invisible per RULEBOOK.md §13.4
 });
