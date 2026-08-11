@@ -1,12 +1,12 @@
 # CardVerse Dashboard
 
 **Document ID:** CV-SYS-016
-**Version:** 3.0.0
+**Version:** 3.1.0
 **Status:** Operational
 **Classification:** System
 **Owner:** Mostafa
 **Created:** 2026-07-07
-**Last Updated:** 2026-08-10
+**Last Updated:** 2026-08-11
 
 ---
 
@@ -52,17 +52,17 @@ Do not create new status/tracking files. Everything operational belongs in this 
 
 ## 3. Quick Status
 
-| Item                      | Value                                                          |
-| ------------------------- | -------------------------------------------------------------- |
-| **Current Phase**         | Production Release Preparation                                 |
-| **Current Sprint**        | Sprint 8 - Production Hardening                                |
-| **Current Task**          | Production release preparation                                 |
-| **Current Status**        | Complete                                                       |
-| **Latest Commit**         | 71836ba _(update after next commit)_                           |
-| **Latest Commit Message** | feat(socket): implement real-time communication with socket.io |
-| **Next Task**             | Game Layer (Hokm)                                              |
-| **Repository Status**     | Development                                                    |
-| **Current Version**       | 0.9.0                                                          |
+| Item                      | Value                                         |
+| ------------------------- | --------------------------------------------- |
+| **Current Phase**         | Game Layer Development                        |
+| **Current Sprint**        | Sprint 9 - Game Layer (Hokm)                  |
+| **Current Task**          | Scoring System Integration                    |
+| **Current Status**        | In Progress                                   |
+| **Latest Commit**         | e4734d5                                       |
+| **Latest Commit Message** | test: add jest configuration and test scripts |
+| **Next Task**             | AI Strategy / Match Flow                      |
+| **Repository Status**     | Development                                   |
+| **Current Version**       | 0.9.0                                         |
 
 ---
 
@@ -422,6 +422,7 @@ See CHANGELOG.md for the full task-by-task history of these sprints.
 | 2.8.0         | 2026-08-08              | Empty directories cleaned up; *.tsbuildinfo added to .gitignore                                                                                                                                                                                                                                                                                                                      |
 | 2.9.0         | 2026-08-08              | Open Items (Critical) added; Sprint 8 planned; Persian text converted to English; Quick Status updated                                                                                                                                                                                                                                                                               |
 | 3.0.0         | 2026-08-10              | Game Layer (Hokm) is the next task; Hokm rule/card/bot logic moved to the Game Layer under backend/src/game/; Sprint 8 complete; Open Items (Critical) resolved; documentation consistency updates                                                                                                                                                                                   |
+| 3.1.0         | 2026-08-11              | Scoring System implemented and tested (15 tests passed); Jest configuration added; Game Layer development in progress                                                                                                                                                                                                                                                                |
 
 ---
 
