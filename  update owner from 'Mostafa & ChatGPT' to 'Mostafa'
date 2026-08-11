@@ -1,0 +1,369 @@
+warning: in the working copy of 'backend/src/engine/engine.service.ts', LF will be replaced by CRLF the next time Git touches it
+[1mdiff --git a/backend/src/engine/engine.service.ts b/backend/src/engine/engine.service.ts[m
+[1mindex a3ef665..ba63a7f 100644[m
+[1m--- a/backend/src/engine/engine.service.ts[m
+[1m+++ b/backend/src/engine/engine.service.ts[m
+[36m@@ -2,6 +2,8 @@[m
+ // Manages the complete lifecycle of a Hokm match[m
+ [m
+ import { cardEngine } from '../game/card/card.engine';[m
+[32m+[m[32mimport { scoringService } from '../game/scoring/scoring.service';[m
+[32m+[m[32mimport { ruleExecutor } from '../game/card/rule.executor';[m
+ [m
+ import { EngineStatus, Card, Player, Team, MatchConfig, MatchState } from './engine.types';[m
+ import { gamePersistenceService } from './game-persistence.service';[m
+[36m@@ -19,42 +21,28 @@[m [mexport class EngineService {[m
+     players: Omit<Player, 'consecutiveMisses' | 'isBot'>[],[m
+     config: MatchConfig[m
+   ): MatchState {[m
+[31m-    // Validate: exactly 4 players required[m
+     if (players.length !== 4) {[m
+       throw new Error('Hokm requires exactly 4 players');[m
+     }[m
+ [m
+[31m-    // Create player objects with default values[m
+     const playerObjects: Player[] = players.map((p) => ({[m
+       ...p,[m
+       consecutiveMisses: 0,[m
+       isBot: false,[m
+     }));[m
+ [m
+[31m-    // Assign teams: seats 0&2 = Team 0, seats 1&3 = Team 1 (opposite seating)[m
+     const team0Players = playerObjects.filter((p) => p.seatIndex === 0 || p.seatIndex === 2);[m
+     const team1Players = playerObjects.filter((p) => p.seatIndex === 1 || p.seatIndex === 3);[m
+ [m
+     const teams: Team[] = [[m
+[31m-      {[m
+[31m-        id: 0,[m
+[31m-        players: team0Players,[m
+[31m-        setsWon: 0,[m
+[31m-        tricksWon: 0,[m
+[31m-      },[m
+[31m-      {[m
+[31m-        id: 1,[m
+[31m-        players: team1Players,[m
+[31m-        setsWon: 0,[m
+[31m-        tricksWon: 0,[m
+[31m-      },[m
+[32m+[m[32m      { id: 0, players: team0Players, setsWon: 0, tricksWon: 0 },[m
+[32m+[m[32m      { id: 1, players: team1Players, setsWon: 0, tricksWon: 0 },[m
+     ];[m
+ [m
+[31m-    // Select random Hakem for first round[m
+     const randomIndex = Math.floor(Math.random() * playerObjects.length);[m
+     const hakemId = playerObjects[randomIndex].id;[m
+[32m+[m[32m    const hakemTeamId = teams.find((t) => t.players.some((p) => p.id === hakemId))?.id ?? 0;[m
+ [m
+[31m-    // Create initial match state[m
+     const matchState: MatchState = {[m
+       matchId,[m
+       status: EngineStatus.INITIALIZING,[m
+[36m@@ -65,16 +53,16 @@[m [mexport class EngineService {[m
+       currentTrickIndex: 0,[m
+       tricks: [],[m
+       hakemId,[m
+[31m-      dealerId: hakemId, // Dealer is Hakem initially[m
+[32m+[m[32m      hakemTeamId,[m
+[32m+[m[32m      dealerId: hakemId,[m
+       handCards: {},[m
+       isComplete: false,[m
+     };[m
+ [m
+[31m-    // Store match state[m
+     this.matchStates.set(matchId, matchState);[m
+     this.activeMatches.add(matchId);[m
+[32m+[m[32m    scoringService.initializeMatch(matchId);[m
+ [m
+[31m-    // Persist to database (fire-and-forget; falls back to memory if DB unavailable)[m
+     if (this.persistenceEnabled) {[m
+       void gamePersistenceService.saveMatchState(matchState);[m
+     }[m
+[36m@@ -82,25 +70,14 @@[m [mexport class EngineService {[m
+     return matchState;[m
+   }[m
+ [m
+[31m-  /**[m
+[31m-   * Gets the current state of a match[m
+[31m-   */[m
+   getMatchState(matchId: string): MatchState | undefined {[m
+     return this.matchStates.get(matchId);[m
+   }[m
+ [m
+[31m-  /**[m
+[31m-   * Loads a match state from the database (or memory fallback).[m
+[31m-   * If found, it is restored into the in-memory store.[m
+[31m-   */[m
+   async loadMatchState(matchId: string): Promise<MatchState | undefined> {[m
+[31m-    // Check memory first[m
+     const cached = this.matchStates.get(matchId);[m
+[31m-    if (cached) {[m
+[31m-      return cached;[m
+[31m-    }[m
+[32m+[m[32m    if (cached) return cached;[m
+ [m
+[31m-    // Try to load from persistence layer[m
+     const restored = await gamePersistenceService.loadMatchState(matchId);[m
+     if (restored) {[m
+       this.matchStates.set(matchId, restored);[m
+[36m@@ -109,40 +86,25 @@[m [mexport class EngineService {[m
+     return restored;[m
+   }[m
+ [m
+[31m-  /**[m
+[31m-   * Enables or disables database persistence.[m
+[31m-   * When disabled, the engine operates purely in-memory.[m
+[31m-   */[m
+   setPersistenceEnabled(enabled: boolean): void {[m
+     this.persistenceEnabled = enabled;[m
+   }[m
+ [m
+[31m-  /**[m
+[31m-   * Returns whether persistence is currently enabled.[m
+[31m-   */[m
+   isPersistenceEnabled(): boolean {[m
+     return this.persistenceEnabled;[m
+   }[m
+ [m
+[31m-  /**[m
+[31m-   * Starts a match (moves from INITIALIZING to LOBBY)[m
+[31m-   */[m
+   startMatch(matchId: string): MatchState {[m
+     const match = this.getMatchState(matchId);[m
+[31m-    if (!match) {[m
+[31m-      throw new Error(`Match ${matchId} not found`);[m
+[31m-    }[m
+[31m-[m
+[32m+[m[32m    if (!match) throw new Error(`Match ${matchId} not found`);[m
+     if (match.status !== EngineStatus.INITIALIZING) {[m
+       throw new Error(`Match ${matchId} is not in INITIALIZING state`);[m
+     }[m
+ [m
+     match.status = EngineStatus.LOBBY;[m
+     match.startedAt = new Date();[m
+[31m-[m
+     this.matchStates.set(matchId, match);[m
+ [m
+[31m-    // Persist updated state[m
+     if (this.persistenceEnabled) {[m
+       void gamePersistenceService.saveMatchState(match);[m
+     }[m
+[36m@@ -150,25 +112,17 @@[m [mexport class EngineService {[m
+     return match;[m
+   }[m
+ [m
+[31m-  /**[m
+[31m-   * Deals cards to all players (5+4+4 = 13 cards each)[m
+[31m-   */[m
+   dealCards(matchId: string): MatchState {[m
+     const match = this.getMatchState(matchId);[m
+[31m-    if (!match) {[m
+[31m-      throw new Error(`Match ${matchId} not found`);[m
+[31m-    }[m
+[31m-[m
+[32m+[m[32m    if (!match) throw new Error(`Match ${matchId} not found`);[m
+     if (match.status !== EngineStatus.LOBBY && match.status !== EngineStatus.PLAYING) {[m
+       throw new Error(`Match ${matchId} is not ready for dealing`);[m
+     }[m
+ [m
+[31m-    // Create, shuffle and deal a 52-card deck via the shared Card Engine (Game Layer)[m
+     const deck = cardEngine.createDeck();[m
+     const shuffled = cardEngine.shuffleDeck(deck);[m
+     const dealt = cardEngine.dealCards(shuffled, match.players.length);[m
+ [m
+[31m-    // Deal 13 cards to each player (5+4+4 per RULEBOOK.md)[m
+     const handCards: Record<string, Card[]> = {};[m
+     match.players.forEach((player, i) => {[m
+       handCards[player.id] = dealt[i] || [];[m
+[36m@@ -178,15 +132,10 @@[m [mexport class EngineService {[m
+     match.status = EngineStatus.PLAYING;[m
+     match.currentTrickIndex = 0;[m
+     match.tricks = [];[m
+[31m-[m
+[31m-    // Reset tricks won for current set[m
+[31m-    match.teams.forEach((team) => {[m
+[31m-      team.tricksWon = 0;[m
+[31m-    });[m
+[32m+[m[32m    match.teams.forEach((team) => { team.tricksWon = 0; });[m
+ [m
+     this.matchStates.set(matchId, match);[m
+ [m
+[31m-    // Persist updated state[m
+     if (this.persistenceEnabled) {[m
+       void gamePersistenceService.saveMatchState(match);[m
+     }[m
+[36m@@ -194,51 +143,83 @@[m [mexport class EngineService {[m
+     return match;[m
+   }[m
+ [m
+[31m-  /**[m
+[31m-   * Places a card from a player's hand[m
+[31m-   */[m
+   playCard(matchId: string, playerId: string, cardId: string): MatchState {[m
+     const match = this.getMatchState(matchId);[m
+[31m-    if (!match) {[m
+[31m-      throw new Error(`Match ${matchId} not found`);[m
+[31m-    }[m
+[31m-[m
+[32m+[m[32m    if (!match) throw new Error(`Match ${matchId} not found`);[m
+     if (match.status !== EngineStatus.PLAYING) {[m
+       throw new Error(`Match ${matchId} is not in PLAYING state`);[m
+     }[m
+ [m
+[31m-    // Validate player exists and is active[m
+     const player = match.players.find((p) => p.id === playerId);[m
+[31m-    if (!player) {[m
+[31m-      throw new Error(`Player ${playerId} not found in match`);[m
+[31m-    }[m
+[31m-[m
+[31m-    if (!player.isActive) {[m
+[31m-      throw new Error(`Player ${playerId} is not active`);[m
+[31m-    }[m
+[32m+[m[32m    if (!player) throw new Error(`Player ${playerId} not found`);[m
+[32m+[m[32m    if (!player.isActive) throw new Error(`Player ${playerId} is not active`);[m
+ [m
+[31m-    // Find card in player's hand[m
+     const hand = match.handCards[playerId];[m
+[31m-    if (!hand) {[m
+[31m-      throw new Error(`Player ${playerId} has no cards`);[m
+[31m-    }[m
+[32m+[m[32m    if (!hand) throw new Error(`Player ${playerId} has no cards`);[m
+ [m
+     const cardIndex = hand.findIndex((c) => c.id === cardId);[m
+     if (cardIndex === -1) {[m
+       throw new Error(`Card ${cardId} not found in player ${playerId}'s hand`);[m
+     }[m
+ [m
+[31m-    // Remove card from hand[m
+[31m-    hand.splice(cardIndex, 1); // Remove card without storing[m
+[32m+[m[32m    hand.splice(cardIndex, 1);[m
+     match.handCards[playerId] = hand;[m
+ [m
+[31m-    // Add to current trick[m
+[31m-    // (Trick management will be handled by the Turn Manager)[m
+[31m-    // This is a placeholder - full trick logic goes in turn manager[m
+[32m+[m[32m    // ✅ استفاده از `hakemTeamId` ذخیره‌شده در matchState[m
+[32m+[m[32m    const hakemTeamId = match.hakemTeamId;[m
+[32m+[m
+[32m+[m[32m    // 🔧 این بخش باید با منطق واقعی `getTrickWinner` جایگزین شود[m
+[32m+[m[32m    const playerTeam = match.teams.find((t) => t.players.some((p) => p.id === playerId));[m
+[32m+[m[32m    if (playerTeam) {[m
+[32m+[m[32m      playerTeam.tricksWon += 1;[m
+[32m+[m[32m    }[m
+[32m+[m
+[32m+[m[32m    const team0Tricks = match.teams[0].tricksWon;[m
+[32m+[m[32m    const team1Tricks = match.teams[1].tricksWon;[m
+[32m+[m
+[32m+[m[32m    if (team0Tricks >= 7 || team1Tricks >= 7) {[m
+[32m+[m[32m      const outcome = ruleExecutor.getRoundOutcome(team0Tricks, team1Tricks, hakemTeamId);[m
+[32m+[m[32m      const hakemId = match.hakemId;[m
+[32m+[m[32m      if (hakemId === undefined) {[m
+[32m+[m[32m        throw new Error(`Match ${matchId} has no hakem`);[m
+[32m+[m[32m      }[m
+[32m+[m[32m      const hakemIndex = match.players.findIndex((p) => p.id === hakemId);[m
+[32m+[m[32m      const nextHakemId = match.players[(hakemIndex + 1) % match.players.length].id;[m
+[32m+[m[32m      const roundResult = {[m
+[32m+[m[32m        ...outcome,[m
+[32m+[m[32m        roundNumber: match.currentSet,[m
+[32m+[m[32m        hakemId,[m
+[32m+[m[32m        nextHakemId,[m
+[32m+[m[32m      };[m
+[32m+[m
+[32m+[m[32m      scoringService.recordRound(matchId, roundResult);[m
+[32m+[m
+[32m+[m[32m      const winningTeam = match.teams[roundResult.winningTeamId];[m
+[32m+[m[32m      winningTeam.setsWon += roundResult.setsAwarded;[m
+[32m+[m
+[32m+[m[32m      if (winningTeam.setsWon >= 7) {[m
+[32m+[m[32m        match.status = EngineStatus.COMPLETED;[m
+[32m+[m[32m        match.isComplete = true;[m
+[32m+[m[32m        match.completedAt = new Date();[m
+[32m+[m[32m        this.activeMatches.delete(matchId);[m
+[32m+[m[32m      } else {[m
+[32m+[m[32m        match.currentSet += 1;[m
+[32m+[m[32m        match.teams.forEach((team) => { team.tricksWon = 0; });[m
+[32m+[m[32m        match.tricks = [];[m
+[32m+[m
+[32m+[m[32m        const deck = cardEngine.createDeck();[m
+[32m+[m[32m        const shuffled = cardEngine.shuffleDeck(deck);[m
+[32m+[m[32m        const dealt = cardEngine.dealCards(shuffled, match.players.length);[m
+[32m+[m[32m        const handCards: Record<string, Card[]> = {};[m
+[32m+[m[32m        match.players.forEach((player, i) => {[m
+[32m+[m[32m          handCards[player.id] = dealt[i] || [];[m
+[32m+[m[32m        });[m
+[32m+[m[32m        match.handCards = handCards;[m
+[32m+[m[32m      }[m
+[32m+[m[32m    }[m
+ [m
+     this.matchStates.set(matchId, match);[m
+ [m
+[31m-    // Persist updated state[m
+     if (this.persistenceEnabled) {[m
+       void gamePersistenceService.saveMatchState(match);[m
+     }[m
+[36m@@ -246,14 +227,9 @@[m [mexport class EngineService {[m
+     return match;[m
+   }[m
+ [m
+[31m-  /**[m
+[31m-   * Ends a match[m
+[31m-   */[m
+   endMatch(matchId: string): MatchState {[m
+     const match = this.getMatchState(matchId);[m
+[31m-    if (!match) {[m
+[31m-      throw new Error(`Match ${matchId} not found`);[m
+[31m-    }[m
+[32m+[m[32m    if (!match) throw new Error(`Match ${matchId} not found`);[m
+ [m
+     match.status = EngineStatus.COMPLETED;[m
+     match.isComplete = true;[m
+[36m@@ -262,7 +238,6 @@[m [mexport class EngineService {[m
+     this.activeMatches.delete(matchId);[m
+     this.matchStates.set(matchId, match);[m
+ [m
+[31m-    // Persist final state[m
+     if (this.persistenceEnabled) {[m
+       void gamePersistenceService.saveMatchState(match);[m
+     }[m
+[36m@@ -270,16 +245,10 @@[m [mexport class EngineService {[m
+     return match;[m
+   }[m
+ [m
+[31m-  /**[m
+[31m-   * Gets all active match IDs[m
+[31m-   */[m
+   getActiveMatches(): string[] {[m
+     return Array.from(this.activeMatches);[m
+   }[m
+ [m
+[31m-  /**[m
+[31m-   * Checks if a player is in an active match[m
+[31m-   */[m
+   isPlayerInMatch(playerId: string): boolean {[m
+     for (const matchId of this.activeMatches) {[m
+       const match = this.matchStates.get(matchId);[m
+[36m@@ -290,9 +259,6 @@[m [mexport class EngineService {[m
+     return false;[m
+   }[m
+ [m
+[31m-  /**[m
+[31m-   * Gets the match ID for a player[m
+[31m-   */[m
+   getMatchByPlayer(playerId: string): string | undefined {[m
+     for (const matchId of this.activeMatches) {[m
+       const match = this.matchStates.get(matchId);[m
+[36m@@ -303,13 +269,9 @@[m [mexport class EngineService {[m
+     return undefined;[m
+   }[m
+ [m
+[31m-  /**[m
+[31m-   * Gets the count of active matches[m
+[31m-   */[m
+   getActiveMatchCount(): number {[m
+     return this.activeMatches.size;[m
+   }[m
+ }[m
+ [m
+[31m-// Export singleton instance[m
+[31m-export const engineService = new EngineService();[m
+[32m+[m[32mexport const engineService = new EngineService();[m
+\ No newline at end of file[m

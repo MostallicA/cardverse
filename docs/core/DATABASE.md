@@ -4,7 +4,7 @@
 **Version:** 0.3.0
 **Status:** Frozen
 **Classification:** Technical
-**Owner:** Mostafa & ChatGPT
+**Owner:** Mostafa
 **Created:** 2026-06-27
 **Last Updated:** 2026-08-09
 

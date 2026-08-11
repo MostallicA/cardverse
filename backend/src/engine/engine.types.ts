@@ -92,6 +92,7 @@ export interface MatchState {
   tricks: Trick[]; // All tricks in current set
   currentPlayerId?: string; // Whose turn it is
   hakemId?: string; // Hakem for current round
+  hakemTeamId: number;
   dealerId?: string; // Dealer for current round
   handCards: Record<string, Card[]>; // playerId -> cards in hand
   isComplete: boolean;

@@ -2,6 +2,8 @@
 // Manages the complete lifecycle of a Hokm match
 
 import { cardEngine } from '../game/card/card.engine';
+import { scoringService } from '../game/scoring/scoring.service';
+import { ruleExecutor } from '../game/card/rule.executor';
 
 import { EngineStatus, Card, Player, Team, MatchConfig, MatchState } from './engine.types';
 import { gamePersistenceService } from './game-persistence.service';
@@ -19,42 +21,28 @@ export class EngineService {
     players: Omit<Player, 'consecutiveMisses' | 'isBot'>[],
     config: MatchConfig
   ): MatchState {
-    // Validate: exactly 4 players required
     if (players.length !== 4) {
       throw new Error('Hokm requires exactly 4 players');
     }
 
-    // Create player objects with default values
     const playerObjects: Player[] = players.map((p) => ({
       ...p,
       consecutiveMisses: 0,
       isBot: false,
     }));
 
-    // Assign teams: seats 0&2 = Team 0, seats 1&3 = Team 1 (opposite seating)
     const team0Players = playerObjects.filter((p) => p.seatIndex === 0 || p.seatIndex === 2);
     const team1Players = playerObjects.filter((p) => p.seatIndex === 1 || p.seatIndex === 3);
 
     const teams: Team[] = [
-      {
-        id: 0,
-        players: team0Players,
-        setsWon: 0,
-        tricksWon: 0,
-      },
-      {
-        id: 1,
-        players: team1Players,
-        setsWon: 0,
-        tricksWon: 0,
-      },
+      { id: 0, players: team0Players, setsWon: 0, tricksWon: 0 },
+      { id: 1, players: team1Players, setsWon: 0, tricksWon: 0 },
     ];
 
-    // Select random Hakem for first round
     const randomIndex = Math.floor(Math.random() * playerObjects.length);
     const hakemId = playerObjects[randomIndex].id;
+    const hakemTeamId = teams.find((t) => t.players.some((p) => p.id === hakemId))?.id ?? 0;
 
-    // Create initial match state
     const matchState: MatchState = {
       matchId,
       status: EngineStatus.INITIALIZING,
@@ -65,16 +53,16 @@ export class EngineService {
       currentTrickIndex: 0,
       tricks: [],
       hakemId,
-      dealerId: hakemId, // Dealer is Hakem initially
+      hakemTeamId,
+      dealerId: hakemId,
       handCards: {},
       isComplete: false,
     };
 
-    // Store match state
     this.matchStates.set(matchId, matchState);
     this.activeMatches.add(matchId);
+    scoringService.initializeMatch(matchId);
 
-    // Persist to database (fire-and-forget; falls back to memory if DB unavailable)
     if (this.persistenceEnabled) {
       void gamePersistenceService.saveMatchState(matchState);
     }
@@ -82,25 +70,14 @@ export class EngineService {
     return matchState;
   }
 
-  /**
-   * Gets the current state of a match
-   */
   getMatchState(matchId: string): MatchState | undefined {
     return this.matchStates.get(matchId);
   }
 
-  /**
-   * Loads a match state from the database (or memory fallback).
-   * If found, it is restored into the in-memory store.
-   */
   async loadMatchState(matchId: string): Promise<MatchState | undefined> {
-    // Check memory first
     const cached = this.matchStates.get(matchId);
-    if (cached) {
-      return cached;
-    }
+    if (cached) return cached;
 
-    // Try to load from persistence layer
     const restored = await gamePersistenceService.loadMatchState(matchId);
     if (restored) {
       this.matchStates.set(matchId, restored);
@@ -109,40 +86,25 @@ export class EngineService {
     return restored;
   }
 
-  /**
-   * Enables or disables database persistence.
-   * When disabled, the engine operates purely in-memory.
-   */
   setPersistenceEnabled(enabled: boolean): void {
     this.persistenceEnabled = enabled;
   }
 
-  /**
-   * Returns whether persistence is currently enabled.
-   */
   isPersistenceEnabled(): boolean {
     return this.persistenceEnabled;
   }
 
-  /**
-   * Starts a match (moves from INITIALIZING to LOBBY)
-   */
   startMatch(matchId: string): MatchState {
     const match = this.getMatchState(matchId);
-    if (!match) {
-      throw new Error(`Match ${matchId} not found`);
-    }
-
+    if (!match) throw new Error(`Match ${matchId} not found`);
     if (match.status !== EngineStatus.INITIALIZING) {
       throw new Error(`Match ${matchId} is not in INITIALIZING state`);
     }
 
     match.status = EngineStatus.LOBBY;
     match.startedAt = new Date();
-
     this.matchStates.set(matchId, match);
 
-    // Persist updated state
     if (this.persistenceEnabled) {
       void gamePersistenceService.saveMatchState(match);
     }
@@ -150,25 +112,17 @@ export class EngineService {
     return match;
   }
 
-  /**
-   * Deals cards to all players (5+4+4 = 13 cards each)
-   */
   dealCards(matchId: string): MatchState {
     const match = this.getMatchState(matchId);
-    if (!match) {
-      throw new Error(`Match ${matchId} not found`);
-    }
-
+    if (!match) throw new Error(`Match ${matchId} not found`);
     if (match.status !== EngineStatus.LOBBY && match.status !== EngineStatus.PLAYING) {
       throw new Error(`Match ${matchId} is not ready for dealing`);
     }
 
-    // Create, shuffle and deal a 52-card deck via the shared Card Engine (Game Layer)
     const deck = cardEngine.createDeck();
     const shuffled = cardEngine.shuffleDeck(deck);
     const dealt = cardEngine.dealCards(shuffled, match.players.length);
 
-    // Deal 13 cards to each player (5+4+4 per RULEBOOK.md)
     const handCards: Record<string, Card[]> = {};
     match.players.forEach((player, i) => {
       handCards[player.id] = dealt[i] || [];
@@ -178,15 +132,12 @@ export class EngineService {
     match.status = EngineStatus.PLAYING;
     match.currentTrickIndex = 0;
     match.tricks = [];
-
-    // Reset tricks won for current set
     match.teams.forEach((team) => {
       team.tricksWon = 0;
     });
 
     this.matchStates.set(matchId, match);
 
-    // Persist updated state
     if (this.persistenceEnabled) {
       void gamePersistenceService.saveMatchState(match);
     }
@@ -194,51 +145,85 @@ export class EngineService {
     return match;
   }
 
-  /**
-   * Places a card from a player's hand
-   */
   playCard(matchId: string, playerId: string, cardId: string): MatchState {
     const match = this.getMatchState(matchId);
-    if (!match) {
-      throw new Error(`Match ${matchId} not found`);
-    }
-
+    if (!match) throw new Error(`Match ${matchId} not found`);
     if (match.status !== EngineStatus.PLAYING) {
       throw new Error(`Match ${matchId} is not in PLAYING state`);
     }
 
-    // Validate player exists and is active
     const player = match.players.find((p) => p.id === playerId);
-    if (!player) {
-      throw new Error(`Player ${playerId} not found in match`);
-    }
+    if (!player) throw new Error(`Player ${playerId} not found`);
+    if (!player.isActive) throw new Error(`Player ${playerId} is not active`);
 
-    if (!player.isActive) {
-      throw new Error(`Player ${playerId} is not active`);
-    }
-
-    // Find card in player's hand
     const hand = match.handCards[playerId];
-    if (!hand) {
-      throw new Error(`Player ${playerId} has no cards`);
-    }
+    if (!hand) throw new Error(`Player ${playerId} has no cards`);
 
     const cardIndex = hand.findIndex((c) => c.id === cardId);
     if (cardIndex === -1) {
       throw new Error(`Card ${cardId} not found in player ${playerId}'s hand`);
     }
 
-    // Remove card from hand
-    hand.splice(cardIndex, 1); // Remove card without storing
+    hand.splice(cardIndex, 1);
     match.handCards[playerId] = hand;
 
-    // Add to current trick
-    // (Trick management will be handled by the Turn Manager)
-    // This is a placeholder - full trick logic goes in turn manager
+    // ✅ استفاده از `hakemTeamId` ذخیره‌شده در matchState
+    const hakemTeamId = match.hakemTeamId;
+
+    // 🔧 این بخش باید با منطق واقعی `getTrickWinner` جایگزین شود
+    const playerTeam = match.teams.find((t) => t.players.some((p) => p.id === playerId));
+    if (playerTeam) {
+      playerTeam.tricksWon += 1;
+    }
+
+    const team0Tricks = match.teams[0].tricksWon;
+    const team1Tricks = match.teams[1].tricksWon;
+
+    if (team0Tricks >= 7 || team1Tricks >= 7) {
+      const outcome = ruleExecutor.getRoundOutcome(team0Tricks, team1Tricks, hakemTeamId);
+      const hakemId = match.hakemId;
+      if (hakemId === undefined) {
+        throw new Error(`Match ${matchId} has no hakem`);
+      }
+      const hakemIndex = match.players.findIndex((p) => p.id === hakemId);
+      const nextHakemId = match.players[(hakemIndex + 1) % match.players.length].id;
+      const roundResult = {
+        ...outcome,
+        roundNumber: match.currentSet,
+        hakemId,
+        nextHakemId,
+      };
+
+      scoringService.recordRound(matchId, roundResult);
+
+      const winningTeam = match.teams[roundResult.winningTeamId];
+      winningTeam.setsWon += roundResult.setsAwarded;
+
+      if (winningTeam.setsWon >= 7) {
+        match.status = EngineStatus.COMPLETED;
+        match.isComplete = true;
+        match.completedAt = new Date();
+        this.activeMatches.delete(matchId);
+      } else {
+        match.currentSet += 1;
+        match.teams.forEach((team) => {
+          team.tricksWon = 0;
+        });
+        match.tricks = [];
+
+        const deck = cardEngine.createDeck();
+        const shuffled = cardEngine.shuffleDeck(deck);
+        const dealt = cardEngine.dealCards(shuffled, match.players.length);
+        const handCards: Record<string, Card[]> = {};
+        match.players.forEach((player, i) => {
+          handCards[player.id] = dealt[i] || [];
+        });
+        match.handCards = handCards;
+      }
+    }
 
     this.matchStates.set(matchId, match);
 
-    // Persist updated state
     if (this.persistenceEnabled) {
       void gamePersistenceService.saveMatchState(match);
     }
@@ -246,14 +231,9 @@ export class EngineService {
     return match;
   }
 
-  /**
-   * Ends a match
-   */
   endMatch(matchId: string): MatchState {
     const match = this.getMatchState(matchId);
-    if (!match) {
-      throw new Error(`Match ${matchId} not found`);
-    }
+    if (!match) throw new Error(`Match ${matchId} not found`);
 
     match.status = EngineStatus.COMPLETED;
     match.isComplete = true;
@@ -262,7 +242,6 @@ export class EngineService {
     this.activeMatches.delete(matchId);
     this.matchStates.set(matchId, match);
 
-    // Persist final state
     if (this.persistenceEnabled) {
       void gamePersistenceService.saveMatchState(match);
     }
@@ -270,16 +249,10 @@ export class EngineService {
     return match;
   }
 
-  /**
-   * Gets all active match IDs
-   */
   getActiveMatches(): string[] {
     return Array.from(this.activeMatches);
   }
 
-  /**
-   * Checks if a player is in an active match
-   */
   isPlayerInMatch(playerId: string): boolean {
     for (const matchId of this.activeMatches) {
       const match = this.matchStates.get(matchId);
@@ -290,9 +263,6 @@ export class EngineService {
     return false;
   }
 
-  /**
-   * Gets the match ID for a player
-   */
   getMatchByPlayer(playerId: string): string | undefined {
     for (const matchId of this.activeMatches) {
       const match = this.matchStates.get(matchId);
@@ -303,13 +273,9 @@ export class EngineService {
     return undefined;
   }
 
-  /**
-   * Gets the count of active matches
-   */
   getActiveMatchCount(): number {
     return this.activeMatches.size;
   }
 }
 
-// Export singleton instance
 export const engineService = new EngineService();
