@@ -1,12 +1,12 @@
 ﻿# CardVerse
 
 **Document ID:** CV-0001
-**Version:** 0.4.0
+**Version:** 0.5.0
 **Status:** Frozen
 **Classification:** Core
 **Owner:** Mostafa
 **Created:** 2026-06-26
-**Last Updated:** 2026-08-09
+**Last Updated:** 2026-08-11
 
 ---
 
@@ -208,6 +208,7 @@ All rights reserved.
 | 0.2.0   | 2026-07-07 | Updated with new documentation structure and setup guide                                                                                                        |
 | 0.3.0   | 2026-07-12 | corrected Planned Games to the confirmed priority order (Bidel, Shelem, Haft Khabis, Bank/21, Pasur/11, Poker); clarified Sars/Nars/Tak Nars are Hokm sub-modes |
 | 0.4.0   | 2026-08-09 | Updated References to use DASHBOARD.md; improved documentation structure                                                                                        |
+| 0.5.0   | 2026-08-11 | Updated documentation: Scoring System completed; CHANGELOG updated                                                                                              |
 
 ```
 

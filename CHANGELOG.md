@@ -6,6 +6,27 @@ The format is inspired by **Keep a Changelog** and follows **Semantic Versioning
 
 ---
 
+## [1.1.0] - 2026-08-11 — Sprint 9: Game Layer (Hokm)
+
+### Added
+
+- Scoring System fully implemented and tested (15/15 tests passed)
+- Jest configuration and test scripts for backend testing
+- Scoring Service with Trick → Set → Match hierarchy
+- Unit tests for Scoring Service (15 tests covering all scenarios)
+- Unit tests for Rule Executor
+
+### Changed
+
+- Updated DASHBOARD.md to version 3.1.0
+- Updated CHANGELOG.md to version 1.1.0
+
+### Security
+
+- No security changes in this release
+
+---
+
 ## [1.0.0] - 2026-08-10 — Sprint 8: Production Hardening
 
 ### Added
