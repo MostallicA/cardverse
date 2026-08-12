@@ -8,12 +8,16 @@
 
 import { Request, Response } from 'express';
 
-import { ShopCategory, Rarity } from '../shop/shop.types';
-import { sendSuccess, sendError, getRequiredParamString } from '../../utils/controller.utils';
+import { ShopCategory, Rarity } from '../shop/shop.types.js';
+import { sendSuccess, sendError, getRequiredParamString } from '../../utils/controller.utils.js';
 
-import { validateGetInventory, validateUseItem, validateTransferItem } from './inventory.validator';
-import { inventoryService } from './inventory.service';
-import { ItemType, InventoryItemStatus } from './inventory.types';
+import {
+  validateGetInventory,
+  validateUseItem,
+  validateTransferItem,
+} from './inventory.validator.js';
+import { inventoryService } from './inventory.service.js';
+import { ItemType, InventoryItemStatus } from './inventory.types.js';
 
 type AuthenticatedRequest = Request & { user?: { id: string } };
 

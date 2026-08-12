@@ -1,5 +1,14 @@
-import { MatchmakingIntegrationService } from './matchmaking-integration.service';
-import { lobbyManager } from '../../engine/lobby/lobby.manager';
+import { lobbyManager } from '../../engine/lobby/lobby.manager.js';
+
+import { MatchmakingIntegrationService } from './matchmaking-integration.service.js';
+
+// Mock the database so the unit test does not load the real Prisma client
+// (Prisma 7 generates ESM-only code that cannot be loaded in a CJS test run).
+jest.mock('../../db/prisma', () => ({
+  prisma: {
+    match: { update: jest.fn().mockResolvedValue({}) },
+  },
+}));
 
 describe('MatchmakingIntegrationService', () => {
   afterEach(() => {

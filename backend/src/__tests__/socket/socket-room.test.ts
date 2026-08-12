@@ -1,5 +1,14 @@
 import { createServer, Server as HttpServer } from 'http';
-import { SocketManager } from '../../socket';
+
+import { SocketManager } from '../../socket/index.js';
+
+// Mock the database so the unit test does not load the real Prisma client
+// (Prisma 7 generates ESM-only code that cannot be loaded in a CJS test run).
+jest.mock('../../db/prisma', () => ({
+  prisma: {
+    match: { update: jest.fn().mockResolvedValue({}) },
+  },
+}));
 
 describe('SocketManager room handling', () => {
   let server: HttpServer;

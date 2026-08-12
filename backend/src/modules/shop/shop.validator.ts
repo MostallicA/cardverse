@@ -6,7 +6,7 @@
  * purchasing items, getting shop items, and managing inventory.
  */
 
-import { ShopCategory, Rarity } from './shop.types';
+import { ShopCategory, Rarity } from './shop.types.js';
 
 export interface ValidationResult {
   valid: boolean;

@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
 
-import { asyncHandler } from '../../middleware/asyncHandler';
+import { asyncHandler } from '../../middleware/asyncHandler.js';
 
-import { matchmakingIntegration } from './matchmaking-integration.service';
+import { matchmakingIntegration } from './matchmaking-integration.service.js';
 import {
   createMatchFromQueueSchema,
   startMatchSchema,
@@ -13,7 +13,7 @@ import {
   getMatchStateSchema,
   getMatchStatisticsSchema,
   cleanupMatchSchema,
-} from './matchmaking-integration.validator';
+} from './matchmaking-integration.validator.js';
 
 /**
  * Create a match from matchmaking queue

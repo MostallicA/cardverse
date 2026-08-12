@@ -1,7 +1,7 @@
 // Scoring Types & Constants - Trick -> Set -> Match hierarchy
 // Per RULEBOOK.md Sections 8, 9 & 10
 
-import { RoundResult, SpecialOutcome } from '../../engine/engine.types';
+import { RoundResult, SpecialOutcome } from '../../engine/engine.types.js';
 
 /**
  * Scoring constants — single source of truth for the Trick->Set->Match hierarchy.

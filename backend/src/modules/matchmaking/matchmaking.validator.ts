@@ -6,7 +6,7 @@
  * joining queue, leaving queue, and getting queue status.
  */
 
-import { GameMode } from './matchmaking.types';
+import { GameMode } from './matchmaking.types.js';
 
 export interface ValidationResult {
   valid: boolean;

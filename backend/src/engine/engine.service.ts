@@ -1,12 +1,12 @@
 // Engine Layer - Main Service
 // Manages the complete lifecycle of a Hokm match
 
-import { cardEngine } from '../game/card/card.engine';
-import { scoringService } from '../game/scoring/scoring.service';
-import { ruleExecutor } from '../game/card/rule.executor';
+import { cardEngine } from '../game/card/card.engine.js';
+import { scoringService } from '../game/scoring/scoring.service.js';
+import { ruleExecutor } from '../game/card/rule.executor.js';
 
-import { EngineStatus, Card, Player, Team, MatchConfig, MatchState } from './engine.types';
-import { gamePersistenceService } from './game-persistence.service';
+import { EngineStatus, Card, Player, Team, MatchConfig, MatchState } from './engine.types.js';
+import { gamePersistenceService } from './game-persistence.service.js';
 
 export class EngineService {
   private matchStates: Map<string, MatchState> = new Map();

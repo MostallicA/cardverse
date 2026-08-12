@@ -16,7 +16,7 @@ import {
   NotificationPreferences,
   UpdatePreferencesRequest,
   UnreadCountResponse,
-} from './notifications.types';
+} from './notifications.types.js';
 
 // In-memory stores (will be replaced with PostgreSQL in production)
 const notifications = new Map<string, Notification[]>(); // userId -> notifications[]

@@ -6,9 +6,9 @@
  * viewing items, using items, and transferring items.
  */
 
-import { ShopCategory, Rarity } from '../shop/shop.types';
+import { ShopCategory, Rarity } from '../shop/shop.types.js';
 
-import { ItemType, InventoryItemStatus } from './inventory.types';
+import { ItemType, InventoryItemStatus } from './inventory.types.js';
 
 export interface ValidationResult {
   valid: boolean;

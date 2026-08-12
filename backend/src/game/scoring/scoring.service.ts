@@ -1,11 +1,11 @@
 // Scoring Service - Manages Trick -> Set -> Match scoring
 // Per RULEBOOK.md Sections 8, 9 & 10
 
-import { prisma } from '../../db/prisma';
-import { ruleExecutor } from '../card/rule.executor';
-import { MatchState, RoundResult, SpecialOutcome } from '../../engine/engine.types';
+import { prisma } from '../../db/prisma.js';
+import { ruleExecutor } from '../card/rule.executor.js';
+import { MatchState, RoundResult, SpecialOutcome } from '../../engine/engine.types.js';
 
-import { MatchScore, TrickResult, ScoringConstants } from './scoring.types';
+import { MatchScore, TrickResult, ScoringConstants } from './scoring.types.js';
 
 export class ScoringService {
   private matchScores: Map<string, MatchScore> = new Map<string, MatchScore>();

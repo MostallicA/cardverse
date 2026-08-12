@@ -8,9 +8,9 @@
 
 import { Router } from 'express';
 
-import { authenticate } from '../../middleware/auth.middleware';
+import { authenticate } from '../../middleware/auth.middleware.js';
 
-import { walletController } from './wallet.controller';
+import { walletController } from './wallet.controller.js';
 
 const router: Router = Router();
 

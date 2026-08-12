@@ -5,9 +5,9 @@
 
 /// <reference types="jest" />
 
-import { Card, Suit, Rank, GameMode, SpecialOutcome } from '../../engine/engine.types';
+import { Card, Suit, Rank, GameMode, SpecialOutcome } from '../../engine/engine.types.js';
 
-import { ruleExecutor } from './rule.executor';
+import { ruleExecutor } from './rule.executor.js';
 
 describe('RuleExecutor', () => {
   // Helper: build a Card quickly

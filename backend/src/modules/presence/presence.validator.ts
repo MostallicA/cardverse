@@ -6,7 +6,7 @@
  * status updates, heartbeat, and batch queries.
  */
 
-import { PresenceStatus } from './presence.types';
+import { PresenceStatus } from './presence.types.js';
 
 export interface ValidationResult {
   valid: boolean;

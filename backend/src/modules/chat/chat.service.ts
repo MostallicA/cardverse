@@ -6,7 +6,7 @@
  * sending messages, retrieving chat history, and managing read status.
  */
 
-import { presenceService } from '../presence/presence.service';
+import { presenceService } from '../presence/presence.service.js';
 
 import {
   Message,
@@ -16,7 +16,7 @@ import {
   MessageResponse,
   ChatRoomResponse,
   GetMessagesResponse,
-} from './chat.types';
+} from './chat.types.js';
 
 // In-memory stores (will be replaced with Redis/PostgreSQL in production)
 const messages = new Map<string, Message[]>(); // userId -> messages[]

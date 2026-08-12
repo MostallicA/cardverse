@@ -8,15 +8,15 @@
 
 import { Request, Response } from 'express';
 
-import { sendSuccess, sendError, getRequiredParamString } from '../../utils/controller.utils';
+import { sendSuccess, sendError, getRequiredParamString } from '../../utils/controller.utils.js';
 
-import { notificationsService } from './notifications.service';
+import { notificationsService } from './notifications.service.js';
 import {
   validateGetNotifications,
   validateMarkAsRead,
   validateUpdatePreferences,
-} from './notifications.validator';
-import { NotificationType, NotificationStatus } from './notifications.types';
+} from './notifications.validator.js';
+import { NotificationType, NotificationStatus } from './notifications.types.js';
 
 type AuthenticatedRequest = Request & { user?: { id: string } };
 

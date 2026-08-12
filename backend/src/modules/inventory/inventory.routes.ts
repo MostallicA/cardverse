@@ -8,7 +8,7 @@
 
 import { Router } from 'express';
 
-import { inventoryController } from './inventory.controller';
+import { inventoryController } from './inventory.controller.js';
 
 const router: Router = Router();
 

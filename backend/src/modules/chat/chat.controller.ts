@@ -8,9 +8,9 @@
 
 import { Request, Response } from 'express';
 
-import { sendSuccess, sendError, getRequiredParamString } from '../../utils/controller.utils';
+import { sendSuccess, sendError, getRequiredParamString } from '../../utils/controller.utils.js';
 
-import { chatService } from './chat.service';
+import { chatService } from './chat.service.js';
 
 export class ChatController {
   /**

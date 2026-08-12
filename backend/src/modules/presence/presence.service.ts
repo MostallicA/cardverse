@@ -12,7 +12,7 @@ import {
   PresenceUpdateRequest,
   PresenceResponse,
   PresenceStats,
-} from './presence.types';
+} from './presence.types.js';
 
 // In-memory presence store (will be replaced with Redis in production)
 const presenceStore = new Map<string, Presence>();

@@ -1,13 +1,13 @@
 // Session Manager - Manages match lifecycle from start to finish
 // Per ARCHITECTURE.md Section 3.2
 
-import { MatchState, EngineStatus, Player, MatchConfig } from '../engine.types';
-import { engineService } from '../engine.service';
-import { turnManager } from '../turn/turn.manager';
-import { disconnectManager } from '../disconnect/disconnect.manager';
-import { botManager } from '../../game/bot/bot.manager';
-import { lobbyManager } from '../lobby/lobby.manager';
-import { roomManager } from '../room/room.manager';
+import { MatchState, EngineStatus, Player, MatchConfig } from '../engine.types.js';
+import { engineService } from '../engine.service.js';
+import { turnManager } from '../turn/turn.manager.js';
+import { disconnectManager } from '../disconnect/disconnect.manager.js';
+import { botManager } from '../../game/bot/bot.manager.js';
+import { lobbyManager } from '../lobby/lobby.manager.js';
+import { roomManager } from '../room/room.manager.js';
 
 export interface Session {
   id: string;

@@ -15,7 +15,7 @@ import {
   MatchmakingStats,
   GameMode,
   MatchmakingStatus,
-} from './matchmaking.types';
+} from './matchmaking.types.js';
 
 // In-memory stores (will be replaced with Redis in production)
 const queue = new Map<string, MatchmakingQueueEntry>(); // userId -> queue entry

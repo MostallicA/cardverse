@@ -8,7 +8,7 @@
 
 import { Router } from 'express';
 
-import { presenceController } from './presence.controller';
+import { presenceController } from './presence.controller.js';
 
 const router: Router = Router();
 

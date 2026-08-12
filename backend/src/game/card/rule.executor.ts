@@ -1,6 +1,6 @@
 // Rule Executor - Implements Hokm rules per RULEBOOK.md
 
-import { Card, Suit, Rank, GameMode, SpecialOutcome } from '../../engine/engine.types';
+import { Card, Suit, Rank, GameMode, SpecialOutcome } from '../../engine/engine.types.js';
 
 export class RuleExecutor {
   /**

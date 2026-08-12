@@ -1,8 +1,8 @@
 // Turn Manager - Manages turn order, timers, and consecutive misses
 
-import { MatchState, Player } from '../engine.types';
+import { MatchState, Player } from '../engine.types.js';
 
-import { TurnPhase, TurnInfo, TurnManagerConfig } from './turn.types';
+import { TurnPhase, TurnInfo, TurnManagerConfig } from './turn.types.js';
 
 export class TurnManager {
   private config: TurnManagerConfig;

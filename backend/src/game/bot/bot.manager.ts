@@ -1,7 +1,7 @@
 // Bot Manager - Manages AI bot players for matches
 // Per ARCHITECTURE.md Section 3.2 and RULEBOOK.md Section 13
 
-import { Player, Card, Suit, MatchState, BotConfig, GameMode } from '../../engine/engine.types';
+import { Player, Card, Suit, MatchState, BotConfig, GameMode } from '../../engine/engine.types.js';
 
 export interface BotManagerConfig {
   defaultDifficulty: 'basic' | 'advanced';

@@ -2,9 +2,9 @@
 // Persists and restores MatchState to/from the database via Prisma.
 // Falls back to in-memory storage when the database is unavailable.
 
-import { prisma } from '../db/prisma';
+import { prisma } from '../db/prisma.js';
 
-import { MatchState, EngineStatus } from './engine.types';
+import { MatchState, EngineStatus } from './engine.types.js';
 
 /**
  * GamePersistenceService

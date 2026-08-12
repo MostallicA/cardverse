@@ -9,10 +9,10 @@ import {
   EngineStatus,
   GameMode,
   Team,
-} from '../../engine/engine.types';
+} from '../../engine/engine.types.js';
 
-import { ScoringService } from './scoring.service';
-import { ScoringConstants } from './scoring.types';
+import { ScoringService } from './scoring.service.js';
+import { ScoringConstants } from './scoring.types.js';
 
 // Mock the database so match completion does not hit PostgreSQL.
 jest.mock('../../db/prisma', () => ({

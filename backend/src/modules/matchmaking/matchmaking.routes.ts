@@ -8,7 +8,7 @@
 
 import { Router } from 'express';
 
-import { matchmakingController } from './matchmaking.controller';
+import { matchmakingController } from './matchmaking.controller.js';
 
 const router: Router = Router();
 

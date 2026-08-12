@@ -1,7 +1,7 @@
 // Room Manager - Manages match rooms and seating
 // Per ARCHITECTURE.md Section 3.2
 
-import { Player, Team } from '../engine.types';
+import { Player, Team } from '../engine.types.js';
 
 export interface RoomSeat {
   index: number; // 0-3

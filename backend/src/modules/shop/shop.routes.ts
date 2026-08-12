@@ -8,7 +8,7 @@
 
 import { Router } from 'express';
 
-import { shopController } from './shop.controller';
+import { shopController } from './shop.controller.js';
 
 const router: Router = Router();
 

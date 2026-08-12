@@ -4,7 +4,7 @@
  * Defines types for connecting Matchmaking Foundation with Engine Layer
  */
 
-import { GameMode as MatchmakingGameMode } from '../matchmaking/matchmaking.types';
+import { GameMode as MatchmakingGameMode } from '../matchmaking/matchmaking.types.js';
 
 export interface MatchmakingMatchRequest {
   queueEntryId: string;

@@ -5,24 +5,29 @@
  * Per ARCHITECTURE.md Section 3.2 and DASHBOARD.md Task 7.0
  */
 
-import { GameMode as MatchmakingGameMode } from '../matchmaking/matchmaking.types';
-import { GameMode as EngineGameMode, Player, MatchConfig, Suit } from '../../engine/engine.types';
-import { engineService } from '../../engine/engine.service';
-import { lobbyManager } from '../../engine/lobby/lobby.manager';
-import { roomManager } from '../../engine/room/room.manager';
-import { sessionManager } from '../../engine/session/session.manager';
-import { botManager } from '../../game/bot/bot.manager';
-import { turnManager } from '../../engine/turn/turn.manager';
-import { TurnPhase } from '../../engine/turn/turn.types';
-import { disconnectManager } from '../../engine/disconnect/disconnect.manager';
-import { getSocketManager } from '../../socket';
+import { GameMode as MatchmakingGameMode } from '../matchmaking/matchmaking.types.js';
+import {
+  GameMode as EngineGameMode,
+  Player,
+  MatchConfig,
+  Suit,
+} from '../../engine/engine.types.js';
+import { engineService } from '../../engine/engine.service.js';
+import { lobbyManager } from '../../engine/lobby/lobby.manager.js';
+import { roomManager } from '../../engine/room/room.manager.js';
+import { sessionManager } from '../../engine/session/session.manager.js';
+import { botManager } from '../../game/bot/bot.manager.js';
+import { turnManager } from '../../engine/turn/turn.manager.js';
+import { TurnPhase } from '../../engine/turn/turn.types.js';
+import { disconnectManager } from '../../engine/disconnect/disconnect.manager.js';
+import { getSocketManager } from '../../socket/index.js';
 
 import {
   MatchmakingMatchRequest,
   MatchCreationResult,
   MatchmakingIntegrationConfig,
   MatchStatisticsRecord,
-} from './matchmaking-integration.types';
+} from './matchmaking-integration.types.js';
 
 export class MatchmakingIntegrationService {
   private config: MatchmakingIntegrationConfig;

@@ -1,7 +1,7 @@
 // Disconnect Manager - Manages player disconnections, auto-kick, and reconnection
 // Per RULEBOOK.md Section 12
 
-import { MatchState } from '../engine.types';
+import { MatchState } from '../engine.types.js';
 
 export interface DisconnectConfig {
   maxConsecutiveMisses: number; // 3 per RULEBOOK.md

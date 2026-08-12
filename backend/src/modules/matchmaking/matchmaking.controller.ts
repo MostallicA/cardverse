@@ -8,10 +8,10 @@
 
 import { Request, Response } from 'express';
 
-import { sendSuccess, sendError, getRequiredParamString } from '../../utils/controller.utils';
+import { sendSuccess, sendError, getRequiredParamString } from '../../utils/controller.utils.js';
 
-import { matchmakingService } from './matchmaking.service';
-import { validateJoinQueue } from './matchmaking.validator';
+import { matchmakingService } from './matchmaking.service.js';
+import { validateJoinQueue } from './matchmaking.validator.js';
 
 type AuthenticatedRequest = Request & { user?: { id: string } };
 

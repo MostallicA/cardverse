@@ -5,18 +5,18 @@
 import { Router, Request, Response } from 'express';
 import { APP_NAME, APP_VERSION } from '@cardverse/shared';
 
-import presenceRoutes from '../../modules/presence/presence.routes';
+import presenceRoutes from '../../modules/presence/presence.routes.js';
 import friendsRoutes from '../../modules/friends/friends.routes.js';
 import { ResponseHelper } from '../../utils/response.js';
 import authRoutes from '../../modules/auth/auth.routes.js';
 import userRoutes from '../../modules/user/user.routes.js';
-import chatRoutes from '../../modules/chat/chat.routes';
-import notificationsRoutes from '../../modules/notifications/notifications.routes';
-import matchmakingRoutes from '../../modules/matchmaking/matchmaking.routes';
-import walletRoutes from '../../modules/wallet/wallet.routes';
-import shopRoutes from '../../modules/shop/shop.routes';
-import inventoryRoutes from '../../modules/inventory/inventory.routes';
-import matchmakingIntegrationRoutes from '../../modules/matchmaking-integration/matchmaking-integration.routes';
+import chatRoutes from '../../modules/chat/chat.routes.js';
+import notificationsRoutes from '../../modules/notifications/notifications.routes.js';
+import matchmakingRoutes from '../../modules/matchmaking/matchmaking.routes.js';
+import walletRoutes from '../../modules/wallet/wallet.routes.js';
+import shopRoutes from '../../modules/shop/shop.routes.js';
+import inventoryRoutes from '../../modules/inventory/inventory.routes.js';
+import matchmakingIntegrationRoutes from '../../modules/matchmaking-integration/matchmaking-integration.routes.js';
 
 const router: Router = Router();
 

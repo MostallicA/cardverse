@@ -6,7 +6,7 @@
  * adding coins, spending coins, and transaction queries.
  */
 
-import { TransactionType, TransactionSource } from './wallet.types';
+import { TransactionType, TransactionSource } from './wallet.types.js';
 
 export interface ValidationResult {
   valid: boolean;

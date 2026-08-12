@@ -6,7 +6,7 @@
  * retrieving notifications, marking as read, and updating preferences.
  */
 
-import { NotificationType, NotificationStatus } from './notifications.types';
+import { NotificationType, NotificationStatus } from './notifications.types.js';
 
 export interface ValidationResult {
   valid: boolean;

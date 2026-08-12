@@ -8,14 +8,14 @@
 
 import { Request, Response } from 'express';
 
-import { sendSuccess, sendError, getRequiredParamString } from '../../utils/controller.utils';
+import { sendSuccess, sendError, getRequiredParamString } from '../../utils/controller.utils.js';
 
-import { presenceService } from './presence.service';
+import { presenceService } from './presence.service.js';
 import {
   validatePresenceUpdate,
   validateHeartbeat,
   validateBatchQuery,
-} from './presence.validator';
+} from './presence.validator.js';
 
 type AuthenticatedRequest = Request & { user?: { id: string } };
 

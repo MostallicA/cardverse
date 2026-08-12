@@ -7,10 +7,10 @@ import compression from 'compression';
 import morgan from 'morgan';
 import rateLimit from 'express-rate-limit';
 
-import { config } from './config';
-import { errorHandler } from './middleware/errorHandler';
-import v1Routes from './routes/v1';
-import { initSocketIO } from './socket';
+import { config } from './config/index.js';
+import { errorHandler } from './middleware/errorHandler.js';
+import v1Routes from './routes/v1/index.js';
+import { initSocketIO } from './socket/index.js';
 
 const app: Express = express();
 const server = createServer(app);

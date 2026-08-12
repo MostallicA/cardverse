@@ -6,7 +6,7 @@
  * inventory items, categories, and item management.
  */
 
-import { ShopCategory, Rarity } from '../shop/shop.types';
+import { ShopCategory, Rarity } from '../shop/shop.types.js';
 
 /* eslint-disable no-unused-vars */
 export enum InventoryItemStatus {

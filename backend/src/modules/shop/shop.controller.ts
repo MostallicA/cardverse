@@ -8,11 +8,11 @@
 
 import { Request, Response } from 'express';
 
-import { sendSuccess, sendError, getRequiredParamString } from '../../utils/controller.utils';
+import { sendSuccess, sendError, getRequiredParamString } from '../../utils/controller.utils.js';
 
-import { shopService } from './shop.service';
-import { validatePurchase, validateGetShopItems, validateEquipItem } from './shop.validator';
-import { ShopCategory, Rarity } from './shop.types';
+import { shopService } from './shop.service.js';
+import { validatePurchase, validateGetShopItems, validateEquipItem } from './shop.validator.js';
+import { ShopCategory, Rarity } from './shop.types.js';
 
 type AuthenticatedRequest = Request & { user?: { id: string } };
 

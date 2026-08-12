@@ -8,11 +8,15 @@
 
 import { Request, Response } from 'express';
 
-import { sendSuccess, sendError } from '../../utils/controller.utils';
+import { sendSuccess, sendError } from '../../utils/controller.utils.js';
 
-import { walletService } from './wallet.service';
-import { validateAddCoins, validateSpendCoins, validateGetTransactions } from './wallet.validator';
-import { TransactionType, TransactionSource } from './wallet.types';
+import { walletService } from './wallet.service.js';
+import {
+  validateAddCoins,
+  validateSpendCoins,
+  validateGetTransactions,
+} from './wallet.validator.js';
+import { TransactionType, TransactionSource } from './wallet.types.js';
 
 type AuthenticatedRequest = Request & { user?: { id: string } };
 

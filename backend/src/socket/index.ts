@@ -5,13 +5,13 @@ import { Server as HttpServer } from 'http';
 
 import { Server as SocketServer, Socket } from 'socket.io';
 
-import { engineService } from '../engine/engine.service';
-import { sessionManager } from '../engine/session/session.manager';
-import { turnManager } from '../engine/turn/turn.manager';
-import { TurnPhase } from '../engine/turn/turn.types';
-import { disconnectManager } from '../engine/disconnect/disconnect.manager';
-import { lobbyManager } from '../engine/lobby/lobby.manager';
-import { matchmakingIntegration } from '../modules/matchmaking-integration/matchmaking-integration.service';
+import { engineService } from '../engine/engine.service.js';
+import { sessionManager } from '../engine/session/session.manager.js';
+import { turnManager } from '../engine/turn/turn.manager.js';
+import { TurnPhase } from '../engine/turn/turn.types.js';
+import { disconnectManager } from '../engine/disconnect/disconnect.manager.js';
+import { lobbyManager } from '../engine/lobby/lobby.manager.js';
+import { matchmakingIntegration } from '../modules/matchmaking-integration/matchmaking-integration.service.js';
 import { verifyToken } from '../auth/jwt.service.js';
 
 // Socket.IO event types

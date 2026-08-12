@@ -17,7 +17,7 @@ import {
   InventoryStats,
   AddToInventoryRequest,
   TransferItemRequest,
-} from './inventory.types';
+} from './inventory.types.js';
 // ShopCategory and Rarity are used only in types, not in service logic
 // No import needed
 

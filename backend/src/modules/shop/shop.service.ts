@@ -6,8 +6,8 @@
  * purchases, and user inventory.
  */
 
-import { walletService } from '../wallet/wallet.service';
-import { TransactionSource } from '../wallet/wallet.types';
+import { walletService } from '../wallet/wallet.service.js';
+import { TransactionSource } from '../wallet/wallet.types.js';
 
 import {
   ShopItem,
@@ -21,7 +21,7 @@ import {
   UserInventoryItem,
   GetInventoryResponse,
   EquipItemRequest,
-} from './shop.types';
+} from './shop.types.js';
 
 // In-memory stores (will be replaced with PostgreSQL in production)
 const shopItems = new Map<string, ShopItem>(); // itemId -> ShopItem

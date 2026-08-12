@@ -19,7 +19,7 @@ import {
   GetTransactionsRequest,
   GetTransactionsResponse,
   DailyRewardResponse,
-} from './wallet.types';
+} from './wallet.types.js';
 
 // In-memory stores (will be replaced with PostgreSQL in production)
 const wallets = new Map<string, Wallet>(); // userId -> Wallet

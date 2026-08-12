@@ -16,7 +16,7 @@ import {
   getMatchState,
   getMatchStatistics,
   cleanupMatch,
-} from './matchmaking-integration.controller';
+} from './matchmaking-integration.controller.js';
 
 const router: Router = Router();
 

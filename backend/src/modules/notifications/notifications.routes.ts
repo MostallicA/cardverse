@@ -8,7 +8,7 @@
 
 import { Router } from 'express';
 
-import { notificationsController } from './notifications.controller';
+import { notificationsController } from './notifications.controller.js';
 
 const router: Router = Router();
 
