@@ -1,7 +1,7 @@
 # CardVerse Dashboard
 
 **Document ID:** CV-SYS-016
-**Version:** 3.2.0
+**Version:** 3.2.1
 **Status:** Operational
 **Classification:** System
 **Owner:** Mostafa
@@ -52,17 +52,17 @@ Do not create new status/tracking files. Everything operational belongs in this 
 
 ## 3. Quick Status
 
-| Item                      | Value                                                   |
-| ------------------------- | ------------------------------------------------------- |
-| **Current Phase**         | Game Layer Development                                  |
-| **Current Sprint**        | Sprint 9 - Game Layer (Hokm)                            |
-| **Current Task**          | Fix Prisma ESM/CommonJS Compatibility                   |
-| **Current Status**        | In Progress                                             |
-| **Latest Commit**         | 70c785c                                                 |
-| **Latest Commit Message** | fix(backend): resolve prisma esm/commonjs compatibility |
-| **Next Task**             | AI Strategy / Match Flow                                |
-| **Repository Status**     | Development                                             |
-| **Current Version**       | 0.9.0                                                   |
+| Item                      | Value                                         |
+| ------------------------- | --------------------------------------------- |
+| **Current Phase**         | Game Layer Development                        |
+| **Current Sprint**        | Sprint 9 - Game Layer (Hokm)                  |
+| **Current Task**          | Isolate E2E Jest Configuration                |
+| **Current Status**        | In Progress                                   |
+| **Latest Commit**         | 0cd533d                                       |
+| **Latest Commit Message** | test(backend): isolate e2e jest configuration |
+| **Next Task**             | AI Strategy / Match Flow                      |
+| **Repository Status**     | Development                                   |
+| **Current Version**       | 0.9.0                                         |
 
 ---
 
@@ -104,6 +104,7 @@ All Engine Layer modules implemented:
 | Priority | Item                | Description                                         | Status   |
 | -------- | ------------------- | --------------------------------------------------- | -------- |
 | 1        | Prisma ESM/CommonJS | Backend converted to ESM for Prisma 7 compatibility | Complete |
+| 2        | E2E Jest isolation  | Dedicated jest.e2e.config.cjs runs E2E via test:e2e | Complete |
 
 ### Open Items (Critical)
 
@@ -403,9 +404,10 @@ See CHANGELOG.md for the full task-by-task history of these sprints.
 
 ### Sprint 9 — Game Layer (Hokm) (In Progress)
 
-| Task | Description                           | Status      |
-| ---- | ------------------------------------- | ----------- |
-| 9.1  | Fix Prisma ESM/CommonJS Compatibility | ✅ Complete |
+| Task | Description                                  | Status      |
+| ---- | -------------------------------------------- | ----------- |
+| 9.1  | Fix Prisma ESM/CommonJS Compatibility        | ✅ Complete |
+| 9.2  | Isolate E2E tests with dedicated Jest config | ✅ Complete |
 
 ---
 
@@ -445,6 +447,7 @@ See CHANGELOG.md for the full task-by-task history of these sprints.
 | 3.0.0         | 2026-08-10              | Game Layer (Hokm) is the next task; Hokm rule/card/bot logic moved to the Game Layer under backend/src/game/; Sprint 8 complete; Open Items (Critical) resolved; documentation consistency updates                                                                                                                                                                                   |
 | 3.1.0         | 2026-08-11              | Scoring System implemented and tested (15 tests passed); Jest configuration added; Game Layer development in progress                                                                                                                                                                                                                                                                |
 | 3.2.0         | 2026-08-12              | Fixed Prisma ESM/CommonJS compatibility; backend converted to ESM                                                                                                                                                                                                                                                                                                                    |
+| 3.2.1         | 2026-08-12              | Isolated E2E tests: dedicated jest.e2e.config.cjs; test:e2e now discovers and runs the E2E suite                                                                                                                                                                                                                                                                                     |
 
 ---
 
