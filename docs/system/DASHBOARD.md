@@ -1,12 +1,12 @@
 # CardVerse Dashboard
 
 **Document ID:** CV-SYS-016
-**Version:** 3.1.0
+**Version:** 3.2.0
 **Status:** Operational
 **Classification:** System
 **Owner:** Mostafa
 **Created:** 2026-07-07
-**Last Updated:** 2026-08-11
+**Last Updated:** 2026-08-12
 
 ---
 
@@ -52,17 +52,17 @@ Do not create new status/tracking files. Everything operational belongs in this 
 
 ## 3. Quick Status
 
-| Item                      | Value                                         |
-| ------------------------- | --------------------------------------------- |
-| **Current Phase**         | Game Layer Development                        |
-| **Current Sprint**        | Sprint 9 - Game Layer (Hokm)                  |
-| **Current Task**          | Scoring System Integration                    |
-| **Current Status**        | In Progress                                   |
-| **Latest Commit**         | e4734d5                                       |
-| **Latest Commit Message** | test: add jest configuration and test scripts |
-| **Next Task**             | AI Strategy / Match Flow                      |
-| **Repository Status**     | Development                                   |
-| **Current Version**       | 0.9.0                                         |
+| Item                      | Value                                                   |
+| ------------------------- | ------------------------------------------------------- |
+| **Current Phase**         | Game Layer Development                                  |
+| **Current Sprint**        | Sprint 9 - Game Layer (Hokm)                            |
+| **Current Task**          | Fix Prisma ESM/CommonJS Compatibility                   |
+| **Current Status**        | In Progress                                             |
+| **Latest Commit**         | 70c785c                                                 |
+| **Latest Commit Message** | fix(backend): resolve prisma esm/commonjs compatibility |
+| **Next Task**             | AI Strategy / Match Flow                                |
+| **Repository Status**     | Development                                             |
+| **Current Version**       | 0.9.0                                                   |
 
 ---
 
@@ -98,6 +98,12 @@ All Engine Layer modules implemented:
 - Task 7.0: Integration of Engine Layer with Platform Layer — ✅ Complete
 - Task 7.1: End-to-end testing — ✅ Complete
 - Task 7.2: Production release preparation — ✅ Complete
+
+### Current Fixes in Progress
+
+| Priority | Item                | Description                                         | Status   |
+| -------- | ------------------- | --------------------------------------------------- | -------- |
+| 1        | Prisma ESM/CommonJS | Backend converted to ESM for Prisma 7 compatibility | Complete |
 
 ### Open Items (Critical)
 
@@ -338,6 +344,15 @@ Only decisions with long-term impact (architecture, product direction, database,
 
 ---
 
+### CV-DEC-0019 — Backend ESM Conversion for Prisma 7
+
+**Date:** 2026-08-12 · **Status:** Accepted
+**Decision:** Convert backend from CommonJS to ESM by adding `"type": "module"`.
+**Rationale:** Prisma 7 generates ESM-only code. Backend was CJS causing runtime crashes on load (`import.meta` in the generated client) and Jest module-resolution failures.
+**Consequences:** Added `"type": "module"` to `backend/package.json`; added explicit `.js` extensions to all relative imports (NodeNext requirement); renamed `jest.config.js` → `jest.config.cjs`; removed the stale `moduleNameMapper`; added `jest.mock('../../db/prisma')` to Prisma-dependent unit tests; added `backend/tsconfig.test.json` (CommonJS compilation for Jest) and a `.js`-stripping `moduleNameMapper`; E2E (`__tests__/e2e`) isolated under `test:e2e`.
+
+---
+
 ## 7. Phase & Sprint Status
 
 ### Phase Status
@@ -386,6 +401,12 @@ See CHANGELOG.md for the full task-by-task history of these sprints.
 | 8.2  | Implement game state persistence | ✅ Complete |
 | 8.3  | Socket.IO authentication         | ✅ Complete |
 
+### Sprint 9 — Game Layer (Hokm) (In Progress)
+
+| Task | Description                           | Status      |
+| ---- | ------------------------------------- | ----------- |
+| 9.1  | Fix Prisma ESM/CommonJS Compatibility | ✅ Complete |
+
 ---
 
 ## 8. References
@@ -423,6 +444,7 @@ See CHANGELOG.md for the full task-by-task history of these sprints.
 | 2.9.0         | 2026-08-08              | Open Items (Critical) added; Sprint 8 planned; Persian text converted to English; Quick Status updated                                                                                                                                                                                                                                                                               |
 | 3.0.0         | 2026-08-10              | Game Layer (Hokm) is the next task; Hokm rule/card/bot logic moved to the Game Layer under backend/src/game/; Sprint 8 complete; Open Items (Critical) resolved; documentation consistency updates                                                                                                                                                                                   |
 | 3.1.0         | 2026-08-11              | Scoring System implemented and tested (15 tests passed); Jest configuration added; Game Layer development in progress                                                                                                                                                                                                                                                                |
+| 3.2.0         | 2026-08-12              | Fixed Prisma ESM/CommonJS compatibility; backend converted to ESM                                                                                                                                                                                                                                                                                                                    |
 
 ---
 
