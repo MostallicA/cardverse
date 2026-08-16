@@ -6,6 +6,25 @@ The format is inspired by **Keep a Changelog** and follows **Semantic Versioning
 
 ---
 
+## [1.4.0] - 2026-08-16 — Sprint 10: Build Repair
+
+### Changed
+
+- `shared/src/index.ts` rebuilt with proper exports for types, utils, and constants
+- `frontend/src/index.ts` renamed to `index.tsx` (JSX support)
+- `frontend/index.html` script src updated to `/src/index.tsx`
+- `frontend/vite.config.ts` proxy target changed from port 5000 to 3000
+- `frontend/src/services/auth.service.ts` baseURL changed from port 5000 to 3000
+- DASHBOARD.md updated to version 4.3.0
+
+### Fixed
+
+- Frontend build now works correctly with JSX files
+- Shared package now has proper entry point for builds
+- Port unification: all services now consistently use port 3000
+
+---
+
 ## [1.3.0] - 2026-08-16 — Sprint 10: Auth + Database Operational
 
 ### Added

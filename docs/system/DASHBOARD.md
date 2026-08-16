@@ -1,7 +1,7 @@
 # CardVerse Dashboard
 
 **Document ID:** CV-SYS-016
-**Version:** 4.2.0
+**Version:** 4.3.0
 **Status:** Operational
 **Classification:** System
 **Owner:** Mostafa
@@ -53,17 +53,17 @@ Do not create new status/tracking files. Everything operational belongs in this 
 
 ## 3. Quick Status
 
-| Item                      | Value                                             |
-| ------------------------- | ------------------------------------------------- |
-| **Current Phase**         | Sprint 10 — Local DB Setup & Auth Unblocking      |
-| **Current Sprint**        | Sprint 10 - Production Correctness                |
-| **Current Task**          | 10.5 - Build repair (shared + frontend + ports)   |
-| **Current Status**        | In Progress                                       |
-| **Latest Commit**         | 3820e42                                           |
-| **Latest Commit Message** | docs(dashboard): record e2e jest isolation v3.2.1 |
-| **Next Task**             | 10.5 - Build repair                               |
-| **Repository Status**     | Development                                       |
-| **Current Version**       | 0.9.0                                             |
+| Item                      | Value                                                        |
+| ------------------------- | ------------------------------------------------------------ |
+| **Current Phase**         | Sprint 10 — Local DB Setup & Auth Unblocking                 |
+| **Current Sprint**        | Sprint 10 - Production Correctness                           |
+| **Current Task**          | 10.6 - Replace optimistic tricksWon with real getTrickWinner |
+| **Current Status**        | Pending                                                      |
+| **Latest Commit**         | 3820e42                                                      |
+| **Latest Commit Message** | docs(dashboard): record e2e jest isolation v3.2.1            |
+| **Next Task**             | 10.5 - Build repair                                          |
+| **Repository Status**     | Development                                                  |
+| **Current Version**       | 0.9.0                                                        |
 
 ---
 
@@ -460,7 +460,7 @@ See CHANGELOG.md for the full task-by-task history of these sprints.
 | 10.2 | Create `.env` from `.env.example` with real DATABASE_URL + strong JWT_SECRET   | ✅ Complete |
 | 10.3 | Apply Prisma migrations to `cardverse` db (incl. new `state` column migration) | ✅ Complete |
 | 10.4 | Wire Auth to real JWT + Prisma; verify /auth/guest + /auth/me end-to-end       | ✅ Complete |
-| 10.5 | Repair build: shared/index.ts, frontend index.tsx, port 3000                   | Pending     |
+| 10.5 | Repair build: shared/index.ts, frontend index.tsx, port 3000                   | ✅ Complete |
 | 10.6 | Replace optimistic tricksWon with real getTrickWinner                          | Pending     |
 | 10.7 | Remove Socket.IO auth backdoor                                                 | Pending     |
 
@@ -587,6 +587,7 @@ Decide and document whether **Statistics / Achievements / Rankings / Seasons** s
 | 4.0.0         | 2026-08-14              | Realism review: downgraded overstated "Complete" flags to In Progress/Blocked/Not Ready; added CV-DEC-0020 and Section 8 (Remediation Plan); Auth wired to real JWT + Prisma (blocked on local PostgreSQL); documented total project progress at ~35-40%                                                                                                                             |
 | 4.1.0         | 2026-08-14              | PostgreSQL 18.6 installed and running (service up, `cardverse` db created, psql on PATH); `.env` created; added CV-DEC-0021, Sprint 10 tasks 10.1-10.2 complete, and the "Fresh Environment / AI Onboarding" checklist; fixed stale DECISION_LOG.md reference in AI_DEVELOPER_GUIDE                                                                                                  |
 | 4.2.0         | 2026-08-16              | Auth real JWT+Prisma verified; migration add_match_state applied; local PostgreSQL operational; Sprint 10 tasks 10.3 & 10.4 Complete                                                                                                                                                                                                                                                 |
+| 4.3.0         | 2026-08-16              | Task 10.5 completed: shared/index.ts rebuilt, frontend index.ts renamed to index.tsx, ports unified to 3000                                                                                                                                                                                                                                                                          |
 
 ---
 
