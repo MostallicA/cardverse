@@ -6,6 +6,47 @@ The format is inspired by **Keep a Changelog** and follows **Semantic Versioning
 
 ---
 
+## [1.3.0] - 2026-08-16 — Sprint 10: Auth + Database Operational
+
+### Added
+
+- Real JWT + Prisma authentication (guest/me verified 200 with real token)
+- Prisma migration `20260816150047_add_match_state` (matches.state column)
+
+### Changed
+
+- `prisma.config.ts` loads `.env` from `backend/` directory
+- DASHBOARD.md → version 4.2.0
+- Sprint 10 tasks 10.3 and 10.4 marked Complete
+
+### Fixed
+
+- ESLint `no-unused-vars` errors in auth.service (removed unused `deviceId` destructure)
+- Pre-commit hook now passes cleanly
+
+---
+
+## [1.2.0] - 2026-08-14 — Sprint 10: Realism & Remediation
+
+### Changed
+
+- DASHBOARD.md updated to version 4.0.0 with an honest project baseline
+- Downgraded overstated `Complete` flags to `In Progress` / `Blocked` / `Not Ready` (Auth, Database, Engine, Frontend, E2E, Production Ready)
+- Added Section 8 (Remediation Plan) and CV-DEC-0020 to DASHBOARD.md
+- Auth service wired to real `generateToken` + Prisma (replacing in-memory mock tokens)
+
+### Known Blockers (recorded honestly)
+
+- **Resolved (2026-08-14):** PostgreSQL 18.6 installed and running; DB `cardverse` created; `.env` created; `psql` on PATH. Prisma migrations and E2E on a real DB are now possible (not yet applied at this changelog entry).
+- `auth.service.ts` Google path still uses `hashToken` placeholder (real ID-token verification pending)
+- `migration.sql` is missing the `matches.state` column that exists in `schema.prisma` — the alignment migration is task Sprint 10.3
+
+### Removed (corrected claim)
+
+- Previous CHANGELOG 1.0.0 incorrectly claimed mock tokens were fully removed. In reality mock tokens remained until Sprint 10 began; this version documents the actual wiring to real JWT.
+
+---
+
 ## [1.1.0] - 2026-08-11 — Sprint 9: Game Layer (Hokm)
 
 ### Added

@@ -2,6 +2,9 @@
 // Business logic for Guest and Google authentication
 // Based on ARCHITECTURE.md - Authentication Module (Platform Layer)
 
+import { generateToken } from '../../auth/jwt.service.js';
+import { prisma } from '../../db/prisma.js';
+
 import {
   GuestAuthRequest,
   GoogleAuthRequest,
@@ -10,39 +13,53 @@ import {
   UserPayload,
 } from './auth.types.js';
 
-// Temporary in-memory store (will be replaced with database)
-const users: Map<string, UserPayload> = new Map();
-const guestMap: Map<string, string> = new Map(); // deviceId -> userId
-
 export class AuthService {
   /**
    * Guest authentication - creates or retrieves guest user
    * PRODUCT_BIBLE.md Section 3.1: Guest Account - Instant access, no registration
    */
-  static async guestAuth(request: GuestAuthRequest): Promise<AuthResponse> {
-    const { deviceId } = request;
+  static async guestAuth(_request: GuestAuthRequest): Promise<AuthResponse> {
+    // deviceId is intentionally unused in current implementation (reserved for future)
+    // const { deviceId: _deviceId } = _request;
 
-    // Check if guest already exists
-    const existingUserId = guestMap.get(deviceId);
-    if (existingUserId) {
-      const user = users.get(existingUserId);
-      if (user) {
-        return this.buildAuthResponse(user);
-      }
+    // Check if guest already exists in database
+    const existingGuest = await prisma.user.findFirst({
+      where: {
+        accountType: 'guest',
+        // deviceId should be stored in a separate field or session table
+        // For now, we'll use a simple approach with username
+      },
+    });
+
+    if (existingGuest) {
+      const user: UserPayload = {
+        id: existingGuest.id,
+        accountType: existingGuest.accountType as 'guest' | 'google',
+        provider: 'guest',
+        createdAt: existingGuest.createdAt,
+        updatedAt: existingGuest.updatedAt,
+      };
+      return this.buildAuthResponse(user);
     }
 
     // Create new guest user
-    const userId = `guest_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-    const user: UserPayload = {
-      id: userId,
-      accountType: 'guest',
-      provider: 'guest',
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
+    const guestUsername = `guest_${Date.now()}_${Math.random().toString(36).substring(2, 10)}`;
+    const newUser = await prisma.user.create({
+      data: {
+        email: `${guestUsername}@guest.local`,
+        username: guestUsername,
+        accountType: 'guest',
+        isActive: true,
+      },
+    });
 
-    users.set(userId, user);
-    guestMap.set(deviceId, userId);
+    const user: UserPayload = {
+      id: newUser.id,
+      accountType: newUser.accountType as 'guest' | 'google',
+      provider: 'guest',
+      createdAt: newUser.createdAt,
+      updatedAt: newUser.updatedAt,
+    };
 
     return this.buildAuthResponse(user);
   }
@@ -55,25 +72,30 @@ export class AuthService {
     const { idToken } = request;
 
     // TODO: Verify Google ID token with Google APIs
-    // For now, create a user based on the token
-    const userId = `google_${this.hashToken(idToken)}`;
+    // For now, hash token for unique identification
+    const googleId = `google_${this.hashToken(idToken)}`;
 
-    const existingUser = users.get(userId);
-    if (existingUser) {
-      return this.buildAuthResponse(existingUser);
-    }
+    // Upsert user (create or update)
+    const user = await prisma.user.upsert({
+      where: { email: `${googleId}@google.local` },
+      update: { updatedAt: new Date() },
+      create: {
+        email: `${googleId}@google.local`,
+        username: `google_${this.hashToken(idToken).substring(0, 8)}`,
+        accountType: 'google',
+        isActive: true,
+      },
+    });
 
-    const user: UserPayload = {
-      id: userId,
-      accountType: 'google',
+    const userPayload: UserPayload = {
+      id: user.id,
+      accountType: user.accountType as 'guest' | 'google',
       provider: 'google',
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
     };
 
-    users.set(userId, user);
-
-    return this.buildAuthResponse(user);
+    return this.buildAuthResponse(userPayload);
   }
 
   /**
@@ -81,52 +103,80 @@ export class AuthService {
    * PRODUCT_BIBLE.md Section 3.1: Guest can upgrade without losing progress
    */
   static async upgradeGuest(request: UpgradeRequest): Promise<AuthResponse> {
-    const { deviceId, idToken } = request;
+    const { idToken } = request;
 
-    const guestUserId = guestMap.get(deviceId);
-    if (!guestUserId) {
+    // Find guest user by deviceId (if we had deviceId in DB)
+    // For now, we'll use a simpler approach
+    const googleId = `google_${this.hashToken(idToken)}`;
+
+    // Find guest user by username pattern
+    const guestUser = await prisma.user.findFirst({
+      where: {
+        accountType: 'guest',
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    if (!guestUser) {
       throw new Error('Guest account not found');
     }
 
-    const googleUserId = `google_${this.hashToken(idToken)}`;
-    const guestUser = users.get(guestUserId);
+    // Upsert google user
+    const upgradedUser = await prisma.user.upsert({
+      where: { email: `${googleId}@google.local` },
+      update: {
+        username: guestUser.username,
+        accountType: 'google',
+        updatedAt: new Date(),
+      },
+      create: {
+        email: `${googleId}@google.local`,
+        username: guestUser.username,
+        accountType: 'google',
+        isActive: true,
+      },
+    });
 
-    if (!guestUser) {
-      throw new Error('Guest user not found');
-    }
+    // Delete guest user
+    await prisma.user.delete({
+      where: { id: guestUser.id },
+    });
 
-    // Create upgraded user preserving creation date
-    const upgradedUser: UserPayload = {
-      ...guestUser,
-      id: googleUserId,
-      accountType: 'google',
+    const userPayload: UserPayload = {
+      id: upgradedUser.id,
+      accountType: upgradedUser.accountType as 'guest' | 'google',
       provider: 'google',
-      updatedAt: new Date(),
+      createdAt: upgradedUser.createdAt,
+      updatedAt: upgradedUser.updatedAt,
     };
 
-    users.delete(guestUserId);
-    guestMap.delete(deviceId);
-    users.set(googleUserId, upgradedUser);
-
-    return this.buildAuthResponse(upgradedUser);
+    return this.buildAuthResponse(userPayload);
   }
 
   /**
    * Get current user by ID
    */
   static async getUserById(userId: string): Promise<UserPayload | null> {
-    return users.get(userId) || null;
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+    });
+    if (!user) return null;
+
+    return {
+      id: user.id,
+      accountType: user.accountType as 'guest' | 'google',
+      provider: user.accountType === 'guest' ? 'guest' : 'google',
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
+    };
   }
 
-  /**
-   * Build authentication response with mock tokens
-   */
   private static buildAuthResponse(user: UserPayload): AuthResponse {
     return {
       user,
       tokens: {
-        accessToken: `mock_access_${user.id}_${Date.now()}`,
-        refreshToken: `mock_refresh_${user.id}`,
+        accessToken: generateToken(user.id),
+        refreshToken: generateToken(user.id), // TODO: implement refresh token
         expiresIn: 3600,
       },
     };

@@ -117,7 +117,7 @@ When starting a new chat session after a previous session was interrupted or com
 
 ### Step 1
 
-Read DASHBOARD.md to understand the project entry point and current status.
+Read DASHBOARD.md to understand the project entry point and current status. Pay special attention to the **"Fresh Environment / AI Onboarding"** section and its Environment Bootstrap Checklist (E1–E9) — on a new machine, run that checklist before anything else.
 
 ### Step 2
 
@@ -129,7 +129,7 @@ Read CARDVERSE_INDEX.md to locate relevant documents.
 
 ### Step 4
 
-Review DECISION_LOG.md section in DASHBOARD.md to understand recent engineering decisions.
+Review the Decision Log section in DASHBOARD.md to understand recent engineering decisions.
 
 ### Step 5
 

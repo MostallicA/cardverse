@@ -1,12 +1,12 @@
 # CardVerse Dashboard
 
 **Document ID:** CV-SYS-016
-**Version:** 3.2.1
+**Version:** 4.2.0
 **Status:** Operational
 **Classification:** System
 **Owner:** Mostafa
 **Created:** 2026-07-07
-**Last Updated:** 2026-08-12
+**Last Updated:** 2026-08-16
 
 ---
 
@@ -19,8 +19,9 @@
 5. Implementation Status
 6. Decision Log
 7. Phase & Sprint Status
-8. References
-9. Version History
+8. Remediation Plan (Sprint 10)
+9. References
+10. Version History
 
 ---
 
@@ -52,17 +53,17 @@ Do not create new status/tracking files. Everything operational belongs in this 
 
 ## 3. Quick Status
 
-| Item                      | Value                                         |
-| ------------------------- | --------------------------------------------- |
-| **Current Phase**         | Game Layer Development                        |
-| **Current Sprint**        | Sprint 9 - Game Layer (Hokm)                  |
-| **Current Task**          | Isolate E2E Jest Configuration                |
-| **Current Status**        | In Progress                                   |
-| **Latest Commit**         | 0cd533d                                       |
-| **Latest Commit Message** | test(backend): isolate e2e jest configuration |
-| **Next Task**             | AI Strategy / Match Flow                      |
-| **Repository Status**     | Development                                   |
-| **Current Version**       | 0.9.0                                         |
+| Item                      | Value                                             |
+| ------------------------- | ------------------------------------------------- |
+| **Current Phase**         | Sprint 10 — Local DB Setup & Auth Unblocking      |
+| **Current Sprint**        | Sprint 10 - Production Correctness                |
+| **Current Task**          | 10.5 - Build repair (shared + frontend + ports)   |
+| **Current Status**        | In Progress                                       |
+| **Latest Commit**         | 3820e42                                           |
+| **Latest Commit Message** | docs(dashboard): record e2e jest isolation v3.2.1 |
+| **Next Task**             | 10.5 - Build repair                               |
+| **Repository Status**     | Development                                       |
+| **Current Version**       | 0.9.0                                             |
 
 ---
 
@@ -75,8 +76,8 @@ Core Game Engine Development — implementing the actual Hokm game engine (Lobby
 ### Repository Health
 
 - Git Repository: Healthy
-- Documentation: Synchronized (as of 2026-08-06)
-- Development Environment: Ready
+- Documentation: Synchronization in progress (status below is now realistic; see 2026-08-14 updates)
+- Development Environment: Backend ready; **PostgreSQL 18.6 installed and running** (service `postgresql-x64-18`, port 5432), database `cardverse` created; `.env` present — migrations pending
 
 ### Session Summary
 
@@ -99,26 +100,31 @@ All Engine Layer modules implemented:
 - Task 7.1: End-to-end testing — ✅ Complete
 - Task 7.2: Production release preparation — ✅ Complete
 
+**Sprint 10 – Realism & Remediation (In Progress):**
+Auth has been successfully rewired to real JWT + Prisma and verified via /auth/guest and /auth/me (200 OK). Local PostgreSQL 18.6 is running, database `cardverse` is created, and migration `add_match_state` has been applied. Sprint now moves to build repair (10.5).
+
 ### Current Fixes in Progress
 
-| Priority | Item                | Description                                         | Status   |
-| -------- | ------------------- | --------------------------------------------------- | -------- |
-| 1        | Prisma ESM/CommonJS | Backend converted to ESM for Prisma 7 compatibility | Complete |
-| 2        | E2E Jest isolation  | Dedicated jest.e2e.config.cjs runs E2E via test:e2e | Complete |
+| Priority | Item                   | Description                                                      | Status   |
+| -------- | ---------------------- | ---------------------------------------------------------------- | -------- |
+| 1        | Prisma ESM/CommonJS    | Backend converted to ESM for Prisma 7 compatibility              | Complete |
+| 2        | E2E Jest isolation     | Dedicated jest.e2e.config.cjs runs E2E via test:e2e              | Complete |
+| 3        | Real Auth (JWT+Prisma) | auth.service.ts uses generateToken + Prisma; blocked on local DB | Blocked  |
 
 ### Open Items (Critical)
 
-The following items must be resolved before the Production (V1) release:
+The following items must be resolved before the Production (V1) release.
+**Note (2026-08-14):** statuses below were previously marked "Complete" but the codebase review showed they were overstated. They are now being re-verified in Sprint 10.
 
-| Priority | Item                         | Description                                             | Status   |
-| -------- | ---------------------------- | ------------------------------------------------------- | -------- |
-| 1        | **Auth Mock**                | Replace mock tokens with real JWT authentication        | Complete |
-| 2        | **Socket.IO Authentication** | Implement real authentication for Socket.IO connections | Complete |
-| 3        | **Database Connection**      | Connect to a real database (PostgreSQL)                 | Complete |
-| 4        | **Game State Persistence**   | Persist game state in the database                      | Complete |
-| 5        | **Deprecated Packages**      | Remove @types/helmet and @types/joi                     | Complete |
+| Priority | Item                         | Description                                                                                 | Status      |
+| -------- | ---------------------------- | ------------------------------------------------------------------------------------------- | ----------- |
+| 1        | Auth Mock                    | Replace mock tokens with real JWT authentication                                            | ✅ Complete |
+| 2        | **Socket.IO Authentication** | Real auth for Socket.IO; backdoor `directUserId` fallback must be removed                   | In Progress |
+| 3        | Database Connection          | PostgreSQL 18.6 installed & running; db `cardverse` created; `.env` set; migrations applied | ✅ Complete |
+| 4        | Game State Persistence       | `state` column added via migration `20260816150047_add_match_state`                         | ✅ Complete |
+| 5        | **Deprecated Packages**      | Remove @types/helmet and @types/joi                                                         | ✅Complete  |
 
-These items are recorded in CV-DEC-0018 (Auth Mock) and their precise scheduling will be defined in Sprint 8.
+These items are recorded in CV-DEC-0018 (Auth Mock), and their corrected scheduling is defined in Sprint 10.
 
 ---
 
@@ -126,16 +132,16 @@ These items are recorded in CV-DEC-0018 (Auth Mock) and their precise scheduling
 
 ### Overall Status (Accurate — separated by architectural layer)
 
-| Layer                               | Modules                                                                                             | Status      |
-| ----------------------------------- | --------------------------------------------------------------------------------------------------- | ----------- |
-| **Platform Layer**                  | Auth, User, Friends, Presence, Chat, Notifications, Matchmaking Foundation, Wallet, Shop, Inventory | Complete    |
-| **Frontend (Platform-facing)**      | Auth integration, routing, protected routes                                                         | Complete    |
-| **Engine Layer**                    | Lobby, Room, Session, Turn Manager, Disconnect Manager                                              | Complete    |
-| **Matchmaking Integration**         | Integration Service, API Routes, Controller, Validator                                              | Complete    |
-| **E2E Testing**                     |                                                                                                     | Complete    |
-| **Game Layer (Hokm)**               | Card Engine, Rule Executor, Bot Manager (basic logic) under game/; scoring/AI strategy pending      | In Progress |
-| **Production Ready**                |                                                                                                     | In Progress |
-| **Shared / Tests / Tools packages** | Configuration only                                                                                  | Complete    |
+| Layer                               | Modules                                                                                             | Status                                |
+| ----------------------------------- | --------------------------------------------------------------------------------------------------- | ------------------------------------- |
+| **Platform Layer**                  | Auth, User, Friends, Presence, Chat, Notifications, Matchmaking Foundation, Wallet, Shop, Inventory | In Progress (in-memory, DB not wired) |
+| **Frontend (Platform-facing)**      | Auth integration, routing, protected routes (Login/Register only; no game client)                   | In Progress                           |
+| **Engine Layer**                    | Lobby, Room, Session, Turn Manager, Disconnect Manager                                              | In Progress                           |
+| **Matchmaking Integration**         | Integration Service, API Routes, Controller, Validator                                              | Complete                              |
+| **E2E Testing**                     | 8 tests passing, but run against in-memory fallback (no real PostgreSQL)                            | In Progress                           |
+| **Game Layer (Hokm)**               | Card Engine, Rule Executor, Bot Manager (basic logic) under game/; scoring/AI strategy pending      | In Progress                           |
+| **Production Ready**                |                                                                                                     | Not Ready                             |
+| **Shared / Tests / Tools packages** | Configuration only (shared/src/index.ts is empty — build risk)                                      | In Progress                           |
 
 > **Why this table replaced the old "88/88 — 100%" summary:** the previous version only counted Platform Layer files and implied full project completion. The Engine and Game layers — the actual card game — had not been started. This table exists so that "percent complete" always reflects the whole project, not one layer of it.
 
@@ -188,8 +194,10 @@ These items are recorded in CV-DEC-0018 (Auth Mock) and their precise scheduling
 
 ### Not Yet Started
 
-- Game Layer / Hokm — full scoring integration and AI strategy (basic rule/bot logic already lives under game/)
-- Frontend game client integration
+- Game Layer / Hokm — full scoring integration into engine.playCard and AI strategy
+- Frontend game client integration (no playable board exists)
+- Statistics / Achievements / Rankings / Seasons modules (declared V1 in PRODUCT_BIBLE but not implemented)
+- PostgreSQL wiring for all platform modules (currently in-memory)
 
 ---
 
@@ -354,6 +362,40 @@ Only decisions with long-term impact (architecture, product direction, database,
 
 ---
 
+### CV-DEC-0020 — Sprint 10 Realism & Remediation (overriding overstated "Complete" flags)
+
+**Date:** 2026-08-14 · **Status:** Accepted
+**Decision:** A full codebase review revealed that several items previously marked `Complete` were overstated. Effective immediately, the project resets to an honest baseline and Sprint 10 corrects the real gaps before anything is re-marked complete.
+**Rationale:** Production readiness must be based on verified reality (working build, real database, actually playable game), not on file counts or optimistic claims.
+**Corrected gaps (from codebase review):**
+
+- Auth: `auth.service.ts` was emitting mock tokens while `auth.middleware.ts` only accepts real JWT → all protected requests returned 401. Wired to `generateToken` + Prisma; **blocked pending a running PostgreSQL**.
+- Database: no PostgreSQL installed/running on this machine; no Docker; no `.env` file. E2E tests ran against in-memory fallback, not a real DB.
+- Migration: `state` column exists in `schema.prisma` but is missing from `migration.sql` → saveMatchState would fail on a fresh DB.
+- Playback correctness: `engine.service.playCard` increments `tricksWon` optimistically and has a TODO to use `ruleExecutor.getTrickWinner` (the real trick winner is not computed in the live match flow).
+- Frontend: only Login/Register exist — no playable game client. Build is broken (`src/index.ts` uses JSX but is named `.ts`). Port mismatch (frontend targets 5000, backend serves 3000).
+- Shared: `shared/src/index.ts` and `shared/tsconfig.json` are empty files (a build time bomb).
+- Socket auth backdoor: `directUserId` accepted without a token must be removed.
+- Statistics/Achievements/Rankings/Seasons are declared V1 in PRODUCT_BIBLE but not implemented.
+  **Consequences:** All affected `Complete` flags downgraded to `In Progress`/`Blocked`/`Not Ready` in this document. The full step-by-step remediation plan is captured in Section 8.
+
+---
+
+### CV-DEC-0021 — Local PostgreSQL as the Development Database
+
+**Date:** 2026-08-14 · **Status:** Accepted
+**Decision:** PostgreSQL 18.6 is the local development database. Database `cardverse` created on the dev machine; `psql` added to PATH (permanent); `.env` created from `.env.example` with real `DATABASE_URL` and a strong `JWT_SECRET`.
+**Rationale:** Unblocks auth, migrations, and E2E testing that previously ran only against the in-memory fallback. A real local DB is required before any `Complete` flag for database-dependent items is restored.
+**Environment facts (2026-08-14, dev machine):**
+
+- Service: `postgresql-x64-18` running on port 5432 (auth: scram-sha-256; password required)
+- CLI: `psql (PostgreSQL) 18.6` on PATH
+- Database: `cardverse` created
+- File: `.env` at repo root (contains the dev `DATABASE_URL`; password is user-set, not committed)
+  **Consequences:** Prisma migrations can now be applied (`migrate deploy`), E2E can run against a real DB, and Sprint 10 items 10.3–10.7 can proceed. Anyone setting up a new machine should follow the Fresh Environment / AI Onboarding checklist (Section 7).
+
+---
+
 ## 7. Phase & Sprint Status
 
 ### Phase Status
@@ -364,11 +406,11 @@ Only decisions with long-term impact (architecture, product direction, database,
 | Documentation Standardization | Completed   | 100%     |
 | Documentation Freeze          | Completed   | 100%     |
 | Repository Foundation         | Completed   | 100%     |
-| Platform Backend Development  | Completed   | 100%     |
-| Platform Frontend Development | Completed   | 100%     |
-| **Core Game Engine (Hokm)**   | Completed   | **100%** |
-| Integration                   | In Progress | **~50%** |
-| Testing                       | Pending     | 0%       |
+| Platform Backend Development  | In Progress | ~70%     |
+| Platform Frontend Development | In Progress | ~10%     |
+| **Core Game Engine (Hokm)**   | In Progress | ~60%     |
+| Integration                   | In Progress | ~40%     |
+| Testing                       | In Progress | ~25%     |
 | Production Release            | Pending     | 0%       |
 
 ### Sprints 0–4 — Completed (Platform Layer)
@@ -385,33 +427,127 @@ See CHANGELOG.md for the full task-by-task history of these sprints.
 | 6.3  | Disconnect Manager + Bot Manager (basic)                 | Complete |
 | 6.4  | Real-time protocol decision + implementation             | Complete |
 
-### Sprint 7 — Integration & Testing (Complete)
+### Sprint 7 - Integration & Testing (Re-verified 2026-08-14)
 
-| Task | Description                                     | Status      |
-| ---- | ----------------------------------------------- | ----------- |
-| 7.0  | Integration of Engine Layer with Platform Layer | ✅ Complete |
-| 7.1  | End-to-end testing                              | ✅ Complete |
-| 7.2  | Production release preparation                  | ✅ Complete |
+| Task | Description                                     | Status                             |
+| ---- | ----------------------------------------------- | ---------------------------------- |
+| 7.0  | Integration of Engine Layer with Platform Layer | Complete                           |
+| 7.1  | End-to-end testing                              | Complete (in-memory fallback only) |
+| 7.2  | Production release preparation                  | Re-opened - claims were overstated |
 
-### Sprint 8 — Production Hardening (Complete)
+### Sprint 8 - Production Hardening (Re-verified 2026-08-14)
 
-| Task | Description                      | Status      |
-| ---- | -------------------------------- | ----------- |
-| 8.0  | Replace Auth Mock with JWT       | ✅ Complete |
-| 8.1  | Add real database (PostgreSQL)   | ✅ Complete |
-| 8.2  | Implement game state persistence | ✅ Complete |
-| 8.3  | Socket.IO authentication         | ✅ Complete |
+| Task | Description                      | Status                                              |
+| ---- | -------------------------------- | --------------------------------------------------- |
+| 8.0  | Replace Auth Mock with JWT       | In Progress (real JWT wired, DB blocked)            |
+| 8.1  | Add real database (PostgreSQL)   | Blocked - no local PostgreSQL                       |
+| 8.2  | Implement game state persistence | In Progress - migration missing state column        |
+| 8.3  | Socket.IO authentication         | In Progress - directUserId backdoor must be removed |
 
-### Sprint 9 — Game Layer (Hokm) (In Progress)
+### Sprint 9 - Game Layer (Hokm) (In Progress)
 
-| Task | Description                                  | Status      |
-| ---- | -------------------------------------------- | ----------- |
-| 9.1  | Fix Prisma ESM/CommonJS Compatibility        | ✅ Complete |
-| 9.2  | Isolate E2E tests with dedicated Jest config | ✅ Complete |
+| Task | Description                                  | Status   |
+| ---- | -------------------------------------------- | -------- |
+| 9.1  | Fix Prisma ESM/CommonJS Compatibility        | Complete |
+| 9.2  | Isolate E2E tests with dedicated Jest config | Complete |
+
+### Sprint 10 - Realism & Remediation (In Progress)
+
+| Task | Description                                                                    | Status      |
+| ---- | ------------------------------------------------------------------------------ | ----------- |
+| 10.0 | Realism review and honest re-baseline                                          | ✅ Complete |
+| 10.1 | Set up local PostgreSQL 18.6 (service running, db `cardverse` created)         | ✅ Complete |
+| 10.2 | Create `.env` from `.env.example` with real DATABASE_URL + strong JWT_SECRET   | ✅ Complete |
+| 10.3 | Apply Prisma migrations to `cardverse` db (incl. new `state` column migration) | ✅ Complete |
+| 10.4 | Wire Auth to real JWT + Prisma; verify /auth/guest + /auth/me end-to-end       | ✅ Complete |
+| 10.5 | Repair build: shared/index.ts, frontend index.tsx, port 3000                   | Pending     |
+| 10.6 | Replace optimistic tricksWon with real getTrickWinner                          | Pending     |
+| 10.7 | Remove Socket.IO auth backdoor                                                 | Pending     |
+
+### Fresh Environment / AI Onboarding (READ THIS FIRST in a new system)
+
+If this project is opened on a **different machine** (or with a new AI session), follow this exact order to know where to start:
+
+1. **Read THIS file (DASHBOARD.md) first, top to bottom.** Its Quick Status and Version History tell you exactly where the project stands.
+2. **Read README.md** for repo layout and the setup commands (`pnpm install`, `pnpm run build`, `pnpm run dev`).
+3. **Read docs/system/CARDVERSE_INDEX.md** to locate any document you need.
+4. **Read docs/system/PROJECT_RULES.md §2** for the document hierarchy — it decides which doc wins on conflict.
+5. **Then run the environment bootstrap checklist (below).** Do not skip to implementing a feature before the checklist is green.
+
+#### Environment Bootstrap Checklist (run every time on a fresh system)
+
+| #   | Step                        | Verify command                                       |
+| --- | --------------------------- | ---------------------------------------------------- |
+| E1  | Node.js >= 20 available     | `node --version`                                     |
+| E2  | pnpm installed (>= 9)       | `pnpm --version`                                     |
+| E3  | PostgreSQL running on 5432  | `psql --version` and `pg_isready`                    |
+| E4  | Database `cardverse` exists | `psql -U postgres -c "\l"` (password set on install) |
+| E5  | `.env` exists at repo root  | check file presence; copy `.env.example` if missing  |
+| E6  | Prisma client generated     | `cd backend && pnpm exec prisma generate`            |
+| E7  | Migrations applied          | `cd backend && pnpm exec prisma migrate deploy`      |
+| E8  | Backend type-checks         | `cd backend && pnpm build` (or `tsc --noEmit`)       |
+| E9  | All tests pass              | `cd backend && pnpm test` then `pnpm test:e2e`       |
+
+Only after E1–E9 pass should any AI begin a new implementation task. If a checklist item fails, fix the environment first — do not "work around" the failure in code.
+
+#### Golden rule for each checklist pass
+
+- Never mark a `Complete` flag in this document until its step **actually passes on a real database/render**.
+- Commit each completed phase on a **feature branch**, never directly on `main` (PROJECT_RULES §10).
 
 ---
 
-## 8. References
+## 8. Remediation Plan (Sprint 10)
+
+The following is the definitive, step-by-step recovery plan produced by the 2026-08-14 realism review. Each phase has a checkable definition of done. Work **on a feature branch**, commit each finished phase separately, and only re-mark a `Complete` flag after its step actually passes.
+
+> Note: duplicate plan kept in this Dashboard per PROJECT_RULES ("everything operational belongs here"). Work is executed incrementally by the owner with AI assistance on blockers.
+
+### Phase A — Backend critical fixes
+
+- **A1. English-only code comments.** Translate remaining Persian comments in `backend/src/engine/engine.service.ts` and `eslint.config.js` (Decision DASHBOARD 2.9.0 requires English).
+- **A2. Repair Auth (blocked on DB).** `auth.service.ts` now uses `generateToken(..)` + Prisma instead of mock tokens. Remaining: real Google ID token verification (replace `hashToken`), remove in-memory `Map`, and restore `/auth/me` to return the authenticated user.
+  - **Definition of done:** `POST /api/v1/auth/guest` returns a real JWT; calling `GET /api/v1/auth/me` with that token returns 200 (not 401).
+- **A3. Wire platform modules to PostgreSQL.** Migrate `user`, `wallet`, `shop`, `inventory`, `friends`, `chat`, `notifications`, `presence`, `matchmaking` services from in-memory `Map` to Prisma, one module at a time. Priority: User → Wallet → Shop/Inventory → Friends → rest.
+  - **Definition of done:** Data survives a server restart.
+- **A4. Align schema & migration.** Create a new Prisma migration adding the `matches.state` column (currently only in `schema.prisma`, missing from `migration.sql`).
+  - **Definition of done:** `npx prisma migrate status` reports up-to-date.
+
+### Phase B — Build & configuration
+
+- **B1. Restore `shared` package.** Recreate the contents of `shared/src/index.ts` (`export * from './utils/index.js';` etc.) and a valid `shared/tsconfig.json`. `cd shared && pnpm build` must produce a populated `dist/index.js`.
+- **B2. Fix frontend build.** Rename `frontend/src/index.ts` → `index.tsx` and update the `<script src>` in `frontend/index.html`. `cd frontend && pnpm build` must pass.
+- **B3. Unify ports.** Target port **3000** (backend): update `frontend/src/services/auth.service.ts`, `frontend/vite.config.ts`, and `frontend/.env.example` (5000 → 3000).
+  - **Definition of done:** A request from the frontend to `/api/v1/health` returns 200.
+
+### Phase C — Game correctness & security
+
+- **C1. Real trick winner.** In `engine.service.playCard`, replace the optimistic `tricksWon += 1` with `ruleExecutor.getTrickWinner` once 4 cards are in the trick, then call `scoringService.recordTrick`.
+- **C2. Hokm declaration flow.** `handleDeclareHokm` must validate that only the Hakem declares during the DECLARATION phase, then move the Turn Manager to PLAYING.
+- **C3. Remove Socket auth backdoor.** Delete the `directUserId` (tokenless) acceptance in `backend/src/socket/index.ts`; require a real JWT.
+
+### Phase D — Frontend game client
+
+Build the playable board: 4 seats, hands, table cards, Hakem declaration UI, and a Socket.IO client wired to `turn_started` / `card_played` / `match_updated` / `declare_hokm`. Then Lobby/Room, then Profile/Friends/Shop.
+
+### Phase E — Testing & hardening
+
+- Re-run E2E against a **real PostgreSQL** (`cd backend && pnpm test:e2e`), not the in-memory fallback.
+- Reconcile test scripts: root `package.json` declares `test:unit`/`test:integration` that no workspace implements — either add them to `backend` or remove from root.
+- Add CI (GitHub Actions): build + lint + test on every PR.
+- Per PROJECT_RULES §10, stop committing directly to `main`; use `develop` and `feature/*`.
+
+### Phase F — V1 scope decision
+
+Decide and document whether **Statistics / Achievements / Rankings / Seasons** stay in V1 (and get built) or move to "Planned" in PRODUCT_BIBLE.md and ARCHITECTURE.md. Honest scope reduction is acceptable and preferable to phantom deadlines.
+
+### Priority order (by impact)
+
+1. A2 (Auth) → 2. A3 + A4 (Database) → 3. C1 + C2 (game correctness) → 4. B1 + B2 + B3 (build/ports) → 5. C3 (security) → 6. A1 + Phase D (cleanup + frontend).
+
+---
+
+## 9. References
 
 - README.md
 - PROJECT_DNA.md
@@ -428,7 +564,7 @@ See CHANGELOG.md for the full task-by-task history of these sprints.
 
 ---
 
-## 9. Version History
+## 10. Version History
 
 | Version       | Date                    | Description                                                                                                                                                                                                                                                                                                                                                                          |
 | ------------- | ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -448,6 +584,9 @@ See CHANGELOG.md for the full task-by-task history of these sprints.
 | 3.1.0         | 2026-08-11              | Scoring System implemented and tested (15 tests passed); Jest configuration added; Game Layer development in progress                                                                                                                                                                                                                                                                |
 | 3.2.0         | 2026-08-12              | Fixed Prisma ESM/CommonJS compatibility; backend converted to ESM                                                                                                                                                                                                                                                                                                                    |
 | 3.2.1         | 2026-08-12              | Isolated E2E tests: dedicated jest.e2e.config.cjs; test:e2e now discovers and runs the E2E suite                                                                                                                                                                                                                                                                                     |
+| 4.0.0         | 2026-08-14              | Realism review: downgraded overstated "Complete" flags to In Progress/Blocked/Not Ready; added CV-DEC-0020 and Section 8 (Remediation Plan); Auth wired to real JWT + Prisma (blocked on local PostgreSQL); documented total project progress at ~35-40%                                                                                                                             |
+| 4.1.0         | 2026-08-14              | PostgreSQL 18.6 installed and running (service up, `cardverse` db created, psql on PATH); `.env` created; added CV-DEC-0021, Sprint 10 tasks 10.1-10.2 complete, and the "Fresh Environment / AI Onboarding" checklist; fixed stale DECISION_LOG.md reference in AI_DEVELOPER_GUIDE                                                                                                  |
+| 4.2.0         | 2026-08-16              | Auth real JWT+Prisma verified; migration add_match_state applied; local PostgreSQL operational; Sprint 10 tasks 10.3 & 10.4 Complete                                                                                                                                                                                                                                                 |
 
 ---
 

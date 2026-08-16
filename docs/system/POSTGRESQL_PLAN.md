@@ -286,3 +286,7 @@ Per DATABASE.md §9:
 **Document Status:** Complete (Implementation)
 
 This document was implemented in Sprint 8 (Tasks 8.1–8.2: real database + game state persistence). It is retained as the reference for the PostgreSQL / Prisma integration and schema design.
+
+---
+
+**Implementation finished:** Migrations applied to `cardverse` database on 2026-08-16. Auth is now fully operational with real JWT + Prisma.

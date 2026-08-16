@@ -7,7 +7,7 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
-    "dev": "tsc --watch",
+    "dev": "concurrently -k \"tsc --watch\" \"node --watch dist/index.js\"",
     "start": "node dist/index.js",
     "clean": "rm -rf dist",
     "test": "jest",
@@ -39,6 +39,7 @@
     "@types/morgan": "^1.9.10",
     "@types/node": "^20.0.0",
     "axios": "^1.18.1",
+    "concurrently": "^10.0.4",
     "jest": "^30.4.2",
     "prisma": "^7.9.1",
     "socket.io-client": "^4.8.3",
