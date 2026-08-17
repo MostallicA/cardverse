@@ -1,12 +1,12 @@
 # CardVerse Dashboard
 
 **Document ID:** CV-SYS-016
-**Version:** 4.3.0
+**Version:** 4.4.0
 **Status:** Operational
 **Classification:** System
 **Owner:** Mostafa
 **Created:** 2026-07-07
-**Last Updated:** 2026-08-16
+**Last Updated:** 2026-08-17
 
 ---
 
@@ -53,17 +53,17 @@ Do not create new status/tracking files. Everything operational belongs in this 
 
 ## 3. Quick Status
 
-| Item                      | Value                                                        |
-| ------------------------- | ------------------------------------------------------------ |
-| **Current Phase**         | Sprint 10 — Local DB Setup & Auth Unblocking                 |
-| **Current Sprint**        | Sprint 10 - Production Correctness                           |
-| **Current Task**          | 10.6 - Replace optimistic tricksWon with real getTrickWinner |
-| **Current Status**        | Pending                                                      |
-| **Latest Commit**         | 3820e42                                                      |
-| **Latest Commit Message** | docs(dashboard): record e2e jest isolation v3.2.1            |
-| **Next Task**             | 10.5 - Build repair                                          |
-| **Repository Status**     | Development                                                  |
-| **Current Version**       | 0.9.0                                                        |
+| Item                      | Value                                             |
+| ------------------------- | ------------------------------------------------- |
+| **Current Phase**         | Sprint 10 — Local DB Setup & Auth Unblocking      |
+| **Current Sprint**        | Sprint 10 - Production Correctness                |
+| **Current Task**          | 10.7 - Remove Socket.IO auth backdoor             |
+| **Current Status**        | Pending                                           |
+| **Latest Commit**         | 3820e42                                           |
+| **Latest Commit Message** | docs(dashboard): record e2e jest isolation v3.2.1 |
+| **Next Task**             | 10.5 - Build repair                               |
+| **Repository Status**     | Development                                       |
+| **Current Version**       | 0.9.0                                             |
 
 ---
 
@@ -461,7 +461,7 @@ See CHANGELOG.md for the full task-by-task history of these sprints.
 | 10.3 | Apply Prisma migrations to `cardverse` db (incl. new `state` column migration) | ✅ Complete |
 | 10.4 | Wire Auth to real JWT + Prisma; verify /auth/guest + /auth/me end-to-end       | ✅ Complete |
 | 10.5 | Repair build: shared/index.ts, frontend index.tsx, port 3000                   | ✅ Complete |
-| 10.6 | Replace optimistic tricksWon with real getTrickWinner                          | Pending     |
+| 10.6 | Replace optimistic tricksWon with real getTrickWinner                          | ✅ Complete |
 | 10.7 | Remove Socket.IO auth backdoor                                                 | Pending     |
 
 ### Fresh Environment / AI Onboarding (READ THIS FIRST in a new system)
@@ -588,6 +588,7 @@ Decide and document whether **Statistics / Achievements / Rankings / Seasons** s
 | 4.1.0         | 2026-08-14              | PostgreSQL 18.6 installed and running (service up, `cardverse` db created, psql on PATH); `.env` created; added CV-DEC-0021, Sprint 10 tasks 10.1-10.2 complete, and the "Fresh Environment / AI Onboarding" checklist; fixed stale DECISION_LOG.md reference in AI_DEVELOPER_GUIDE                                                                                                  |
 | 4.2.0         | 2026-08-16              | Auth real JWT+Prisma verified; migration add_match_state applied; local PostgreSQL operational; Sprint 10 tasks 10.3 & 10.4 Complete                                                                                                                                                                                                                                                 |
 | 4.3.0         | 2026-08-16              | Task 10.5 completed: shared/index.ts rebuilt, frontend index.ts renamed to index.tsx, ports unified to 3000                                                                                                                                                                                                                                                                          |
+| 4.4.0         | 2026-08-17              | Task 10.6 completed: replaced optimistic tricksWon with ruleExecutor.getTrickWinner                                                                                                                                                                                                                                                                                                  |
 
 ---
 

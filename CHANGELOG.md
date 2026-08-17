@@ -6,6 +6,21 @@ The format is inspired by **Keep a Changelog** and follows **Semantic Versioning
 
 ---
 
+## [1.5.0] - 2026-08-17 — Sprint 10: Real Trick Winner
+
+### Changed
+
+- `engine.service.ts` playCard method now uses `ruleExecutor.getTrickWinner` to determine the actual trick winner instead of optimistic increment
+- `MatchState` now properly tracks `currentTrick` with cards, playedBy, and leadSuit
+- Completed trick is recorded in `tricks[]` array with winner information
+
+### Fixed
+
+- Tricks are now correctly awarded to the team that actually wins the trick per RULEBOOK.md Section 8
+- Removed optimistic `tricksWon += 1` that incorrectly awarded tricks to the player who played the card
+
+---
+
 ## [1.4.0] - 2026-08-16 — Sprint 10: Build Repair
 
 ### Changed

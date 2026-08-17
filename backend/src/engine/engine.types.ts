@@ -90,6 +90,11 @@ export interface MatchState {
   currentSet: number;
   currentTrickIndex: number;
   tricks: Trick[]; // All tricks in current set
+  currentTrick: {
+    cards: Card[];
+    playedBy: string[];
+    leadSuit?: Suit;
+  }; // Track current trick cards (4 cards before completion)
   currentPlayerId?: string; // Whose turn it is
   hakemId?: string; // Hakem for current round
   hakemTeamId: number;

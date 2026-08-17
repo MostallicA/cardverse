@@ -5,7 +5,15 @@ import { cardEngine } from '../game/card/card.engine.js';
 import { scoringService } from '../game/scoring/scoring.service.js';
 import { ruleExecutor } from '../game/card/rule.executor.js';
 
-import { EngineStatus, Card, Player, Team, MatchConfig, MatchState } from './engine.types.js';
+import {
+  EngineStatus,
+  Card,
+  Player,
+  Team,
+  MatchConfig,
+  MatchState,
+  Trick,
+} from './engine.types.js';
 import { gamePersistenceService } from './game-persistence.service.js';
 
 export class EngineService {
@@ -52,6 +60,12 @@ export class EngineService {
       currentSet: 0,
       currentTrickIndex: 0,
       tricks: [],
+      currentTrick: {
+        cards: [],
+        playedBy: [],
+        leadSuit: undefined,
+      },
+      currentPlayerId: undefined,
       hakemId,
       hakemTeamId,
       dealerId: hakemId,
@@ -132,6 +146,11 @@ export class EngineService {
     match.status = EngineStatus.PLAYING;
     match.currentTrickIndex = 0;
     match.tricks = [];
+    match.currentTrick = {
+      cards: [],
+      playedBy: [],
+      leadSuit: undefined,
+    };
     match.teams.forEach((team) => {
       team.tricksWon = 0;
     });
@@ -164,62 +183,125 @@ export class EngineService {
       throw new Error(`Card ${cardId} not found in player ${playerId}'s hand`);
     }
 
-    hand.splice(cardIndex, 1);
+    // Remove card from hand
+    const playedCard = hand.splice(cardIndex, 1)[0];
     match.handCards[playerId] = hand;
 
-    // ✅ استفاده از `hakemTeamId` ذخیره‌شده در matchState
-    const hakemTeamId = match.hakemTeamId;
+    // Add card to current trick
+    if (!match.currentTrick) {
+      match.currentTrick = { cards: [], playedBy: [], leadSuit: undefined };
+    }
+    match.currentTrick.cards.push(playedCard);
+    match.currentTrick.playedBy.push(playerId);
 
-    // 🔧 این بخش باید با منطق واقعی `getTrickWinner` جایگزین شود
-    const playerTeam = match.teams.find((t) => t.players.some((p) => p.id === playerId));
-    if (playerTeam) {
-      playerTeam.tricksWon += 1;
+    // Set lead suit if this is the first card of the trick
+    if (match.currentTrick.cards.length === 1) {
+      match.currentTrick.leadSuit = playedCard.suit;
     }
 
-    const team0Tricks = match.teams[0].tricksWon;
-    const team1Tricks = match.teams[1].tricksWon;
+    const hakemTeamId = match.hakemTeamId;
 
-    if (team0Tricks >= 7 || team1Tricks >= 7) {
-      const outcome = ruleExecutor.getRoundOutcome(team0Tricks, team1Tricks, hakemTeamId);
-      const hakemId = match.hakemId;
-      if (hakemId === undefined) {
-        throw new Error(`Match ${matchId} has no hakem`);
+    // Check if trick is complete (4 cards played)
+    if (match.currentTrick.cards.length === 4) {
+      // Determine winner using ruleExecutor
+      const winnerInfo = ruleExecutor.getTrickWinner(
+        match.currentTrick.cards,
+        match.currentTrick.playedBy,
+        match.currentTrick.leadSuit!,
+        match.config.mode,
+        match.config.trumpSuit
+      );
+
+      // Find winning team
+      const winningPlayerId = winnerInfo.winnerId;
+      const winningPlayer = match.players.find((p) => p.id === winningPlayerId);
+      if (!winningPlayer) {
+        throw new Error(`Winner player ${winningPlayerId} not found`);
       }
-      const hakemIndex = match.players.findIndex((p) => p.id === hakemId);
-      const nextHakemId = match.players[(hakemIndex + 1) % match.players.length].id;
-      const roundResult = {
-        ...outcome,
-        roundNumber: match.currentSet,
-        hakemId,
-        nextHakemId,
+      const winningTeam = match.teams.find((t) => t.id === winningPlayer.teamId);
+      if (!winningTeam) {
+        throw new Error(`Team ${winningPlayer.teamId} not found`);
+      }
+
+      // Increment tricksWon for winning team
+      winningTeam.tricksWon += 1;
+
+      // Record the completed trick
+      const completedTrick: Trick = {
+        id: `trick-${match.currentSet}-${match.currentTrickIndex}`,
+        roundNumber: match.currentTrickIndex,
+        leadSuit: match.currentTrick.leadSuit!,
+        cards: [...match.currentTrick.cards],
+        playedBy: [...match.currentTrick.playedBy],
+        winnerId: winningPlayerId,
+        winningTeamId: winningTeam.id,
+        isCompleted: true,
       };
+      match.tricks.push(completedTrick);
+      match.currentTrickIndex += 1;
 
-      scoringService.recordRound(matchId, roundResult);
+      // Clear current trick for next round
+      match.currentTrick = { cards: [], playedBy: [], leadSuit: undefined };
 
-      const winningTeam = match.teams[roundResult.winningTeamId];
-      winningTeam.setsWon += roundResult.setsAwarded;
+      // Set next player (who won the trick leads next)
+      match.currentPlayerId = winningPlayerId;
 
-      if (winningTeam.setsWon >= 7) {
-        match.status = EngineStatus.COMPLETED;
-        match.isComplete = true;
-        match.completedAt = new Date();
-        this.activeMatches.delete(matchId);
-      } else {
-        match.currentSet += 1;
-        match.teams.forEach((team) => {
-          team.tricksWon = 0;
-        });
-        match.tricks = [];
+      // Check if set is complete (7 tricks won)
+      const team0Tricks = match.teams[0].tricksWon;
+      const team1Tricks = match.teams[1].tricksWon;
 
-        const deck = cardEngine.createDeck();
-        const shuffled = cardEngine.shuffleDeck(deck);
-        const dealt = cardEngine.dealCards(shuffled, match.players.length);
-        const handCards: Record<string, Card[]> = {};
-        match.players.forEach((player, i) => {
-          handCards[player.id] = dealt[i] || [];
-        });
-        match.handCards = handCards;
+      if (team0Tricks >= 7 || team1Tricks >= 7) {
+        const outcome = ruleExecutor.getRoundOutcome(team0Tricks, team1Tricks, hakemTeamId);
+        const hakemId = match.hakemId;
+        if (hakemId === undefined) {
+          throw new Error(`Match ${matchId} has no hakem`);
+        }
+        const hakemIndex = match.players.findIndex((p) => p.id === hakemId);
+        const nextHakemId = match.players[(hakemIndex + 1) % match.players.length].id;
+        const roundResult = {
+          ...outcome,
+          roundNumber: match.currentSet,
+          hakemId,
+          nextHakemId,
+        };
+
+        scoringService.recordRound(matchId, roundResult);
+
+        const winningTeamSet = match.teams[roundResult.winningTeamId];
+        winningTeamSet.setsWon += roundResult.setsAwarded;
+
+        if (winningTeamSet.setsWon >= 7) {
+          match.status = EngineStatus.COMPLETED;
+          match.isComplete = true;
+          match.completedAt = new Date();
+          this.activeMatches.delete(matchId);
+        } else {
+          match.currentSet += 1;
+          match.teams.forEach((team) => {
+            team.tricksWon = 0;
+          });
+          match.tricks = [];
+          match.currentTrick = {
+            cards: [],
+            playedBy: [],
+            leadSuit: undefined,
+          };
+
+          const deck = cardEngine.createDeck();
+          const shuffled = cardEngine.shuffleDeck(deck);
+          const dealt = cardEngine.dealCards(shuffled, match.players.length);
+          const handCards: Record<string, Card[]> = {};
+          match.players.forEach((player, i) => {
+            handCards[player.id] = dealt[i] || [];
+          });
+          match.handCards = handCards;
+        }
       }
+    } else {
+      // If trick not complete, set next player (counter-clockwise)
+      const currentPlayerIndex = match.players.findIndex((p) => p.id === playerId);
+      const nextPlayerIndex = (currentPlayerIndex + 1) % match.players.length;
+      match.currentPlayerId = match.players[nextPlayerIndex].id;
     }
 
     this.matchStates.set(matchId, match);
