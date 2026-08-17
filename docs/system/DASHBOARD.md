@@ -1,7 +1,7 @@
 # CardVerse Dashboard
 
 **Document ID:** CV-SYS-016
-**Version:** 4.4.0
+**Version:** 5.0.0
 **Status:** Operational
 **Classification:** System
 **Owner:** Mostafa
@@ -53,17 +53,17 @@ Do not create new status/tracking files. Everything operational belongs in this 
 
 ## 3. Quick Status
 
-| Item                      | Value                                             |
-| ------------------------- | ------------------------------------------------- |
-| **Current Phase**         | Sprint 10 — Local DB Setup & Auth Unblocking      |
-| **Current Sprint**        | Sprint 10 - Production Correctness                |
-| **Current Task**          | 10.7 - Remove Socket.IO auth backdoor             |
-| **Current Status**        | Pending                                           |
-| **Latest Commit**         | 3820e42                                           |
-| **Latest Commit Message** | docs(dashboard): record e2e jest isolation v3.2.1 |
-| **Next Task**             | 10.5 - Build repair                               |
-| **Repository Status**     | Development                                       |
-| **Current Version**       | 0.9.0                                             |
+| Item                      | Value                                                          |
+| ------------------------- | -------------------------------------------------------------- |
+| **Current Phase**         | Sprint 11 — Frontend Game Client                               |
+| **Current Sprint**        | Sprint 11 - Frontend Development                               |
+| **Current Task**          | 11.0 - Build playable board                                    |
+| **Current Status**        | Pending                                                        |
+| **Latest Commit**         | fc5fbad                                                        |
+| **Latest Commit Message** | feat(socket): complete task 10.7 - remove socket auth backdoor |
+| **Next Task**             | 11.0 - Build playable board                                    |
+| **Repository Status**     | Development                                                    |
+| **Current Version**       | 0.9.0                                                          |
 
 ---
 
@@ -462,7 +462,7 @@ See CHANGELOG.md for the full task-by-task history of these sprints.
 | 10.4 | Wire Auth to real JWT + Prisma; verify /auth/guest + /auth/me end-to-end       | ✅ Complete |
 | 10.5 | Repair build: shared/index.ts, frontend index.tsx, port 3000                   | ✅ Complete |
 | 10.6 | Replace optimistic tricksWon with real getTrickWinner                          | ✅ Complete |
-| 10.7 | Remove Socket.IO auth backdoor                                                 | Pending     |
+| 10.7 | Remove Socket.IO auth backdoor                                                 | ✅ Complete |
 
 ### Fresh Environment / AI Onboarding (READ THIS FIRST in a new system)
 
@@ -589,6 +589,7 @@ Decide and document whether **Statistics / Achievements / Rankings / Seasons** s
 | 4.2.0         | 2026-08-16              | Auth real JWT+Prisma verified; migration add_match_state applied; local PostgreSQL operational; Sprint 10 tasks 10.3 & 10.4 Complete                                                                                                                                                                                                                                                 |
 | 4.3.0         | 2026-08-16              | Task 10.5 completed: shared/index.ts rebuilt, frontend index.ts renamed to index.tsx, ports unified to 3000                                                                                                                                                                                                                                                                          |
 | 4.4.0         | 2026-08-17              | Task 10.6 completed: replaced optimistic tricksWon with ruleExecutor.getTrickWinner                                                                                                                                                                                                                                                                                                  |
+| 5.0.0         | 2026-08-17              | Sprint 10 completed: local PostgreSQL, real JWT auth, build repair, real trick winner logic, Socket.IO auth backdoor removed                                                                                                                                                                                                                                                         |
 
 ---
 

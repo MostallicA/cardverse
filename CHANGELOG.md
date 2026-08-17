@@ -6,6 +6,40 @@ The format is inspired by **Keep a Changelog** and follows **Semantic Versioning
 
 ---
 
+## [2.0.0] - 2026-08-17 — Sprint 10: Production Correctness
+
+### Added
+
+- PostgreSQL 18.6 local database setup with `cardverse` database
+- Prisma migrations for `matches.state` column
+- Real JWT authentication with Prisma (guest/me verified)
+- `currentTrick` tracking in MatchState for real trick winner calculation
+
+### Changed
+
+- Auth service wired to real `generateToken` + Prisma (replaced mock tokens)
+- `engine.service.ts` playCard now uses `ruleExecutor.getTrickWinner` for correct trick winner
+- `frontend/vite.config.ts` proxy target changed from 5000 to 3000
+- `frontend/src/services/auth.service.ts` baseURL changed from 5000 to 3000
+- `shared/src/index.ts` rebuilt with proper exports
+- `frontend/src/index.ts` renamed to `index.tsx`
+- Socket.IO authentication now requires valid JWT token (backdoor removed)
+
+### Removed
+
+- `directUserId` backdoor from Socket.IO authentication
+- Mock token logic from auth service
+
+### Fixed
+
+- Frontend build with JSX support
+- Shared package entry point
+- Port unification (all services on port 3000)
+- Optimistic tricksWon replaced with real trick winner logic
+- Socket.IO security vulnerability
+
+---
+
 ## [1.5.0] - 2026-08-17 — Sprint 10: Real Trick Winner
 
 ### Changed
