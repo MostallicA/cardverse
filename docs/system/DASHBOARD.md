@@ -1,7 +1,7 @@
 # CardVerse Dashboard
 
 **Document ID:** CV-SYS-016
-**Version:** 5.0.0
+**Version:** 5.1.0
 **Status:** Operational
 **Classification:** System
 **Owner:** Mostafa
@@ -53,17 +53,17 @@ Do not create new status/tracking files. Everything operational belongs in this 
 
 ## 3. Quick Status
 
-| Item                      | Value                                                          |
-| ------------------------- | -------------------------------------------------------------- |
-| **Current Phase**         | Sprint 11 — Frontend Game Client                               |
-| **Current Sprint**        | Sprint 11 - Frontend Development                               |
-| **Current Task**          | 11.0 - Build playable board                                    |
-| **Current Status**        | Pending                                                        |
-| **Latest Commit**         | fc5fbad                                                        |
-| **Latest Commit Message** | feat(socket): complete task 10.7 - remove socket auth backdoor |
-| **Next Task**             | 11.0 - Build playable board                                    |
-| **Repository Status**     | Development                                                    |
-| **Current Version**       | 0.9.0                                                          |
+| Item                      | Value                                                    |
+| ------------------------- | -------------------------------------------------------- |
+| **Current Phase**         | Sprint 11.5 — Database Completion                        |
+| **Current Sprint**        | Sprint 11.5 - Database Completion                        |
+| **Current Task**          | 11.5.0 - Review and align schema.prisma with DATABASE.md |
+| **Current Status**        | Pending                                                  |
+| **Latest Commit**         | 405fd3d                                                  |
+| **Latest Commit Message** | docs(system): complete sprint 10                         |
+| **Next Task**             | 11.5.1 - Add missing entities                            |
+| **Repository Status**     | Development                                              |
+| **Current Version**       | 0.9.0                                                    |
 
 ---
 
@@ -464,6 +464,19 @@ See CHANGELOG.md for the full task-by-task history of these sprints.
 | 10.6 | Replace optimistic tricksWon with real getTrickWinner                          | ✅ Complete |
 | 10.7 | Remove Socket.IO auth backdoor                                                 | ✅ Complete |
 
+### Sprint 11.5 - Database Completion (In Progress)
+
+| Task   | Description                                                                                             | Status  |
+| ------ | ------------------------------------------------------------------------------------------------------- | ------- |
+| 11.5.0 | Review and align schema.prisma with DATABASE.md                                                         | Pending |
+| 11.5.1 | Add missing entities: Profile, Friend, Wallet, Inventory, Achievement, Statistics, Season, Notification | Pending |
+| 11.5.2 | Create and apply migrations for new entities                                                            | Pending |
+| 11.5.3 | Wire User module to Prisma (replace in-memory)                                                          | Pending |
+| 11.5.4 | Wire Wallet module to Prisma                                                                            | Pending |
+| 11.5.5 | Wire Shop/Inventory modules to Prisma                                                                   | Pending |
+| 11.5.6 | Wire Friends module to Prisma                                                                           | Pending |
+| 11.5.7 | Verify all platform modules persist data correctly                                                      | Pending |
+
 ### Fresh Environment / AI Onboarding (READ THIS FIRST in a new system)
 
 If this project is opened on a **different machine** (or with a new AI session), follow this exact order to know where to start:
@@ -590,6 +603,7 @@ Decide and document whether **Statistics / Achievements / Rankings / Seasons** s
 | 4.3.0         | 2026-08-16              | Task 10.5 completed: shared/index.ts rebuilt, frontend index.ts renamed to index.tsx, ports unified to 3000                                                                                                                                                                                                                                                                          |
 | 4.4.0         | 2026-08-17              | Task 10.6 completed: replaced optimistic tricksWon with ruleExecutor.getTrickWinner                                                                                                                                                                                                                                                                                                  |
 | 5.0.0         | 2026-08-17              | Sprint 10 completed: local PostgreSQL, real JWT auth, build repair, real trick winner logic, Socket.IO auth backdoor removed                                                                                                                                                                                                                                                         |
+| 5.1.0         | 2026-08-17              | Sprint 11.5 defined: Database Completion - align schema.prisma with DATABASE.md and wire platform modules to Prisma                                                                                                                                                                                                                                                                  |
 
 ---
 
