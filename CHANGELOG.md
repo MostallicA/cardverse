@@ -6,6 +6,36 @@ The format is inspired by **Keep a Changelog** and follows **Semantic Versioning
 
 ---
 
+## [3.0.0] - 2026-08-17 — Sprint 11.5: Database Completion
+
+### Added
+
+- 9 new entities to Prisma schema: Profile, Friend, Wallet, Transaction, Inventory, Achievement, Statistics, Season, Notification
+- 5 database migrations applied successfully
+- ShopItem model for in-game store
+- Daily reward fields (lastDailyClaim, dailyStreak) to Wallet model
+
+### Changed
+
+- **User Service**: migrated from in-memory Map to Prisma
+- **Wallet Service**: migrated from in-memory Map to Prisma
+- **Shop Service**: migrated from in-memory Map to Prisma
+- **Inventory Service**: migrated from in-memory Map to Prisma
+- **Friends Service**: migrated from in-memory arrays to Prisma
+
+### Fixed
+
+- All platform modules now persist data in PostgreSQL
+- Removed all in-memory storage from platform layer
+- Database schema now fully aligned with DATABASE.md
+
+### Database
+
+- 15 tables created: users, profiles, friends, wallets, transactions, inventory, shop_items, achievements, statistics, seasons, notifications, matches, match_players, sessions, _prisma_migrations
+- Database schema is up to date with all migrations
+
+---
+
 ## [2.0.0] - 2026-08-17 — Sprint 10: Production Correctness
 
 ### Added

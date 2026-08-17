@@ -1,7 +1,7 @@
 # CardVerse Dashboard
 
 **Document ID:** CV-SYS-016
-**Version:** 5.1.0
+**Version:** 5.2.0
 **Status:** Operational
 **Classification:** System
 **Owner:** Mostafa
@@ -53,17 +53,17 @@ Do not create new status/tracking files. Everything operational belongs in this 
 
 ## 3. Quick Status
 
-| Item                      | Value                                                    |
-| ------------------------- | -------------------------------------------------------- |
-| **Current Phase**         | Sprint 11.5 — Database Completion                        |
-| **Current Sprint**        | Sprint 11.5 - Database Completion                        |
-| **Current Task**          | 11.5.0 - Review and align schema.prisma with DATABASE.md |
-| **Current Status**        | Pending                                                  |
-| **Latest Commit**         | 405fd3d                                                  |
-| **Latest Commit Message** | docs(system): complete sprint 10                         |
-| **Next Task**             | 11.5.1 - Add missing entities                            |
-| **Repository Status**     | Development                                              |
-| **Current Version**       | 0.9.0                                                    |
+| Item                      | Value                                                  |
+| ------------------------- | ------------------------------------------------------ |
+| **Current Phase**         | Sprint 11 — Frontend Game Client                       |
+| **Current Sprint**        | Sprint 11 - Frontend Development                       |
+| **Current Task**          | 11.0 - Build playable board                            |
+| **Current Status**        | Pending                                                |
+| **Latest Commit**         | dcd756c                                                |
+| **Latest Commit Message** | docs(system): define sprint 11.5 - database completion |
+| **Next Task**             | 11.0 - Build playable board                            |
+| **Repository Status**     | Development                                            |
+| **Current Version**       | 0.9.0                                                  |
 
 ---
 
@@ -466,16 +466,16 @@ See CHANGELOG.md for the full task-by-task history of these sprints.
 
 ### Sprint 11.5 - Database Completion (In Progress)
 
-| Task   | Description                                                                                             | Status  |
-| ------ | ------------------------------------------------------------------------------------------------------- | ------- |
-| 11.5.0 | Review and align schema.prisma with DATABASE.md                                                         | Pending |
-| 11.5.1 | Add missing entities: Profile, Friend, Wallet, Inventory, Achievement, Statistics, Season, Notification | Pending |
-| 11.5.2 | Create and apply migrations for new entities                                                            | Pending |
-| 11.5.3 | Wire User module to Prisma (replace in-memory)                                                          | Pending |
-| 11.5.4 | Wire Wallet module to Prisma                                                                            | Pending |
-| 11.5.5 | Wire Shop/Inventory modules to Prisma                                                                   | Pending |
-| 11.5.6 | Wire Friends module to Prisma                                                                           | Pending |
-| 11.5.7 | Verify all platform modules persist data correctly                                                      | Pending |
+| Task   | Description                                                                                             | Status      |
+| ------ | ------------------------------------------------------------------------------------------------------- | ----------- |
+| 11.5.0 | Review and align schema.prisma with DATABASE.md                                                         | ✅ Complete |
+| 11.5.1 | Add missing entities: Profile, Friend, Wallet, Inventory, Achievement, Statistics, Season, Notification | ✅ Complete |
+| 11.5.2 | Create and apply migrations for new entities                                                            | ✅ Complete |
+| 11.5.3 | Wire User module to Prisma (replace in-memory)                                                          | ✅ Complete |
+| 11.5.4 | Wire Wallet module to Prisma                                                                            | ✅ Complete |
+| 11.5.5 | Wire Shop/Inventory modules to Prisma                                                                   | ✅ Complete |
+| 11.5.6 | Wire Friends module to Prisma                                                                           | ✅ Complete |
+| 11.5.7 | Verify all platform modules persist data correctly                                                      | ✅ Complete |
 
 ### Fresh Environment / AI Onboarding (READ THIS FIRST in a new system)
 

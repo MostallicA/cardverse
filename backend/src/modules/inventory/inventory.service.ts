@@ -4,7 +4,11 @@
  *
  * Implements business logic for inventory management including
  * viewing items, using items, and managing inventory.
+ * Now uses Prisma for persistence.
  */
+
+import { prisma } from '../../db/prisma.js';
+import { ShopCategory, Rarity } from '../shop/shop.types.js';
 
 import {
   InventoryItem,
@@ -18,65 +22,71 @@ import {
   AddToInventoryRequest,
   TransferItemRequest,
 } from './inventory.types.js';
-// ShopCategory and Rarity are used only in types, not in service logic
-// No import needed
-
-// In-memory store (will be replaced with PostgreSQL in production)
-const inventoryItems = new Map<string, InventoryItem[]>(); // userId -> inventory items
-
-// Helper to generate unique ID
-function generateId(): string {
-  return Date.now().toString(36) + Math.random().toString(36).substring(2);
-}
 
 export class InventoryService {
   /**
    * Get inventory items for a user with filtering and pagination
    */
   async getInventory(userId: string, request: GetInventoryRequest): Promise<GetInventoryResponse> {
-    let items = inventoryItems.get(userId) || [];
+    const where: any = {
+      userId,
+    };
 
-    // Filter by category
     if (request.category) {
-      items = items.filter((item) => item.category === request.category);
+      where.itemType = request.category;
     }
 
-    // Filter by item type
-    if (request.itemType) {
-      items = items.filter((item) => item.itemType === request.itemType);
-    }
-
-    // Filter by rarity
-    if (request.rarity) {
-      items = items.filter((item) => item.rarity === request.rarity);
-    }
-
-    // Filter by status
     if (request.status) {
-      items = items.filter((item) => item.status === request.status);
+      where.isEquipped = request.status === InventoryItemStatus.EQUIPPED;
     }
 
-    // Search by name or description
-    if (request.search) {
-      const searchLower = request.search.toLowerCase();
-      items = items.filter(
-        (item) =>
-          item.itemName.toLowerCase().includes(searchLower) ||
-          item.description.toLowerCase().includes(searchLower)
-      );
-    }
-
-    // Sort by acquired date (newest first)
-    items.sort((a, b) => b.acquiredAt.getTime() - a.acquiredAt.getTime());
-
-    const total = items.length;
     const limit = request.limit || 20;
     const offset = request.offset || 0;
-    const paginated = items.slice(offset, offset + limit);
+
+    const total = await prisma.inventory.count({ where });
+
+    const items = await prisma.inventory.findMany({
+      where,
+      skip: offset,
+      take: limit,
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+
     const hasMore = offset + limit < total;
 
+    // Get shop item details
+    const shopItems = await prisma.shopItem.findMany({
+      where: {
+        id: { in: items.map((item) => item.itemId) },
+      },
+    });
+
+    const shopItemMap = new Map(shopItems.map((item) => [item.id, item]));
+
+    const inventoryItems: InventoryItem[] = items.map((item) => {
+      const shopItem = shopItemMap.get(item.itemId);
+      return {
+        id: item.id,
+        userId: item.userId,
+        itemId: item.itemId,
+        itemName: shopItem?.name || item.itemId,
+        itemType: item.itemType as ItemType,
+        category: (shopItem?.category as ShopCategory) || (item.itemType as ShopCategory),
+        rarity: (shopItem?.rarity as Rarity) || Rarity.COMMON,
+        description: shopItem?.description || '',
+        imageUrl: shopItem?.imageUrl || undefined,
+        status: item.isEquipped ? InventoryItemStatus.EQUIPPED : InventoryItemStatus.OWNED,
+        quantity: item.quantity,
+        acquiredAt: item.createdAt,
+        expiresAt: undefined,
+        metadata: {},
+      };
+    });
+
     return {
-      items: paginated,
+      items: inventoryItems,
       total,
       hasMore,
     };
@@ -86,32 +96,93 @@ export class InventoryService {
    * Get a specific inventory item
    */
   async getInventoryItem(userId: string, itemId: string): Promise<InventoryItem | null> {
-    const items = inventoryItems.get(userId) || [];
-    return items.find((item) => item.id === itemId) || null;
+    const item = await prisma.inventory.findFirst({
+      where: {
+        id: itemId,
+        userId,
+      },
+    });
+
+    if (!item) {
+      return null;
+    }
+
+    const shopItem = await prisma.shopItem.findUnique({
+      where: { id: item.itemId },
+    });
+
+    return {
+      id: item.id,
+      userId: item.userId,
+      itemId: item.itemId,
+      itemName: shopItem?.name || item.itemId,
+      itemType: item.itemType as ItemType,
+      category: (shopItem?.category as ShopCategory) || (item.itemType as ShopCategory),
+      rarity: (shopItem?.rarity as Rarity) || Rarity.COMMON,
+      description: shopItem?.description || '',
+      imageUrl: shopItem?.imageUrl || undefined,
+      status: item.isEquipped ? InventoryItemStatus.EQUIPPED : InventoryItemStatus.OWNED,
+      quantity: item.quantity,
+      acquiredAt: item.createdAt,
+      expiresAt: undefined,
+      metadata: {},
+    };
   }
 
   /**
    * Add an item to user's inventory
    */
   async addToInventory(userId: string, request: AddToInventoryRequest): Promise<InventoryItem> {
-    // Check if item already exists (for stackable items)
-    const existingItems = inventoryItems.get(userId) || [];
-    const existing = existingItems.find(
-      (item) => item.itemId === request.itemId && item.status === InventoryItemStatus.OWNED
-    );
+    // Check if item already exists
+    const existing = await prisma.inventory.findFirst({
+      where: {
+        userId,
+        itemId: request.itemId,
+      },
+    });
 
     if (existing && request.itemType === ItemType.CONSUMABLE) {
       // Increase quantity for consumable items
-      existing.quantity += request.quantity || 1;
-      inventoryItems.set(userId, existingItems);
-      return existing;
+      const updated = await prisma.inventory.update({
+        where: { id: existing.id },
+        data: {
+          quantity: { increment: request.quantity || 1 },
+        },
+      });
+
+      return {
+        id: updated.id,
+        userId: updated.userId,
+        itemId: updated.itemId,
+        itemName: request.itemName,
+        itemType: request.itemType,
+        category: request.category,
+        rarity: request.rarity,
+        description: request.description,
+        imageUrl: request.imageUrl,
+        status: InventoryItemStatus.OWNED,
+        quantity: updated.quantity,
+        acquiredAt: updated.createdAt,
+        expiresAt: request.expiresAt,
+        metadata: request.metadata || {},
+      };
     }
 
     // Create new inventory item
-    const inventoryItem: InventoryItem = {
-      id: generateId(),
-      userId: request.userId,
-      itemId: request.itemId,
+    const created = await prisma.inventory.create({
+      data: {
+        userId,
+        itemId: request.itemId,
+        itemType: request.category,
+        quantity: request.quantity || 1,
+        isEquipped: false,
+      },
+    });
+
+    return {
+      id: created.id,
+      userId: created.userId,
+      itemId: created.itemId,
       itemName: request.itemName,
       itemType: request.itemType,
       category: request.category,
@@ -119,65 +190,54 @@ export class InventoryService {
       description: request.description,
       imageUrl: request.imageUrl,
       status: InventoryItemStatus.OWNED,
-      quantity: request.quantity || 1,
-      acquiredAt: new Date(),
+      quantity: created.quantity,
+      acquiredAt: created.createdAt,
       expiresAt: request.expiresAt,
-      metadata: request.metadata,
+      metadata: request.metadata || {},
     };
-
-    existingItems.push(inventoryItem);
-    inventoryItems.set(userId, existingItems);
-
-    return inventoryItem;
   }
 
   /**
    * Use an item from inventory
    */
   async useItem(userId: string, request: UseItemRequest): Promise<UseItemResponse> {
-    const items = inventoryItems.get(userId) || [];
-    const itemIndex = items.findIndex((item) => item.id === request.itemId);
+    const item = await prisma.inventory.findFirst({
+      where: {
+        id: request.itemId,
+        userId,
+      },
+    });
 
-    if (itemIndex === -1) {
+    if (!item) {
       throw new Error('Item not found in inventory');
     }
 
-    const item = items[itemIndex];
-
-    // Check if item is usable
-    if (item.status !== InventoryItemStatus.OWNED && item.status !== InventoryItemStatus.EQUIPPED) {
-      throw new Error(`Item is not usable (status: ${item.status})`);
+    if (item.quantity < (request.quantity || 1)) {
+      throw new Error(`Insufficient quantity. Available: ${item.quantity}`);
     }
 
-    if (item.itemType !== ItemType.CONSUMABLE && item.itemType !== ItemType.COLLECTIBLE) {
-      throw new Error('Only consumable and collectible items can be used');
-    }
+    // For now, just reduce quantity
+    // Future: Add item-specific logic
+    const newQuantity = item.quantity - (request.quantity || 1);
+    const updated = await prisma.inventory.update({
+      where: { id: item.id },
+      data: {
+        quantity: newQuantity,
+      },
+    });
 
-    const quantityToUse = request.quantity || 1;
-    if (item.quantity < quantityToUse) {
-      throw new Error(
-        `Insufficient quantity. Available: ${item.quantity}, Requested: ${quantityToUse}`
-      );
-    }
-
-    // Update quantity
-    item.quantity -= quantityToUse;
-
-    // If quantity reaches 0, mark as consumed
-    if (item.quantity === 0) {
-      item.status = InventoryItemStatus.CONSUMED;
-    }
-
-    inventoryItems.set(userId, items);
+    const shopItem = await prisma.shopItem.findUnique({
+      where: { id: item.itemId },
+    });
 
     return {
       itemId: item.id,
-      quantityUsed: quantityToUse,
-      remainingQuantity: item.quantity,
+      quantityUsed: request.quantity || 1,
+      remainingQuantity: updated.quantity,
       result: {
-        itemName: item.itemName,
-        category: item.category,
-        rarity: item.rarity,
+        itemName: shopItem?.name || item.itemId,
+        category: item.itemType as ShopCategory,
+        rarity: (shopItem?.rarity as Rarity) || Rarity.COMMON,
       },
     };
   }
@@ -186,57 +246,57 @@ export class InventoryService {
    * Transfer an item to another user
    */
   async transferItem(userId: string, request: TransferItemRequest): Promise<void> {
-    const items = inventoryItems.get(userId) || [];
-    const itemIndex = items.findIndex((item) => item.id === request.itemId);
+    const item = await prisma.inventory.findFirst({
+      where: {
+        id: request.itemId,
+        userId,
+      },
+    });
 
-    if (itemIndex === -1) {
+    if (!item) {
       throw new Error('Item not found in inventory');
     }
 
-    const item = items[itemIndex];
-
-    // Check if item is transferable
-    if (item.status !== InventoryItemStatus.OWNED) {
-      throw new Error(`Item cannot be transferred (status: ${item.status})`);
+    if (item.quantity < (request.quantity || 1)) {
+      throw new Error(`Insufficient quantity. Available: ${item.quantity}`);
     }
 
-    if (item.itemType === ItemType.COLLECTIBLE) {
-      throw new Error('Collectible items cannot be transferred');
+    // Reduce quantity from sender
+    const newQuantity = item.quantity - (request.quantity || 1);
+    if (newQuantity === 0) {
+      await prisma.inventory.delete({ where: { id: item.id } });
+    } else {
+      await prisma.inventory.update({
+        where: { id: item.id },
+        data: { quantity: newQuantity },
+      });
     }
-
-    const quantityToTransfer = request.quantity || 1;
-    if (item.quantity < quantityToTransfer) {
-      throw new Error(
-        `Insufficient quantity. Available: ${item.quantity}, Requested: ${quantityToTransfer}`
-      );
-    }
-
-    // Remove from current user
-    item.quantity -= quantityToTransfer;
-    if (item.quantity === 0) {
-      items.splice(itemIndex, 1);
-    }
-    inventoryItems.set(userId, items);
 
     // Add to target user
-    const targetItems = inventoryItems.get(request.targetUserId) || [];
-    const existingTarget = targetItems.find(
-      (invItem) => invItem.itemId === request.itemId && invItem.status === InventoryItemStatus.OWNED
-    );
-
-    if (existingTarget && item.itemType === ItemType.CONSUMABLE) {
-      existingTarget.quantity += quantityToTransfer;
-      inventoryItems.set(request.targetUserId, targetItems);
-    } else {
-      const transferredItem: InventoryItem = {
-        ...item,
-        id: generateId(),
+    const targetItem = await prisma.inventory.findFirst({
+      where: {
         userId: request.targetUserId,
-        quantity: quantityToTransfer,
-        acquiredAt: new Date(),
-      };
-      targetItems.push(transferredItem);
-      inventoryItems.set(request.targetUserId, targetItems);
+        itemId: item.itemId,
+      },
+    });
+
+    if (targetItem) {
+      await prisma.inventory.update({
+        where: { id: targetItem.id },
+        data: {
+          quantity: { increment: request.quantity || 1 },
+        },
+      });
+    } else {
+      await prisma.inventory.create({
+        data: {
+          userId: request.targetUserId,
+          itemId: item.itemId,
+          itemType: item.itemType,
+          quantity: request.quantity || 1,
+          isEquipped: false,
+        },
+      });
     }
   }
 
@@ -244,7 +304,9 @@ export class InventoryService {
    * Get inventory statistics
    */
   async getStats(userId: string): Promise<InventoryStats> {
-    const items = inventoryItems.get(userId) || [];
+    const items = await prisma.inventory.findMany({
+      where: { userId },
+    });
 
     const stats: InventoryStats = {
       totalItems: items.length,
@@ -253,15 +315,24 @@ export class InventoryService {
       byStatus: {},
     };
 
+    // Get shop items for details
+    const shopItems = await prisma.shopItem.findMany({
+      where: {
+        id: { in: items.map((item) => item.itemId) },
+      },
+    });
+
+    const shopItemMap = new Map(shopItems.map((item) => [item.id, item]));
+
     for (const item of items) {
-      // By category
-      stats.byCategory[item.category] = (stats.byCategory[item.category] || 0) + 1;
+      const shopItem = shopItemMap.get(item.itemId);
+      const category = (shopItem?.category || item.itemType) as ShopCategory;
+      const rarity = (shopItem?.rarity || Rarity.COMMON) as Rarity;
+      const status = item.isEquipped ? InventoryItemStatus.EQUIPPED : InventoryItemStatus.OWNED;
 
-      // By rarity
-      stats.byRarity[item.rarity] = (stats.byRarity[item.rarity] || 0) + 1;
-
-      // By status
-      stats.byStatus[item.status] = (stats.byStatus[item.status] || 0) + 1;
+      stats.byCategory[category] = (stats.byCategory[category] || 0) + 1;
+      stats.byRarity[rarity] = (stats.byRarity[rarity] || 0) + 1;
+      stats.byStatus[status] = (stats.byStatus[status] || 0) + 1;
     }
 
     return stats;
@@ -271,66 +342,123 @@ export class InventoryService {
    * Equip an item from inventory
    */
   async equipItem(userId: string, itemId: string): Promise<void> {
-    const items = inventoryItems.get(userId) || [];
-    const item = items.find((invItem) => invItem.id === itemId);
+    const item = await prisma.inventory.findFirst({
+      where: {
+        id: itemId,
+        userId,
+      },
+    });
 
     if (!item) {
       throw new Error('Item not found in inventory');
     }
 
-    if (item.status !== InventoryItemStatus.OWNED) {
-      throw new Error(`Item cannot be equipped (status: ${item.status})`);
+    // Get shop item for category
+    const shopItem = await prisma.shopItem.findUnique({
+      where: { id: item.itemId },
+    });
+
+    if (!shopItem) {
+      throw new Error('Shop item not found');
     }
 
-    if (item.itemType !== ItemType.COSMETIC) {
-      throw new Error('Only cosmetic items can be equipped');
-    }
-
-    // Unequip any item in the same category
-    for (const invItem of items) {
-      if (invItem.category === item.category && invItem.status === InventoryItemStatus.EQUIPPED) {
-        invItem.status = InventoryItemStatus.OWNED;
-      }
-    }
+    // Unequip any item in same category
+    await prisma.inventory.updateMany({
+      where: {
+        userId,
+        itemType: shopItem.category,
+        isEquipped: true,
+      },
+      data: {
+        isEquipped: false,
+      },
+    });
 
     // Equip the item
-    item.status = InventoryItemStatus.EQUIPPED;
-    inventoryItems.set(userId, items);
+    await prisma.inventory.update({
+      where: { id: item.id },
+      data: {
+        isEquipped: true,
+      },
+    });
   }
 
   /**
    * Unequip an item
    */
   async unequipItem(userId: string, itemId: string): Promise<void> {
-    const items = inventoryItems.get(userId) || [];
-    const item = items.find((invItem) => invItem.id === itemId);
+    const item = await prisma.inventory.findFirst({
+      where: {
+        id: itemId,
+        userId,
+        isEquipped: true,
+      },
+    });
 
     if (!item) {
-      throw new Error('Item not found in inventory');
+      throw new Error('Item not found or is not equipped');
     }
 
-    if (item.status !== InventoryItemStatus.EQUIPPED) {
-      throw new Error('Item is not currently equipped');
-    }
-
-    item.status = InventoryItemStatus.OWNED;
-    inventoryItems.set(userId, items);
+    await prisma.inventory.update({
+      where: { id: item.id },
+      data: {
+        isEquipped: false,
+      },
+    });
   }
 
   /**
    * Get equipped items for a user
    */
   async getEquippedItems(userId: string): Promise<InventoryItem[]> {
-    const items = inventoryItems.get(userId) || [];
-    return items.filter((item) => item.status === InventoryItemStatus.EQUIPPED);
+    const items = await prisma.inventory.findMany({
+      where: {
+        userId,
+        isEquipped: true,
+      },
+    });
+
+    const shopItems = await prisma.shopItem.findMany({
+      where: {
+        id: { in: items.map((item) => item.itemId) },
+      },
+    });
+
+    const shopItemMap = new Map(shopItems.map((item) => [item.id, item]));
+
+    return items.map((item) => {
+      const shopItem = shopItemMap.get(item.itemId);
+      return {
+        id: item.id,
+        userId: item.userId,
+        itemId: item.itemId,
+        itemName: shopItem?.name || item.itemId,
+        itemType: item.itemType as ItemType,
+        category: (shopItem?.category as ShopCategory) || (item.itemType as ShopCategory),
+        rarity: (shopItem?.rarity as Rarity) || Rarity.COMMON,
+        description: shopItem?.description || '',
+        imageUrl: shopItem?.imageUrl || undefined,
+        status: InventoryItemStatus.EQUIPPED,
+        quantity: item.quantity,
+        acquiredAt: item.createdAt,
+        expiresAt: undefined,
+        metadata: {},
+      };
+    });
   }
 
   /**
    * Check if user owns a specific item
    */
   async userOwnsItem(userId: string, itemId: string): Promise<boolean> {
-    const items = inventoryItems.get(userId) || [];
-    return items.some((item) => item.itemId === itemId);
+    const item = await prisma.inventory.findFirst({
+      where: {
+        userId,
+        itemId,
+      },
+    });
+
+    return !!item;
   }
 }
 

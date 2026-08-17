@@ -22,8 +22,18 @@ model User {
   updatedAt    DateTime @updatedAt @map("updated_at")
   deletedAt    DateTime? @map("deleted_at")
 
-  sessions Session[]
-  matches  MatchPlayer[]
+  // Relations
+  sessions     Session[]
+  matches      MatchPlayer[]
+  profile      Profile?
+  friends      Friend[]      @relation("user_friends")
+  friendOf     Friend[]      @relation("friend_of")
+  wallet       Wallet?
+  inventory    Inventory[]
+  achievements Achievement[]
+  statistics   Statistics?
+  seasons      Season[]
+  notifications Notification[]
 
   @@map("users")
 }
@@ -81,4 +91,172 @@ model MatchPlayer {
 
   @@unique([matchId, userId])
   @@map("match_players")
+}
+
+// Profile - Stores public player information (DATABASE.md ┬د4.2)
+model Profile {
+  id          String   @id @default(cuid())
+  userId      String   @unique @map("user_id")
+  username    String   @unique
+  avatar      String?  @default("default_avatar.png")
+  avatarFrame String?  @map("avatar_frame")
+  country     String?  @default("IR")
+  bio         String?  @default("")
+  level       Int      @default(1)
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  deletedAt   DateTime? @map("deleted_at")
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("profiles")
+}
+
+// Friend - Stores friendship relationships (DATABASE.md ┬د4.3)
+model Friend {
+  id         String   @id @default(cuid())
+  userId     String   @map("user_id")
+  friendId   String   @map("friend_id")
+  status     String   @default("pending") // pending | accepted | blocked
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  user   User @relation(fields: [userId], references: [id], name: "user_friends")
+  friend User @relation(fields: [friendId], references: [id], name: "friend_of")
+
+  @@unique([userId, friendId])
+  @@map("friends")
+}
+
+// Wallet - Stores player currencies (DATABASE.md ┬د4.6)
+model Wallet {
+  id        String   @id @default(cuid())
+  userId    String   @unique @map("user_id")
+  coins     Int      @default(0)
+  gems      Int      @default(0)
+  lastDailyClaim  DateTime? @map("last_daily_claim")
+  dailyStreak     Int      @default(0) @map("daily_streak")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  user         User         @relation(fields: [userId], references: [id])
+  transactions Transaction[]
+
+  @@map("wallets")
+}
+
+// Transaction - Records wallet operations
+model Transaction {
+  id          String   @id @default(cuid())
+  walletId    String   @map("wallet_id")
+  amount      Int
+  type        String   // credit | debit
+  description String
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  wallet Wallet @relation(fields: [walletId], references: [id])
+
+  @@map("transactions")
+}
+
+// Inventory - Stores owned cosmetic items (DATABASE.md ┬د4.7)
+model Inventory {
+  id         String   @id @default(cuid())
+  userId     String   @map("user_id")
+  itemId     String   @map("item_id")
+  itemType   String   @map("item_type") // avatar | frame | card_back | theme | title
+  quantity   Int      @default(1)
+  isEquipped Boolean  @default(false) @map("is_equipped")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@unique([userId, itemId])
+  @@map("inventory")
+}
+
+// Achievement - Tracks player achievements (DATABASE.md ┬د4.8)
+model Achievement {
+  id            String   @id @default(cuid())
+  userId        String   @map("user_id")
+  achievementId String   @map("achievement_id")
+  progress      Int      @default(0)
+  isUnlocked    Boolean  @default(false) @map("is_unlocked")
+  unlockedAt    DateTime? @map("unlocked_at")
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@unique([userId, achievementId])
+  @@map("achievements")
+}
+
+// Statistics - Stores permanent player statistics (DATABASE.md ┬د4.9)
+model Statistics {
+  id             String   @id @default(cuid())
+  userId         String   @unique @map("user_id")
+  totalMatches   Int      @default(0) @map("total_matches")
+  wins           Int      @default(0)
+  losses         Int      @default(0)
+  winRate        Float    @default(0) @map("win_rate")
+  disconnectRate Float    @default(0) @map("disconnect_rate")
+  fairPlayScore  Int      @default(100) @map("fair_play_score")
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("statistics")
+}
+
+// Season - Stores seasonal progression (DATABASE.md ┬د4.10)
+model Season {
+  id        String   @id @default(cuid())
+  userId    String   @map("user_id")
+  seasonId  String   @map("season_id") // e.g., "2026-S1"
+  rating    Int      @default(0)
+  rank      Int      @default(0)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@unique([userId, seasonId])
+  @@map("seasons")
+}
+
+// Notification - Stores player notifications (DATABASE.md ┬د4.11)
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String   @map("user_id")
+  type      String   // friend_request | match_invite | reward | announcement
+  title     String
+  message   String
+  isRead    Boolean  @default(false) @map("is_read")
+  data      Json?    // Additional data (JSON)
+  createdAt DateTime @default(now()) @map("created_at")
+  expiresAt DateTime? @map("expires_at")
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("notifications")
+}
+
+// ShopItem - Items available for purchase (PRODUCT_BIBLE.md ┬د5.3)
+model ShopItem {
+  id          String   @id @default(cuid())
+  name        String
+  description String
+  category    String   // avatar | frame | card_back | theme | title
+  rarity      String   // common | uncommon | rare | epic | legendary
+  price       Int
+  imageUrl    String?  @map("image_url")
+  isAvailable Boolean  @default(true) @map("is_available")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@map("shop_items")
 }

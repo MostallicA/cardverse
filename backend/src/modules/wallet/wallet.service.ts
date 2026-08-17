@@ -4,14 +4,12 @@
  *
  * Implements business logic for wallet management including balance,
  * transactions, coin operations, and daily rewards.
+ * Now uses Prisma for persistence.
  */
 
+import { prisma } from '../../db/prisma.js';
+
 import {
-  Wallet,
-  Transaction,
-  TransactionType,
-  TransactionStatus,
-  TransactionSource,
   AddCoinsRequest,
   SpendCoinsRequest,
   WalletResponse,
@@ -19,17 +17,10 @@ import {
   GetTransactionsRequest,
   GetTransactionsResponse,
   DailyRewardResponse,
+  TransactionType,
+  TransactionStatus,
+  TransactionSource,
 } from './wallet.types.js';
-
-// In-memory stores (will be replaced with PostgreSQL in production)
-const wallets = new Map<string, Wallet>(); // userId -> Wallet
-const transactions = new Map<string, Transaction[]>(); // userId -> Transaction[]
-const dailyRewards = new Map<string, { lastClaim: Date; streak: number }>(); // userId -> daily reward info
-
-// Helper to generate unique ID
-function generateId(): string {
-  return Date.now().toString(36) + Math.random().toString(36).substring(2);
-}
 
 // Constants
 const DAILY_REWARD_AMOUNT = 100;
@@ -40,11 +31,21 @@ export class WalletService {
    * Get wallet for a user (create if not exists)
    */
   async getWallet(userId: string): Promise<WalletResponse> {
-    let wallet = wallets.get(userId);
+    let wallet = await prisma.wallet.findUnique({
+      where: { userId },
+    });
+
     if (!wallet) {
-      wallet = this.createWallet(userId);
-      wallets.set(userId, wallet);
+      wallet = await prisma.wallet.create({
+        data: {
+          userId,
+          coins: 0,
+          gems: 0,
+          dailyStreak: 0,
+        },
+      });
     }
+
     return this.toResponse(wallet);
   }
 
@@ -60,36 +61,60 @@ export class WalletService {
    * Add coins to a user's wallet
    */
   async addCoins(userId: string, request: AddCoinsRequest): Promise<TransactionResponse> {
-    const wallet = await this.getWallet(userId);
+    const wallet = await prisma.wallet.findUnique({
+      where: { userId },
+    });
+
+    if (!wallet) {
+      throw new Error('Wallet not found');
+    }
+
     const balanceBefore = wallet.coins;
+    const balanceAfter = wallet.coins + request.amount;
 
-    // Update wallet
-    wallet.coins += request.amount;
-    wallet.totalEarned += request.amount;
-    // Type assertion to update updatedAt field
-    (wallet as Wallet).updatedAt = new Date();
-    const existingWallet = wallets.get(userId)!;
-    existingWallet.coins = wallet.coins;
-    existingWallet.totalEarned = wallet.totalEarned;
-    wallets.set(userId, existingWallet);
+    // Update wallet using transaction to ensure consistency
+    const updatedWallet = await prisma.$transaction(async (tx) => {
+      const updated = await tx.wallet.update({
+        where: { userId },
+        data: {
+          coins: { increment: request.amount },
+        },
+      });
 
-    // Create transaction
-    const transaction: Transaction = {
-      id: generateId(),
-      userId,
-      type: TransactionType.EARN,
-      source: request.source,
-      amount: request.amount,
-      balanceBefore,
-      balanceAfter: wallet.coins,
-      status: TransactionStatus.COMPLETED,
-      description: request.description,
-      metadata: request.metadata,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
+      // Create transaction record
+      await tx.transaction.create({
+        data: {
+          walletId: updated.id,
+          amount: request.amount,
+          type: TransactionType.EARN,
+          source: request.source as TransactionSource,
+          description: request.description || 'Coins added',
+          balanceBefore,
+          balanceAfter,
+          status: TransactionStatus.COMPLETED,
+          metadata: request.metadata || {},
+        },
+      });
 
-    this.saveTransaction(userId, transaction);
+      return updated;
+    });
+
+    // Get the created transaction
+    const transaction = await prisma.transaction.findFirst({
+      where: {
+        walletId: updatedWallet.id,
+        type: TransactionType.EARN,
+        amount: request.amount,
+        balanceAfter,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+
+    if (!transaction) {
+      throw new Error('Transaction not found after creation');
+    }
 
     return this.toTransactionResponse(transaction);
   }
@@ -98,7 +123,13 @@ export class WalletService {
    * Spend coins from a user's wallet
    */
   async spendCoins(userId: string, request: SpendCoinsRequest): Promise<TransactionResponse> {
-    const wallet = await this.getWallet(userId);
+    const wallet = await prisma.wallet.findUnique({
+      where: { userId },
+    });
+
+    if (!wallet) {
+      throw new Error('Wallet not found');
+    }
 
     // Check if sufficient balance
     if (wallet.coins < request.amount) {
@@ -108,30 +139,51 @@ export class WalletService {
     }
 
     const balanceBefore = wallet.coins;
+    const balanceAfter = wallet.coins - request.amount;
 
-    // Update wallet
-    const existingWallet = wallets.get(userId)!;
-    existingWallet.coins = wallet.coins;
-    existingWallet.totalSpent = wallet.totalSpent;
-    wallets.set(userId, existingWallet);
+    // Update wallet using transaction to ensure consistency
+    const updatedWallet = await prisma.$transaction(async (tx) => {
+      const updated = await tx.wallet.update({
+        where: { userId },
+        data: {
+          coins: { decrement: request.amount },
+        },
+      });
 
-    // Create transaction
-    const transaction: Transaction = {
-      id: generateId(),
-      userId,
-      type: TransactionType.SPEND,
-      source: request.source,
-      amount: request.amount,
-      balanceBefore,
-      balanceAfter: wallet.coins,
-      status: TransactionStatus.COMPLETED,
-      description: request.description,
-      metadata: request.metadata,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
+      // Create transaction record
+      await tx.transaction.create({
+        data: {
+          walletId: updated.id,
+          amount: request.amount,
+          type: TransactionType.SPEND,
+          source: request.source as TransactionSource,
+          description: request.description || 'Coins spent',
+          balanceBefore,
+          balanceAfter,
+          status: TransactionStatus.COMPLETED,
+          metadata: request.metadata || {},
+        },
+      });
 
-    this.saveTransaction(userId, transaction);
+      return updated;
+    });
+
+    // Get the created transaction
+    const transaction = await prisma.transaction.findFirst({
+      where: {
+        walletId: updatedWallet.id,
+        type: TransactionType.SPEND,
+        amount: request.amount,
+        balanceAfter,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+
+    if (!transaction) {
+      throw new Error('Transaction not found after creation');
+    }
 
     return this.toTransactionResponse(transaction);
   }
@@ -143,39 +195,60 @@ export class WalletService {
     userId: string,
     request: GetTransactionsRequest
   ): Promise<GetTransactionsResponse> {
-    const userTransactions = transactions.get(userId) || [];
+    // Get wallet first
+    const wallet = await prisma.wallet.findUnique({
+      where: { userId },
+    });
 
-    let filtered = userTransactions;
+    if (!wallet) {
+      return {
+        transactions: [],
+        total: 0,
+        hasMore: false,
+      };
+    }
 
-    // Filter by type
+    // Build where clause
+    const where: any = {
+      walletId: wallet.id,
+    };
+
     if (request.type) {
-      filtered = filtered.filter((t) => t.type === request.type);
+      where.type = request.type;
     }
 
-    // Filter by source
     if (request.source) {
-      filtered = filtered.filter((t) => t.source === request.source);
+      where.source = request.source;
     }
 
-    // Filter by date range
     if (request.startDate) {
-      filtered = filtered.filter((t) => t.createdAt >= request.startDate!);
+      where.createdAt = { gte: request.startDate };
     }
+
     if (request.endDate) {
-      filtered = filtered.filter((t) => t.createdAt <= request.endDate!);
+      where.createdAt = { ...where.createdAt, lte: request.endDate };
     }
 
-    // Sort by createdAt descending (newest first)
-    filtered.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
-
-    const total = filtered.length;
     const limit = request.limit || 20;
     const offset = request.offset || 0;
-    const paginated = filtered.slice(offset, offset + limit);
+
+    // Get total count
+    const total = await prisma.transaction.count({ where });
+
+    // Get paginated transactions
+    const transactions = await prisma.transaction.findMany({
+      where,
+      skip: offset,
+      take: limit,
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+
     const hasMore = offset + limit < total;
 
     return {
-      transactions: paginated.map((t) => this.toTransactionResponse(t)),
+      transactions: transactions.map((t) => this.toTransactionResponse(t)),
       total,
       hasMore,
     };
@@ -185,49 +258,68 @@ export class WalletService {
    * Claim daily reward for a user
    */
   async claimDailyReward(userId: string): Promise<DailyRewardResponse> {
+    const wallet = await prisma.wallet.findUnique({
+      where: { userId },
+    });
+
+    if (!wallet) {
+      throw new Error('Wallet not found');
+    }
+
     const now = new Date();
-    const rewardInfo = dailyRewards.get(userId);
 
     // Check if already claimed today
-    if (rewardInfo) {
-      const lastClaim = rewardInfo.lastClaim;
-      const timeSinceLastClaim = now.getTime() - lastClaim.getTime();
-
+    if (wallet.lastDailyClaim) {
+      const timeSinceLastClaim = now.getTime() - wallet.lastDailyClaim.getTime();
       if (timeSinceLastClaim < DAILY_REWARD_COOLDOWN) {
-        const nextClaimAt = new Date(lastClaim.getTime() + DAILY_REWARD_COOLDOWN);
+        const nextClaimAt = new Date(wallet.lastDailyClaim.getTime() + DAILY_REWARD_COOLDOWN);
         return {
           claimed: false,
           nextClaimAt,
           amount: 0,
-          streak: rewardInfo.streak,
+          streak: wallet.dailyStreak,
         };
       }
     }
 
     // Calculate streak
     let streak = 1;
-    if (rewardInfo) {
-      const lastClaim = rewardInfo.lastClaim;
-      const timeSinceLastClaim = now.getTime() - lastClaim.getTime();
+    if (wallet.lastDailyClaim) {
+      const timeSinceLastClaim = now.getTime() - wallet.lastDailyClaim.getTime();
       // If claimed within 48 hours, maintain streak
       if (timeSinceLastClaim < 48 * 60 * 60 * 1000) {
-        streak = rewardInfo.streak + 1;
+        streak = wallet.dailyStreak + 1;
       }
     }
 
-    // Update daily reward info
-    dailyRewards.set(userId, {
-      lastClaim: now,
-      streak,
-    });
+    // Calculate reward amount
+    const amount = DAILY_REWARD_AMOUNT + Math.min((streak - 1) * 10, 100);
 
-    // Add coins
-    const amount = DAILY_REWARD_AMOUNT + Math.min((streak - 1) * 10, 100); // Bonus up to 100 extra
-    await this.addCoins(userId, {
-      amount,
-      source: TransactionSource.DAILY_REWARD,
-      description: `Daily reward - Streak: ${streak}`,
-      metadata: { streak },
+    // Update wallet with daily reward info
+    await prisma.$transaction(async (tx) => {
+      const updated = await tx.wallet.update({
+        where: { userId },
+        data: {
+          coins: { increment: amount },
+          lastDailyClaim: now,
+          dailyStreak: streak,
+        },
+      });
+
+      // Create transaction record
+      await tx.transaction.create({
+        data: {
+          walletId: updated.id,
+          amount,
+          type: TransactionType.EARN,
+          source: TransactionSource.DAILY_REWARD,
+          description: `Daily reward - Streak: ${streak}`,
+          balanceBefore: wallet.coins,
+          balanceAfter: wallet.coins + amount,
+          status: TransactionStatus.COMPLETED,
+          metadata: { streak },
+        },
+      });
     });
 
     return {
@@ -242,10 +334,11 @@ export class WalletService {
    * Get daily reward status for a user
    */
   async getDailyRewardStatus(userId: string): Promise<DailyRewardResponse> {
-    const rewardInfo = dailyRewards.get(userId);
-    const now = new Date();
+    const wallet = await prisma.wallet.findUnique({
+      where: { userId },
+    });
 
-    if (!rewardInfo) {
+    if (!wallet) {
       return {
         claimed: false,
         nextClaimAt: undefined,
@@ -254,21 +347,26 @@ export class WalletService {
       };
     }
 
-    const timeSinceLastClaim = now.getTime() - rewardInfo.lastClaim.getTime();
-    if (timeSinceLastClaim < DAILY_REWARD_COOLDOWN) {
-      return {
-        claimed: true,
-        nextClaimAt: new Date(rewardInfo.lastClaim.getTime() + DAILY_REWARD_COOLDOWN),
-        amount: DAILY_REWARD_AMOUNT + Math.min((rewardInfo.streak - 1) * 10, 100),
-        streak: rewardInfo.streak,
-      };
+    const now = new Date();
+
+    if (wallet.lastDailyClaim) {
+      const timeSinceLastClaim = now.getTime() - wallet.lastDailyClaim.getTime();
+      if (timeSinceLastClaim < DAILY_REWARD_COOLDOWN) {
+        const amount = DAILY_REWARD_AMOUNT + Math.min((wallet.dailyStreak - 1) * 10, 100);
+        return {
+          claimed: true,
+          nextClaimAt: new Date(wallet.lastDailyClaim.getTime() + DAILY_REWARD_COOLDOWN),
+          amount,
+          streak: wallet.dailyStreak,
+        };
+      }
     }
 
     return {
       claimed: false,
       nextClaimAt: undefined,
       amount: DAILY_REWARD_AMOUNT,
-      streak: rewardInfo.streak,
+      streak: wallet.dailyStreak || 0,
     };
   }
 
@@ -276,59 +374,43 @@ export class WalletService {
    * Check if user has sufficient balance
    */
   async hasSufficientBalance(userId: string, amount: number): Promise<boolean> {
-    const wallet = await this.getWallet(userId);
+    const wallet = await prisma.wallet.findUnique({
+      where: { userId },
+    });
+
+    if (!wallet) {
+      return false;
+    }
+
     return wallet.coins >= amount;
   }
 
   /**
-   * Create a new wallet for a user
+   * Convert Prisma Wallet to WalletResponse
    */
-  private createWallet(userId: string): Wallet {
-    return {
-      userId,
-      coins: 0,
-      totalEarned: 0,
-      totalSpent: 0,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
-  }
-
-  /**
-   * Save a transaction for a user
-   */
-  private saveTransaction(userId: string, transaction: Transaction): void {
-    const userTransactions = transactions.get(userId) || [];
-    userTransactions.push(transaction);
-    transactions.set(userId, userTransactions);
-  }
-
-  /**
-   * Convert Wallet to WalletResponse
-   */
-  private toResponse(wallet: Wallet): WalletResponse {
+  private toResponse(wallet: any): WalletResponse {
     return {
       userId: wallet.userId,
       coins: wallet.coins,
-      totalEarned: wallet.totalEarned,
-      totalSpent: wallet.totalSpent,
+      totalEarned: 0, // Will be calculated from transactions
+      totalSpent: 0, // Will be calculated from transactions
     };
   }
 
   /**
-   * Convert Transaction to TransactionResponse
+   * Convert Prisma Transaction to TransactionResponse
    */
-  private toTransactionResponse(transaction: Transaction): TransactionResponse {
+  private toTransactionResponse(transaction: any): TransactionResponse {
     return {
       id: transaction.id,
-      type: transaction.type,
-      source: transaction.source,
+      type: transaction.type as TransactionType,
+      source: transaction.source as TransactionSource,
       amount: transaction.amount,
       balanceBefore: transaction.balanceBefore,
       balanceAfter: transaction.balanceAfter,
       description: transaction.description,
-      metadata: transaction.metadata,
-      status: transaction.status,
+      metadata: transaction.metadata || {},
+      status: transaction.status as TransactionStatus,
       createdAt: transaction.createdAt,
     };
   }

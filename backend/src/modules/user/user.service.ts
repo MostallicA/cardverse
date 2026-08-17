@@ -2,6 +2,8 @@
 // Business logic for user profiles and search
 // Based on ARCHITECTURE.md - User Management Module (Platform Layer)
 
+import { prisma } from '../../db/prisma.js';
+
 import {
   UserProfile,
   UpdateProfileRequest,
@@ -9,48 +11,82 @@ import {
   UserSearchResult,
 } from './user.types.js';
 
-// Temporary in-memory store (will be replaced with database)
-const profiles: Map<string, UserProfile> = new Map();
-const usernames: Set<string> = new Set();
-
 export class UserService {
   /**
    * Create a new user profile
    * Called after authentication when user is first created
    */
   static async createProfile(userId: string, username: string): Promise<UserProfile> {
-    // Check username uniqueness (PRODUCT_BIBLE.md Section 3.2)
-    if (usernames.has(username.toLowerCase())) {
-      throw new Error('Username already taken');
-    }
-
     // Validate username format
     this.validateUsername(username);
 
-    const profile: UserProfile = {
-      id: userId,
-      username,
-      avatar: 'default_avatar',
-      avatarFrame: 'default_frame',
-      countryFlag: 'ww',
-      level: 1,
-      rank: 'bronze',
-      status: 'online',
-      joinDate: new Date(),
-      lastOnline: new Date(),
-    };
+    // Check if user already exists
+    const existingUser = await prisma.user.findUnique({
+      where: { id: userId },
+      include: { profile: true },
+    });
 
-    profiles.set(userId, profile);
-    usernames.add(username.toLowerCase());
+    if (!existingUser) {
+      throw new Error('User not found');
+    }
 
-    return profile;
+    if (existingUser.profile) {
+      throw new Error('Profile already exists for this user');
+    }
+
+    // Check username uniqueness
+    const existingProfile = await prisma.profile.findUnique({
+      where: { username },
+    });
+
+    if (existingProfile) {
+      throw new Error('Username already taken');
+    }
+
+    // Create profile
+    const profile = await prisma.profile.create({
+      data: {
+        userId,
+        username,
+        avatar: 'default_avatar.png',
+        avatarFrame: 'default_frame',
+        country: 'IR',
+        bio: '',
+        level: 1,
+      },
+    });
+
+    return this.mapToUserProfile(profile);
   }
 
   /**
    * Get user profile by ID
    */
   static async getProfile(userId: string): Promise<UserProfile | null> {
-    return profiles.get(userId) || null;
+    const profile = await prisma.profile.findUnique({
+      where: { userId },
+    });
+
+    if (!profile) {
+      return null;
+    }
+
+    return this.mapToUserProfile(profile);
+  }
+
+  /**
+   * Get user profile by username
+   */
+  static async getProfileByUsername(username: string): Promise<UserProfile | null> {
+    const profile = await prisma.profile.findUnique({
+      where: { username },
+    });
+
+    if (!profile) {
+      return null;
+    }
+
+    return this.mapToUserProfile(profile);
   }
 
   /**
@@ -58,39 +94,42 @@ export class UserService {
    * PRODUCT_BIBLE.md Section 3.2 - Profile Information
    */
   static async updateProfile(userId: string, updates: UpdateProfileRequest): Promise<UserProfile> {
-    const profile = profiles.get(userId);
-    if (!profile) {
+    // Check if profile exists
+    const existingProfile = await prisma.profile.findUnique({
+      where: { userId },
+    });
+
+    if (!existingProfile) {
       throw new Error('User not found');
     }
 
     // Handle username change
-    if (updates.username) {
-      // Check if new username is available
-      if (updates.username.toLowerCase() !== profile.username.toLowerCase()) {
-        if (usernames.has(updates.username.toLowerCase())) {
-          throw new Error('Username already taken');
-        }
-        this.validateUsername(updates.username);
+    if (updates.username && updates.username !== existingProfile.username) {
+      this.validateUsername(updates.username);
 
-        // Update username tracking
-        usernames.delete(profile.username.toLowerCase());
-        usernames.add(updates.username.toLowerCase());
+      // Check if new username is available
+      const existing = await prisma.profile.findUnique({
+        where: { username: updates.username },
+      });
+
+      if (existing) {
+        throw new Error('Username already taken');
       }
     }
 
-    // Update profile fields
-    const updatedProfile: UserProfile = {
-      ...profile,
-      username: updates.username || profile.username,
-      avatar: updates.avatar || profile.avatar,
-      avatarFrame: updates.avatarFrame || profile.avatarFrame,
-      countryFlag: updates.countryFlag || profile.countryFlag,
-      lastOnline: new Date(),
-    };
+    // Update profile
+    const updatedProfile = await prisma.profile.update({
+      where: { userId },
+      data: {
+        username: updates.username,
+        avatar: updates.avatar,
+        avatarFrame: updates.avatarFrame,
+        country: updates.countryFlag,
+        updatedAt: new Date(),
+      },
+    });
 
-    profiles.set(userId, updatedProfile);
-
-    return updatedProfile;
+    return this.mapToUserProfile(updatedProfile);
   }
 
   /**
@@ -100,26 +139,38 @@ export class UserService {
   static async searchUsers(query: UserSearchQuery): Promise<UserSearchResult> {
     const page = query.page || 1;
     const limit = query.limit || 20;
-    const searchTerm = query.username?.toLowerCase() || '';
+    const searchTerm = query.username || '';
 
-    // Filter users by username
-    let filteredUsers = Array.from(profiles.values());
+    // Build where clause
+    const where = searchTerm
+      ? {
+          username: {
+            contains: searchTerm,
+            mode: 'insensitive' as const,
+          },
+          deletedAt: null,
+        }
+      : {
+          deletedAt: null,
+        };
 
-    if (searchTerm) {
-      filteredUsers = filteredUsers.filter((user) =>
-        user.username.toLowerCase().includes(searchTerm)
-      );
-    }
+    // Get total count
+    const total = await prisma.profile.count({ where });
 
-    // Calculate pagination
-    const total = filteredUsers.length;
+    // Get paginated results
+    const profiles = await prisma.profile.findMany({
+      where,
+      skip: (page - 1) * limit,
+      take: limit,
+      orderBy: {
+        username: 'asc',
+      },
+    });
+
     const totalPages = Math.ceil(total / limit);
-    const startIndex = (page - 1) * limit;
-    const endIndex = startIndex + limit;
-    const paginatedUsers = filteredUsers.slice(startIndex, endIndex);
 
     return {
-      users: paginatedUsers,
+      users: profiles.map((p) => this.mapToUserProfile(p)),
       pagination: {
         page,
         limit,
@@ -133,7 +184,32 @@ export class UserService {
    * Get all users (admin/debug)
    */
   static async getAllUsers(): Promise<UserProfile[]> {
-    return Array.from(profiles.values());
+    const profiles = await prisma.profile.findMany({
+      where: { deletedAt: null },
+      orderBy: {
+        username: 'asc',
+      },
+    });
+
+    return profiles.map((p) => this.mapToUserProfile(p));
+  }
+
+  /**
+   * Map Prisma Profile to UserProfile type
+   */
+  private static mapToUserProfile(profile: any): UserProfile {
+    return {
+      id: profile.userId,
+      username: profile.username,
+      avatar: profile.avatar || 'default_avatar.png',
+      avatarFrame: profile.avatarFrame || 'default_frame',
+      countryFlag: profile.country || 'ww',
+      level: profile.level || 1,
+      rank: 'bronze', // Will be calculated from statistics
+      status: 'online', // Will be from presence system
+      joinDate: profile.createdAt,
+      lastOnline: profile.updatedAt,
+    };
   }
 
   /**
