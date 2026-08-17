@@ -71,13 +71,8 @@ export interface SocketData {
 }
 
 /**
- * Extracts a userId from a JWT token.
- *
- * NOTE: This is a temporary mock implementation that will be replaced
- * with real JWT verification (e.g., jsonwebtoken) in Sprint 8.
- * The token format mirrors the auth middleware mock tokens:
- *   mock_access_guest_<userId>_<random>_<timestamp>
- *   mock_access_google_<userId>_<random>_<timestamp>
+ * Socket.IO authentication uses JWT tokens verified via verifyToken().
+ * All connections must provide a valid JWT token in the handshake auth.
  */
 
 export class SocketManager {
@@ -98,6 +93,10 @@ export class SocketManager {
       path: '/socket.io',
     });
 
+    // Authentication middleware - requires valid JWT token via handshake.auth.token.
+    // No backdoor: direct userId is NOT accepted.
+    // All clients must provide a valid JWT token.
+
     this.setupMiddleware();
     this.setupEventHandlers();
 
@@ -105,34 +104,21 @@ export class SocketManager {
   }
 
   private setupMiddleware(): void {
-    // Authentication middleware
-    // Accepts a JWT token (temporary mock validation) via handshake.auth.token.
-    // Falls back to a direct userId (legacy) for backward compatibility
-    // with existing Socket.IO clients during development.
+    // Authentication middleware - only accepts valid JWT tokens
     this.io.use((socket: Socket, next: (err?: Error) => void) => {
-      // 1. Get token from handshake auth
       const token = socket.handshake.auth.token;
 
-      if (token && typeof token === 'string') {
-        // 2. Extract userId from the token
-        const userId = verifyToken(token);
-        if (!userId) {
-          return next(new Error('Authentication failed'));
-        }
-        // 3. Store userId in socket data
-        socket.data.userId = userId;
-        return next();
+      if (!token || typeof token !== 'string') {
+        return next(new Error('Authentication failed: No token provided'));
       }
 
-      // 4. Backward compatibility: accept direct userId when no token is provided
-      const directUserId = socket.handshake.auth.userId;
-      if (directUserId) {
-        socket.data.userId = directUserId;
-        return next();
+      const userId = verifyToken(token);
+      if (!userId) {
+        return next(new Error('Authentication failed: Invalid token'));
       }
 
-      // 5. No valid authentication
-      return next(new Error('Authentication failed'));
+      socket.data.userId = userId;
+      return next();
     });
   }
 
