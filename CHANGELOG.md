@@ -6,6 +6,29 @@ The format is inspired by **Keep a Changelog** and follows **Semantic Versioning
 
 ---
 
+## [3.1.0] - 2026-08-18 — Sprint 11: Frontend Game Client (Started)
+
+### Added
+
+- Game types: `types/game.types.ts` with Card, Player, Team, MatchState, Socket events
+- Socket hook: `hooks/useGameSocket.ts` for real-time game communication
+- Game components: Card, PlayerSeat, Hand, TableCards, DeclareHokm, GameBoard
+- Game page: `pages/Game.tsx` with route `/game/:matchId`
+- Updated `App.tsx` with game route
+
+### Changed
+
+- Backend typecheck errors resolved (Transaction fields, friends.controller, scoring.test)
+- Added migration `20260818155150_add_transaction_fields`
+
+### Fixed
+
+- `wallet.service.ts`: metadata type conversion
+- `friends.controller.ts`: searchPlayers arguments
+- `scoring.service.test.ts`: currentTrick field
+
+---
+
 ## [3.0.0] - 2026-08-17 — Sprint 11.5: Database Completion
 
 ### Added

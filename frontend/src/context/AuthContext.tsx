@@ -11,6 +11,7 @@
  */
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+
 import authService, { AuthResponse } from '../services/auth.service';
 
 interface User {
@@ -66,10 +67,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setUser(user);
   };
 
-  const login = async (email: string, password: string) => {
+  const login = async (_email: string, _password: string) => {
     setIsLoading(true);
     try {
-      const response = await authService.login({ email, password });
+      const response = await authService.login({ email: _email, password: _password });
       handleAuthResponse(response);
     } finally {
       setIsLoading(false);
@@ -86,20 +87,20 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
-  const googleLogin = async (token: string) => {
+  const googleLogin = async (_token: string) => {
     setIsLoading(true);
     try {
-      const response = await authService.googleLogin(token);
+      const response = await authService.googleLogin(_token);
       handleAuthResponse(response);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const register = async (username: string, email: string, password: string) => {
+  const register = async (_username: string, _email: string, _password: string) => {
     setIsLoading(true);
     try {
-      const response = await authService.register({ username, email, password });
+      const response = await authService.register({ username: _username, email: _email, password: _password });
       handleAuthResponse(response);
     } finally {
       setIsLoading(false);

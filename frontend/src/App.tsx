@@ -7,15 +7,17 @@
  * Classification: Technical
  * Owner: Mostafa & ChatGPT
  * Created: 2026-07-07
- * Last Updated: 2026-07-07
+ * Last Updated: 2026-08-17
  */
 
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import Game from './pages/Game';
 import './index.css';
 
 const Home: React.FC = () => {
@@ -40,6 +42,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <Home />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/game/:matchId"
+            element={
+              <ProtectedRoute>
+                <Game />
               </ProtectedRoute>
             }
           />

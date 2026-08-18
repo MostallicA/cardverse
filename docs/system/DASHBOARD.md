@@ -1,12 +1,12 @@
 # CardVerse Dashboard
 
 **Document ID:** CV-SYS-016
-**Version:** 5.2.0
+**Version:** 5.3.0
 **Status:** Operational
 **Classification:** System
 **Owner:** Mostafa
 **Created:** 2026-07-07
-**Last Updated:** 2026-08-17
+**Last Updated:** 2026-08-18
 
 ---
 
@@ -55,15 +55,15 @@ Do not create new status/tracking files. Everything operational belongs in this 
 
 | Item                      | Value                                                  |
 | ------------------------- | ------------------------------------------------------ |
-| **Current Phase**         | Sprint 11 — Frontend Game Client                       |
-| **Current Sprint**        | Sprint 11 - Frontend Development                       |
-| **Current Task**          | 11.0 - Build playable board                            |
-| **Current Status**        | Pending                                                |
-| **Latest Commit**         | dcd756c                                                |
-| **Latest Commit Message** | docs(system): define sprint 11.5 - database completion |
-| **Next Task**             | 11.0 - Build playable board                            |
-| **Repository Status**     | Development                                            |
-| **Current Version**       | 0.9.0                                                  |
+| **Current Phase**         | Sprint 11 — Frontend Game Client |
+| **Current Sprint**        | Sprint 11 - Frontend Development |
+| **Current Task**          | 11.0 - Build playable board      |
+| **Current Status**        | In Progress                      |
+| **Latest Commit**         | ed06855                          |
+| **Latest Commit Message** | fix(backend): resolve typecheck errors and add transaction fields |
+| **Next Task**             | 11.1 - Lobby and Room UI         |
+| **Repository Status**     | Development                      |
+| **Current Version**       | 0.9.0                            |
 
 ---
 
@@ -477,6 +477,14 @@ See CHANGELOG.md for the full task-by-task history of these sprints.
 | 11.5.6 | Wire Friends module to Prisma                                                                           | ✅ Complete |
 | 11.5.7 | Verify all platform modules persist data correctly                                                      | ✅ Complete |
 
+### Sprint 11 - Frontend Game Client (In Progress)
+
+| Task | Description | Status |
+|------|-------------|--------|
+| 11.0 | Build playable board (GameBoard, Card, Hand, PlayerSeat, TableCards, DeclareHokm, useGameSocket, Game page) | In Progress |
+| 11.1 | Lobby and Room UI | Pending |
+| 11.2 | Profile, Friends, Shop UI | Pending |
+
 ### Fresh Environment / AI Onboarding (READ THIS FIRST in a new system)
 
 If this project is opened on a **different machine** (or with a new AI session), follow this exact order to know where to start:
@@ -604,7 +612,7 @@ Decide and document whether **Statistics / Achievements / Rankings / Seasons** s
 | 4.4.0         | 2026-08-17              | Task 10.6 completed: replaced optimistic tricksWon with ruleExecutor.getTrickWinner                                                                                                                                                                                                                                                                                                  |
 | 5.0.0         | 2026-08-17              | Sprint 10 completed: local PostgreSQL, real JWT auth, build repair, real trick winner logic, Socket.IO auth backdoor removed                                                                                                                                                                                                                                                         |
 | 5.1.0         | 2026-08-17              | Sprint 11.5 defined: Database Completion - align schema.prisma with DATABASE.md and wire platform modules to Prisma                                                                                                                                                                                                                                                                  |
-
+| 5.3.0         | 2026-08-18              | Sprint 11 started: Task 11.0 - Build playable board (In Progress); Backend typecheck errors resolved |
 ---
 
 **Document Status:** Operational

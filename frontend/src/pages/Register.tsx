@@ -11,6 +11,7 @@
  */
 
 import React, { useState } from 'react';
+
 import { useAuth } from '../context/AuthContext';
 
 const Register: React.FC = () => {
@@ -37,7 +38,7 @@ const Register: React.FC = () => {
 
     try {
       await register(username, email, password);
-    } catch (err) {
+    } catch (error) {
       setError('Registration failed. Please try again.');
     }
   };

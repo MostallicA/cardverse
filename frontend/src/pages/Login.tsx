@@ -11,6 +11,7 @@
  */
 
 import React, { useState } from 'react';
+
 import { useAuth } from '../context/AuthContext';
 
 const Login: React.FC = () => {
@@ -24,7 +25,7 @@ const Login: React.FC = () => {
     setError(null);
     try {
       await login(email, password);
-    } catch (err) {
+    } catch (error) {
       setError('Invalid email or password');
     }
   };
@@ -33,7 +34,7 @@ const Login: React.FC = () => {
     setError(null);
     try {
       await guestLogin();
-    } catch (err) {
+    } catch (error) {
       setError('Failed to login as guest');
     }
   };
