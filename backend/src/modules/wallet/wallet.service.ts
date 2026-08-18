@@ -92,7 +92,7 @@ export class WalletService {
           balanceBefore,
           balanceAfter,
           status: TransactionStatus.COMPLETED,
-          metadata: request.metadata || {},
+          metadata: (request.metadata as any) || {},
         },
       });
 
@@ -161,7 +161,7 @@ export class WalletService {
           balanceBefore,
           balanceAfter,
           status: TransactionStatus.COMPLETED,
-          metadata: request.metadata || {},
+          metadata: (request.metadata as any) || {},
         },
       });
 

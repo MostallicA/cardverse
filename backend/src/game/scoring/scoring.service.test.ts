@@ -74,8 +74,15 @@ describe('ScoringService', () => {
       currentSet: 4,
       currentTrickIndex: 0,
       tricks: [],
+      currentTrick: {
+        cards: [],
+        playedBy: [],
+        leadSuit: undefined,
+      },
+      currentPlayerId: undefined,
       hakemId: 'hakem-1',
       hakemTeamId: 0,
+      dealerId: 'dealer-1',
       handCards: {},
       isComplete: false,
     };

@@ -152,7 +152,12 @@ model Transaction {
   walletId    String   @map("wallet_id")
   amount      Int
   type        String   // credit | debit
+  source      String   // daily_reward | shop_purchase | match_reward | admin
   description String
+  balanceBefore Int   @map("balance_before")
+  balanceAfter  Int   @map("balance_after")
+  status      String   // pending | completed | failed
+  metadata    Json?    // Additional data (JSON)
   createdAt   DateTime @default(now()) @map("created_at")
 
   wallet Wallet @relation(fields: [walletId], references: [id])

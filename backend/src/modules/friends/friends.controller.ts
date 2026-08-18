@@ -181,23 +181,26 @@ export class FriendsController {
    */
   searchPlayers = async (req: Request, res: Response): Promise<Response> => {
     try {
-      const { q } = req.query;
       const userId = req.user?.id;
       if (!userId) {
-        return sendError(res, 'Unauthorized', 401);
+        return res.status(401).json({ success: false, error: 'Unauthorized' });
       }
-      if (!q || typeof q !== 'string') {
-        return sendError(res, 'Search query is required', 400);
-      }
-      // searchPlayers now takes no parameters
-      const results = await friendsService.searchPlayers();
-      return sendSuccess(res, results);
+
+      const { query } = req.query;
+      const searchQuery = typeof query === 'string' ? query : '';
+
+      // searchPlayers now takes userId and query
+      const results = await friendsService.searchPlayers(userId, searchQuery);
+
+      return res.status(200).json({
+        success: true,
+        data: results,
+      });
     } catch (error) {
-      return sendError(
-        res,
-        error instanceof Error ? error.message : 'Failed to search players',
-        500
-      );
+      return res.status(500).json({
+        success: false,
+        error: error instanceof Error ? error.message : 'Failed to search players',
+      });
     }
   };
 }
