@@ -53,17 +53,17 @@ Do not create new status/tracking files. Everything operational belongs in this 
 
 ## 3. Quick Status
 
-| Item                      | Value                                                  |
-| ------------------------- | ------------------------------------------------------ |
-| **Current Phase**         | Sprint 11 — Frontend Game Client |
-| **Current Sprint**        | Sprint 11 - Frontend Development |
-| **Current Task**          | 11.0 - Build playable board      |
-| **Current Status**        | In Progress                      |
-| **Latest Commit**         | ed06855                          |
+| Item                      | Value                                                             |
+| ------------------------- | ----------------------------------------------------------------- |
+| **Current Phase**         | Sprint 11 — Frontend Game Client                                  |
+| **Current Sprint**        | Sprint 11 - Frontend Development                                  |
+| **Current Task**          | 11.0 - Build playable board                                       |
+| **Current Status**        | In Progress                                                       |
+| **Latest Commit**         | ed06855                                                           |
 | **Latest Commit Message** | fix(backend): resolve typecheck errors and add transaction fields |
-| **Next Task**             | 11.1 - Lobby and Room UI         |
-| **Repository Status**     | Development                      |
-| **Current Version**       | 0.9.0                            |
+| **Next Task**             | 11.1 - Lobby and Room UI                                          |
+| **Repository Status**     | Development                                                       |
+| **Current Version**       | 0.9.0                                                             |
 
 ---
 
@@ -612,7 +612,8 @@ Decide and document whether **Statistics / Achievements / Rankings / Seasons** s
 | 4.4.0         | 2026-08-17              | Task 10.6 completed: replaced optimistic tricksWon with ruleExecutor.getTrickWinner                                                                                                                                                                                                                                                                                                  |
 | 5.0.0         | 2026-08-17              | Sprint 10 completed: local PostgreSQL, real JWT auth, build repair, real trick winner logic, Socket.IO auth backdoor removed                                                                                                                                                                                                                                                         |
 | 5.1.0         | 2026-08-17              | Sprint 11.5 defined: Database Completion - align schema.prisma with DATABASE.md and wire platform modules to Prisma                                                                                                                                                                                                                                                                  |
-| 5.3.0         | 2026-08-18              | Sprint 11 started: Task 11.0 - Build playable board (In Progress); Backend typecheck errors resolved |
+| 5.2.0         | 2026-08-17              | Sprint 11.5 completed: Database Completion - all platform modules wired to Prisma, 15 tables created, migrations applied                                                                                                                                                                                                                                                             |
+| 5.3.0         | 2026-08-18              | Sprint 11 started: Task 11.0 - Build playable board (In Progress); Backend typecheck errors resolved                                                                                                                                                                                                                                                                                 |
 ---
 
 **Document Status:** Operational
