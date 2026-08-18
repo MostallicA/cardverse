@@ -1,12 +1,12 @@
 # CardVerse Database
 
 **Document ID:** CV-9001
-**Version:** 0.3.0
+**Version:** 0.4.0
 **Status:** Frozen
 **Classification:** Technical
 **Owner:** Mostafa
 **Created:** 2026-06-27
-**Last Updated:** 2026-08-09
+**Last Updated:** 2026-08-18
 
 ---
 
@@ -78,11 +78,9 @@ The database stores persistent platform data including:
 - Inventory
 - Statistics
 - Matches
-- Rooms
 - Seasons
 - Notifications
 - Achievements
-- Reports
 - Configuration
 
 The database never contains business logic or game rules.
@@ -351,20 +349,9 @@ Gameplay rules are not stored in this entity.
 
 ---
 
-## 4.5 Room
+## 4.5 Room — Removed
 
-**Owner Module:** Lobby
-
-Represents a temporary multiplayer lobby.
-
-Contains:
-
-- Participants
-- Ready Status
-- Room Settings
-- Host Information
-
-Rooms are temporary entities.
+**Decision (2026-08-18):** Removed per DASHBOARD.md CV-DEC-0022 — `Room` is not a database entity. Room management is an Engine Layer (Room Manager) concern, and active tables persist through the `Session` entity (§4.13). No `Room` table exists in `schema.prisma`.
 
 ---
 
@@ -466,20 +453,9 @@ Notifications may expire automatically.
 
 ---
 
-## 4.12 Report
+## 4.12 Report — Deferred
 
-**Owner Module:** Moderation
-
-Stores player reports.
-
-Examples:
-
-- Cheating
-- Abuse
-- AFK
-- Offensive Username
-
-Reports are immutable after submission.
+**Decision (2026-08-18):** Deferred to a future release per DASHBOARD.md CV-DEC-0022. Moderation/reporting is not required for V1, so no `Report` entity is modeled in `schema.prisma`. This section will be restored when the feature is scheduled.
 
 ---
 
@@ -913,6 +889,7 @@ Related documents:
 | 0.1.0   | 2026-07-01 | Documentation Freeze completed                                                 |
 | 0.2.0   | 2026-08-09 | Added Session and MatchPlayer entities; added POSTGRESQL_PLAN.md to References |
 | 0.3.0   | 2026-08-10 | References updated: PROJECT_STATUS.md replaced with DASHBOARD.md               |
+| 0.4.0   | 2026-08-18 | Removed `Room` (replaced by `Session`) and deferred `Report` per DASHBOARD.md CV-DEC-0022; responsibilities list aligned with actual schema                                                                       |
 
 ---
 

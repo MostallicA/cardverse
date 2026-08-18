@@ -1,12 +1,12 @@
 # CardVerse Product Bible
 
 **Document ID:** CV-1001
-**Version:** 0.5.0
+**Version:** 0.6.0
 **Status:** Frozen
 **Classification:** Business
 **Owner:** Mostafa
 **Created:** 2026-06-26
-**Last Updated:** 2026-08-09
+**Last Updated:** 2026-08-18
 
 ---
 
@@ -58,12 +58,9 @@ This document defines the business vision, product requirements, gameplay featur
 
 #### Competitive
 
-- Ranking System
 - Matchmaking
-- Fair Play Score
-- Statistics
-- XP & Level
-- Seasonal Rating
+
+> **Scope change (2026-08-18, CV-DEC-0022):** Ranking System, Fair Play Score, Statistics, XP & Level, and Seasonal Rating are moved out of V1 into "Planned" (see below).
 
 #### Economy
 
@@ -71,7 +68,8 @@ This document defines the business vision, product requirements, gameplay featur
 - Cosmetic Shop
 - Daily Rewards
 - Weekly Missions
-- Achievements
+
+> **Scope change (2026-08-18, CV-DEC-0022):** Achievements moved out of V1 into "Planned" (see below).
 
 ---
 
@@ -85,6 +83,12 @@ These features are already part of the product vision but are not included in Ve
 - Voice Messages
 - Advanced Avatar Builder
 - Premium Currency (Gems)
+- Ranking System
+- Fair Play Score
+- Statistics
+- XP & Level
+- Seasonal Rating
+- Achievements
 
 ---
 
@@ -1487,6 +1491,7 @@ Related documents:
 | 0.3.0   | 2026-07-12 | corrected future game roadmap to priority order (Bidel, Shelem, Haft Khabis, Bank/21, Pasur/11, Poker); clarified Nars/Tak Nars/Sars are Hokm sub-modes, not separate games; aligned Bot Replacement section with finalized RULEBOOK.md online rules |
 | 0.4.0   | 2026-08-09 | Added team disconnection rules, bot scenarios (0-3 bots), invisible bots for early phases, bot limits (max 3 per match, never share a team), teammate decision flow, and updated notification types                                                  |
 | 0.5.0   | 2026-08-10 | Unified Hokm sub-mode naming to Saras/Naras/Tak Naras across documentation                                                                                                                                                                           |
+| 0.6.0   | 2026-08-18 | V1 scope reduced: Ranking System, Fair Play Score, Statistics, XP & Level, Seasonal Rating, and Achievements moved to "Planned" (DASHBOARD.md CV-DEC-0022)                                                                                                                       |
 
 ---
 

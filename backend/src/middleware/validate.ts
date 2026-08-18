@@ -5,6 +5,7 @@
  */
 
 import { Request, Response, NextFunction } from 'express';
+
 import { ResponseHelper } from '../utils/response.js';
 
 export interface ValidationRule {
@@ -22,14 +23,15 @@ export interface ValidationSchema {
   params?: Record<string, ValidationRule>;
 }
 
-// Type for Joi-like schema - using any to avoid ESLint unused parameter error
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+// Type for Joi-like schema - using any for Express/Joi compatibility
+/* eslint-disable @typescript-eslint/no-explicit-any */
 type JoiLikeSchema = {
-  validate: (data: any) => {
+  validate: (_data: any) => {
     error?: { details?: Array<{ message: string }> };
     value: any;
   };
 };
+/* eslint-enable @typescript-eslint/no-explicit-any */
 
 /**
  * Check if schema is a Joi-like schema (has validate method)

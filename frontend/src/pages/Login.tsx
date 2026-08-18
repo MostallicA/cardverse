@@ -26,6 +26,7 @@ const Login: React.FC = () => {
     try {
       await login(email, password);
     } catch (error) {
+      console.error('Login failed:', error);
       setError('Invalid email or password');
     }
   };
@@ -35,6 +36,7 @@ const Login: React.FC = () => {
     try {
       await guestLogin();
     } catch (error) {
+      console.error('Guest login failed:', error);
       setError('Failed to login as guest');
     }
   };

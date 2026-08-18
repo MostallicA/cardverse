@@ -10,7 +10,7 @@ import { GameMode, Suit } from '../../types/game.types';
 
 interface DeclareHokmProps {
   isHakem: boolean;
-  onDeclare: (mode: GameMode, suit?: Suit) => void;
+  onDeclare: (_mode: GameMode, _suit?: Suit) => void;
   timeoutMs?: number;
 }
 

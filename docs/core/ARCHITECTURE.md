@@ -1,12 +1,12 @@
 # CardVerse Architecture
 
 **Document ID:** CV-3001
-**Version:** 0.4.0
+**Version:** 0.5.0
 **Status:** Frozen
 **Classification:** Technical
 **Owner:** Mostafa
 **Created:** 2026-06-26
-**Last Updated:** 2026-08-09
+**Last Updated:** 2026-08-18
 
 ---
 
@@ -81,7 +81,7 @@ CardVerse is organized into four primary layers.
 
 Reusable business services shared across every game: Authentication, User Management, Player Profiles, Friends, Presence, Chat, Notifications, Wallet, Shop, Inventory, Statistics, Achievements, Rankings, Seasons, Reports, Moderation, Analytics, Settings.
 
-The Platform Layer contains no game-specific logic. **Status: Complete for Version 1 (see DASHBOARD.md).**
+The Platform Layer contains no game-specific logic. **Status:** Core platform modules (Auth, User, Friends, Presence, Chat, Notifications, Matchmaking Foundation, Wallet, Shop, Inventory) are Complete for Version 1 and wired to PostgreSQL via Prisma. Statistics / Achievements / Rankings / Seasons are **deferred from V1 to "Planned"** (see DASHBOARD.md CV-DEC-0022).
 
 ### 2.2 Engine Layer
 
@@ -337,6 +337,7 @@ Microservices, Distributed Caching, Event Streaming, Replay Service, Tournament 
 | 0.2.0   | 2026-07-12 | added full Engine Layer module detail (Turn/Disconnect/Bot Manager per RULEBOOK.md v0.2.0); added Section 3.2.1 separating the Poker Engine from the shared Card Engine; added Section 7 (Real-Time Communication, open) and Section 8 (Performance Requirements); added Section 9 (Open Architectural Items) |
 | 0.3.0   | 2026-08-09 | Updated Bot Manager with bot scenarios (0-3 bots), invisible bots for early phases, bot limits (max 3 per match, never share a team); added teammate decision event; resolved Real-Time Communication with Socket.IO selection                                                                                |
 | 0.4.0   | 2026-08-10 | Game Layer now owns Hokm logic: Card Engine, Rule Executor, and Bot Manager moved from Engine to backend/src/game/; Engine Layer clarified as game-agnostic                                                                                                                                                   |
+| 0.5.0   | 2026-08-18 | Platform Layer status clarified; Statistics/Achievements/Rankings/Seasons moved from V1 to "Planned" (DASHBOARD.md CV-DEC-0022)                                                                                                                                                   |
 
 ---
 
