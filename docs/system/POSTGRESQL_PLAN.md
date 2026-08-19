@@ -290,3 +290,5 @@ This document was implemented in Sprint 8 (Tasks 8.1–8.2: real database + game
 ---
 
 **Implementation finished:** Migrations applied to `cardverse` database on 2026-08-16. Auth is now fully operational with real JWT + Prisma.
+
+> **Note (2026-08-18):** The actual implementation of this plan was performed across **Sprint 10** (local PostgreSQL setup, real JWT wiring, build repair) and **Sprint 11.5** (Database Completion — all platform modules wired to Prisma, migrations applied, schema aligned with DATABASE.md). The Sprint 8 references above reflect the original planning timeline; see DASHBOARD.md for the actual progress.

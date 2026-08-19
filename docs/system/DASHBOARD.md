@@ -491,6 +491,7 @@ See CHANGELOG.md for the full task-by-task history of these sprints.
 | 11.0 | Build playable board (GameBoard, Card, Hand, PlayerSeat, TableCards, DeclareHokm, useGameSocket, Game page) | Complete (built & committed; E2E against real DB pending) |
 | 11.1 | Lobby and Room UI | Pending |
 | 11.2 | Profile, Friends, Shop UI | Pending |
+| 11.3 | Run E2E tests on real PostgreSQL | Pending |
 
 ### Fresh Environment / AI Onboarding (READ THIS FIRST in a new system)
 
