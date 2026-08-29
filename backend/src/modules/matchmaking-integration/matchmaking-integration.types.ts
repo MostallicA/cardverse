@@ -29,6 +29,7 @@ export interface MatchmakingIntegrationConfig {
   defaultTotalSetsToWin: number; // 7 per RULEBOOK.md
   defaultTurnTimeoutMs: number; // 8000ms
   defaultDeclarationTimeoutMs: number; // 20000ms
+  defaultReadyTimeoutMs: number; // Time to wait for lobby to fill before bot-fill
   botReplacementEnabled: boolean;
   coinPenaltyAmount: number; // TBD per RULEBOOK.md Section 13
 }

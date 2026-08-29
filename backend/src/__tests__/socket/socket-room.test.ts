@@ -26,7 +26,7 @@ describe('SocketManager room handling', () => {
     const join = jest.fn().mockResolvedValue(undefined);
     const socket = {
       id: 'socket-1',
-      data: {},
+      data: { userId: 'player-1' }, // authenticated value injected by the JWT middleware
       join,
       emit: jest.fn(),
       leave: jest.fn(),

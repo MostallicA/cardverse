@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 
 import { asyncHandler } from '../../middleware/asyncHandler.js';
+import { engineService } from '../../engine/engine.service.js';
 
 import { matchmakingIntegration } from './matchmaking-integration.service.js';
 import {
@@ -172,7 +173,8 @@ export const getMatchState = asyncHandler(async (req: Request, res: Response) =>
     return res.status(400).json({ success: false, message: error.message });
   }
 
-  const matchState = await matchmakingIntegration.getMatchStatistics(value.matchId);
+  // ✅ Fix: return the full Engine MatchState
+  const matchState = engineService.getMatchState(value.matchId);
 
   if (!matchState) {
     return res.status(404).json({ success: false, message: 'Match not found' });

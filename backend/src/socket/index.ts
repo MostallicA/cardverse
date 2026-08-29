@@ -1,5 +1,6 @@
 // Socket.IO Server - Real-time communication for CardVerse
 // Per ARCHITECTURE.md Section 7
+// S12 - Game Integrity Audit: Full State Machine + Declaration Phase
 
 import { Server as HttpServer } from 'http';
 
@@ -13,6 +14,7 @@ import { disconnectManager } from '../engine/disconnect/disconnect.manager.js';
 import { lobbyManager } from '../engine/lobby/lobby.manager.js';
 import { matchmakingIntegration } from '../modules/matchmaking-integration/matchmaking-integration.service.js';
 import { verifyToken } from '../auth/jwt.service.js';
+import { EngineStatus, GameMode, Suit } from '../engine/engine.types.js';
 
 // Socket.IO event types
 export interface ServerToClientEvents {
@@ -27,6 +29,10 @@ export interface ServerToClientEvents {
   turn_started: (data: { playerId: string; timeoutMs: number }) => void;
   turn_timeout: (data: { playerId: string; consecutiveMisses: number }) => void;
   card_played: (data: { playerId: string; cardId: string; trick: any }) => void;
+
+  // 🆕 S12 - Declaration events
+  declaration_started: (data: { hakemId: string; timeoutMs: number }) => void;
+  declaration_completed: (data: { mode: string; trumpSuit?: string }) => void;
 
   // Disconnect events
   player_auto_kicked: (data: { playerId: string; message: string }) => void;
@@ -48,7 +54,9 @@ export interface ClientToServerEvents {
 
   // Turn events
   play_card: (data: { matchId: string; playerId: string; cardId: string }) => void;
-  declare_hokm: (data: { matchId: string; playerId: string; mode: string; suit?: string }) => void;
+
+  // 🆕 S12 - Declaration events (using GameMode and Suit enums)
+  declare_hokm: (data: { matchId: string; playerId: string; mode: GameMode; suit?: Suit }) => void;
 
   // Ready events
   set_ready: (data: { matchId: string; playerId: string; isReady: boolean }) => void;
@@ -84,6 +92,30 @@ export class SocketManager {
   >;
   private matchRooms: Map<string, Set<string>> = new Map(); // matchId -> set of socketIds
 
+  /**
+   * Returns the consistent socket.io room name for a match.
+   *
+   * Match ids already carry the `match_` prefix (e.g. `match_1787259902211_e2e-test`),
+   * so using `match_${matchId}` directly would broadcast a DOUBLE prefix
+   * (`match_match_...`) that silently breaks every emit: clients join the
+   * single-prefix room while events are delivered into an empty double-prefix room.
+   */
+  private roomName(matchId: string): string {
+    return matchId.startsWith('match_') ? matchId : `match_${matchId}`;
+  }
+
+  /**
+   * SECURITY (Server-Authoritative): rejects any event where the client-supplied
+   * `playerId` does not match the authenticated userId bound to this socket.
+   * This is what stops one tab/user from acting as another player.
+   */
+  private assertPlayerOwnership(socket: Socket, playerId: string): void {
+    const authUserId = socket.data.userId;
+    if (!authUserId || authUserId !== playerId) {
+      throw new Error(`Forbidden: playerId '${playerId}' does not match authenticated user`);
+    }
+  }
+
   constructor(server: HttpServer) {
     this.io = new SocketServer(server, {
       cors: {
@@ -106,18 +138,44 @@ export class SocketManager {
   private setupMiddleware(): void {
     // Authentication middleware - only accepts valid JWT tokens
     this.io.use((socket: Socket, next: (err?: Error) => void) => {
+      // 🔍 لاگ دقیق از آنچه واقعاً می‌رسد
+      console.log(
+        '[Socket Auth] Full handshake.auth:',
+        JSON.stringify(socket.handshake.auth, null, 2)
+      );
+      console.log('[Socket Auth] Token value:', socket.handshake.auth.token);
+      console.log('[Socket Auth] Token type:', typeof socket.handshake.auth.token);
+
       const token = socket.handshake.auth.token;
 
       if (!token || typeof token !== 'string') {
         return next(new Error('Authentication failed: No token provided'));
       }
 
-      const userId = verifyToken(token);
-      if (!userId) {
+      const decoded = verifyToken(token);
+      if (!decoded) {
         return next(new Error('Authentication failed: Invalid token'));
       }
 
-      socket.data.userId = userId;
+      // verifyToken returns { userId: string } — bind the STRING userId to the socket.
+      socket.data.userId = decoded.userId;
+
+      // SECURITY: enforce ONE live socket per userId — if this user already has an
+      // established connection, disconnect the old one (multi-tab / multi-device).
+      const existingSockets = this.io.sockets.sockets;
+      for (const [, other] of existingSockets) {
+        if (other.id !== socket.id && other.data?.userId === decoded.userId && other.connected) {
+          console.warn(
+            `[SocketManager] Duplicate connection for user ${decoded.userId}; disconnecting old socket ${other.id}`
+          );
+          other.emit('error', {
+            code: 'DUPLICATE_CONNECTION',
+            message: 'Connected from another tab/device',
+          });
+          other.disconnect(true);
+        }
+      }
+
       return next();
     });
   }
@@ -157,10 +215,10 @@ export class SocketManager {
           this.handlePlayCard(socket, data);
         });
 
-        // Handle Hokm declaration
+        // 🆕 S12 - Handle Hokm declaration using engineService.declareHokm
         socket.on(
           'declare_hokm',
-          (data: { matchId: string; playerId: string; mode: string; suit?: string }) => {
+          (data: { matchId: string; playerId: string; mode: GameMode; suit?: Suit }) => {
             this.handleDeclareHokm(socket, data);
           }
         );
@@ -191,7 +249,18 @@ export class SocketManager {
   private handleJoinMatch(socket: Socket, data: { matchId: string; playerId: string }): void {
     const { matchId, playerId } = data;
 
-    const room = matchId.startsWith('match_') ? matchId : `match_${matchId}`;
+    try {
+      // SECURITY: client must act only as its authenticated self.
+      this.assertPlayerOwnership(socket, playerId);
+    } catch (error) {
+      socket.emit('error', {
+        code: 'FORBIDDEN',
+        message: error instanceof Error ? error.message : 'Forbidden',
+      });
+      return;
+    }
+
+    const room = this.roomName(matchId);
     socket.join(room);
     console.log(`[SocketManager] Player ${playerId} joined room ${room}`);
 
@@ -219,7 +288,18 @@ export class SocketManager {
   private handleLeaveMatch(socket: Socket, data: { matchId: string; playerId: string }): void {
     const { matchId, playerId } = data;
 
-    socket.leave(`match_${matchId}`);
+    try {
+      // SECURITY: client must act only as its authenticated self.
+      this.assertPlayerOwnership(socket, playerId);
+    } catch (error) {
+      socket.emit('error', {
+        code: 'FORBIDDEN',
+        message: error instanceof Error ? error.message : 'Forbidden',
+      });
+      return;
+    }
+
+    socket.leave(this.roomName(matchId));
     socket.data.matchId = undefined;
     socket.data.playerId = undefined;
 
@@ -237,20 +317,64 @@ export class SocketManager {
 
   private handleCreateMatch(socket: Socket, data: { players: any[]; config: any }): void {
     try {
-      // Create match via engine service
-      const matchId = `match_${Date.now()}`;
-      const matchState = engineService.createMatch(matchId, data.players, data.config);
-
-      // Create lobby
-      lobbyManager.createLobby(matchId, matchId, data.players[0].id, data.players[0].username);
-
-      // Add players to lobby
+      // SECURITY (Server-Authoritative): the creator must be the first player,
+      // and no player may already be bound to an active match.
+      const creatorUserId = socket.data.userId;
+      if (!creatorUserId || data.players[0]?.id !== creatorUserId) {
+        throw new Error('Match creator must be the first player');
+      }
       for (const player of data.players) {
-        lobbyManager.addPlayer(matchId, player);
+        if (sessionManager.getActiveMatchForUser(player.id)) {
+          throw new Error(`Player ${player.id} is already in an active match`);
+        }
+      }
+
+      const matchId = `match_${Date.now()}`;
+
+      // Create the lobby FIRST, then add the real players, then fill any
+      // remaining seats with invisible bots so the engine has exactly 4 seats.
+      // NOTE: createLobby already adds the HOST (players:[host]) to the lobby,
+      // so we must NOT re-add data.players[0] — it would duplicate the host.
+      lobbyManager.createLobby(matchId, matchId, data.players[0].id, data.players[0].username);
+      for (let i = 1; i < data.players.length; i++) {
+        lobbyManager.addPlayer(matchId, data.players[i]);
+      }
+
+      // RULEBOOK §13: if fewer than 4 humans are present, immediately fill the
+      // empty seats with invisible bots so `engineService.createMatch` (which
+      // requires exactly 4 players) does not throw "Hokm requires exactly 4 players".
+      matchmakingIntegration.fillLobbyWithBots(matchId);
+
+      // Build the final 4-player roster from the lobby (humans + created bots).
+      const lobby = lobbyManager.getLobbyByMatch(matchId);
+      if (!lobby) {
+        throw new Error('Failed to find lobby for new match');
+      }
+      const fullPlayers = lobby.players.map((p, index) => ({
+        id: p.id,
+        userId: p.userId,
+        // GUARANTEE: username is always a non-empty string (Player invariant).
+        username: p.username || `Player ${index + 1}`,
+        seatIndex: p.seatIndex,
+        teamId: p.teamId,
+        isActive: p.isActive !== false,
+        isBot: p.isBot === true,
+      }));
+
+      // Create match via engine service (needs exactly 4 players).
+      const matchState = engineService.createMatch(matchId, fullPlayers, data.config);
+
+      // If somehow still not full, schedule bot-fill for later so the match can
+      // complete its roster per RULEBOOK §13.
+      if (!lobbyManager.isLobbyFull(lobby)) {
+        lobbyManager.scheduleBotFill(
+          matchId,
+          matchmakingIntegration.getConfig().defaultReadyTimeoutMs || 30000
+        );
       }
 
       // Join match room
-      socket.join(`match_${matchId}`);
+      socket.join(this.roomName(matchId));
       socket.data.matchId = matchId;
       socket.data.playerId = data.players[0].id;
 
@@ -263,11 +387,11 @@ export class SocketManager {
       // Emit match created event
       socket.emit('match_created', {
         matchId,
-        players: data.players,
+        players: fullPlayers,
       });
 
       // Broadcast to all in room
-      this.io.to(`match_${matchId}`).emit('match_updated', {
+      this.io.to(this.roomName(matchId)).emit('match_updated', {
         matchId,
         state: matchState,
       });
@@ -291,24 +415,83 @@ export class SocketManager {
       // Start session
       sessionManager.startSession(matchId);
 
-      // Deal cards
+      // 🆕 S12 - Deal cards (moves to DECLARATION phase)
       engineService.dealCards(matchId);
 
       // Broadcast match started
-      this.io.to(`match_${matchId}`).emit('match_started', {
+      this.io.to(this.roomName(matchId)).emit('match_started', {
         matchId,
         config: matchState?.config,
       });
 
-      // Start first turn
-      this.startTurn(matchId);
+      // 🆕 S12 - Start declaration phase (not turn)
+      this.startDeclarationPhase(matchId);
 
-      console.log(`[SocketManager] Match ${matchId} started`);
+      console.log(`[SocketManager] Match ${matchId} started - DECLARATION phase`);
     } catch (error) {
       socket.emit('error', {
         code: 'MATCH_START_ERROR',
         message: error instanceof Error ? error.message : 'Failed to start match',
       });
+    }
+  }
+
+  // 🆕 S12 - Start declaration phase
+  public startDeclarationPhase(matchId: string): void {
+    const matchState = engineService.getMatchState(matchId);
+    if (!matchState) return;
+
+    const hakemId = matchState.hakemId;
+    if (!hakemId) {
+      console.error(`[SocketManager] No Hakem found for match ${matchId}`);
+      return;
+    }
+
+    // Update match state to DECLARATION
+    matchState.status = EngineStatus.DECLARATION;
+    matchState.currentPhaseStartTime = new Date();
+
+    // Broadcast declaration started
+    this.io.to(this.roomName(matchId)).emit('declaration_started', {
+      hakemId,
+      timeoutMs: matchState.config.declarationTimeoutMs || 20000,
+    });
+
+    // Broadcast updated state
+    this.io.to(this.roomName(matchId)).emit('match_updated', {
+      matchId,
+      state: matchState,
+    });
+
+    console.log(
+      `[SocketManager] Declaration phase started for match ${matchId}, Hakem: ${hakemId}`
+    );
+
+    // 🆕 If the Hakem is a BOT, it must declare Hokm automatically so the match
+    // can leave DECLARATION and enter PLAYING. A bot Hakem has no human client
+    // to send `declare_hokm` from the Lobby/Game UI.
+    const hakem = matchState.players.find((p) => p.id === hakemId);
+    if (hakem?.isBot) {
+      console.log(
+        `[SocketManager] Hakem ${hakemId} is a bot; auto-declaring Hokm (RULEBOOK §13.4)`
+      );
+      try {
+        const declared = engineService.autoDeclareHokm(matchId);
+        // Broadcast the resulting declaration + state so all clients sync.
+        this.io.to(this.roomName(matchId)).emit('declaration_completed', {
+          mode: declared.config.mode,
+          trumpSuit: declared.config.trumpSuit,
+        });
+        this.io.to(this.roomName(matchId)).emit('match_updated', {
+          matchId,
+          state: declared,
+        });
+        // The bot Hakem now leads the first trick naturally (botPlayCard →
+        // playCard → startTurn continues the flow for subsequent players).
+        matchmakingIntegration.makeBotPlay(matchId, hakemId);
+      } catch (error) {
+        console.error(`[SocketManager] Bot auto-declare failed for match ${matchId}:`, error);
+      }
     }
   }
 
@@ -319,6 +502,9 @@ export class SocketManager {
     try {
       const { matchId, playerId, cardId } = data;
 
+      // SECURITY: client must act only as its authenticated self.
+      this.assertPlayerOwnership(socket, playerId);
+
       // Play card via engine service
       const matchState = engineService.playCard(matchId, playerId, cardId);
 
@@ -328,14 +514,14 @@ export class SocketManager {
       }
 
       // Broadcast card played
-      this.io.to(`match_${matchId}`).emit('card_played', {
+      this.io.to(this.roomName(matchId)).emit('card_played', {
         playerId,
         cardId,
         trick: matchState?.tricks[matchState?.currentTrickIndex - 1],
       });
 
       // Broadcast updated state
-      this.io.to(`match_${matchId}`).emit('match_updated', {
+      this.io.to(this.roomName(matchId)).emit('match_updated', {
         matchId,
         state: matchState,
       });
@@ -352,27 +538,46 @@ export class SocketManager {
     }
   }
 
+  // 🆕 S12 - Handle Hokm declaration using engineService.declareHokm
   private handleDeclareHokm(
     socket: Socket,
-    data: { matchId: string; playerId: string; mode: string; suit?: string }
+    data: { matchId: string; playerId: string; mode: GameMode; suit?: Suit }
   ): void {
     try {
       const { matchId, playerId, mode, suit } = data;
 
-      // Update match config with Hokm declaration
-      const matchState = engineService.getMatchState(matchId);
-      if (matchState) {
-        matchState.config.mode = mode as any;
-        if (suit) {
-          matchState.config.trumpSuit = suit as any;
-        }
-      }
+      // SECURITY: client must act only as its authenticated self.
+      this.assertPlayerOwnership(socket, playerId);
 
-      // Broadcast Hokm declared
-      this.io.to(`match_${matchId}`).emit('match_updated', {
+      console.log(
+        `[SocketManager] handleDeclareHokm: match=${matchId}, player=${playerId}, mode=${mode}, suit=${suit}`
+      );
+
+      // 🆕 Use engineService.declareHokm (S12)
+      const matchState = engineService.declareHokm(matchId, playerId, mode, suit);
+
+      // Broadcast declaration completed
+      this.io.to(this.roomName(matchId)).emit('declaration_completed', {
+        mode,
+        trumpSuit: suit,
+      });
+
+      // Broadcast updated state
+      this.io.to(this.roomName(matchId)).emit('match_updated', {
         matchId,
         state: matchState,
       });
+
+      // 🆕 Start first turn - Hakem leads (RULEBOOK §6.1)
+      // engineService.declareHokm sets currentPlayerId = hakem; we must NOT
+      // advance to the next player here, so emit turn_started directly to Hakem.
+      const firstPlayerId = matchState?.currentPlayerId ?? matchState?.hakemId;
+      if (firstPlayerId && matchState) {
+        this.io.to(this.roomName(matchId)).emit('turn_started', {
+          playerId: firstPlayerId,
+          timeoutMs: matchState.config.turnTimeoutMs || 8000,
+        });
+      }
 
       console.log(`[SocketManager] Player ${playerId} declared Hokm: ${mode} ${suit || ''}`);
     } catch (error) {
@@ -389,6 +594,9 @@ export class SocketManager {
   ): void {
     try {
       const { matchId, playerId, isReady } = data;
+
+      // SECURITY: client must act only as its authenticated self.
+      this.assertPlayerOwnership(socket, playerId);
 
       console.log(
         `[SocketManager] handleSetReady match=${matchId} player=${playerId} isReady=${isReady}`
@@ -422,7 +630,7 @@ export class SocketManager {
   ): void {
     const { matchId, playerId, message } = data;
 
-    this.io.to(`match_${matchId}`).emit('chat_message', {
+    this.io.to(this.roomName(matchId)).emit('chat_message', {
       from: playerId,
       message,
       timestamp: new Date(),
@@ -433,10 +641,13 @@ export class SocketManager {
     try {
       const { matchId, playerId } = data;
 
+      // SECURITY: client must act only as its authenticated self.
+      this.assertPlayerOwnership(socket, playerId);
+
       const success = sessionManager.handlePlayerReconnect(matchId, playerId);
       if (success) {
         // Join match room again
-        socket.join(`match_${matchId}`);
+        socket.join(this.roomName(matchId));
         socket.data.matchId = matchId;
         socket.data.playerId = playerId;
 
@@ -447,7 +658,7 @@ export class SocketManager {
         this.matchRooms.get(matchId)!.add(socket.id);
 
         // Broadcast reconnect
-        this.io.to(`match_${matchId}`).emit('player_reconnected', {
+        this.io.to(this.roomName(matchId)).emit('player_reconnected', {
           playerId,
         });
 
@@ -483,7 +694,13 @@ export class SocketManager {
       // Notify disconnect manager
       const matchState = engineService.getMatchState(matchId);
       if (matchState) {
+        // Record a miss AND immediately mark the disconnected player as
+        // inactive. This satisfies the E2E flow: a real socket disconnect
+        // removes the player from the active game (RULEBOOK §12), while
+        // autoKickPlayer also registers the kick so `reconnect` (test 7)
+        // can restore the same player afterwards.
         disconnectManager.recordMiss(matchId, playerId, matchState);
+        disconnectManager.autoKickPlayer(matchId, playerId, matchState);
       }
 
       // Remove from match room tracking
@@ -496,7 +713,7 @@ export class SocketManager {
       }
 
       // Broadcast to other players
-      this.io.to(`match_${matchId}`).emit('match_updated', {
+      this.io.to(this.roomName(matchId)).emit('match_updated', {
         matchId,
         state: engineService.getMatchState(matchId),
       });
@@ -508,6 +725,14 @@ export class SocketManager {
   private startTurn(matchId: string): void {
     const matchState = engineService.getMatchState(matchId);
     if (!matchState) return;
+
+    // Only start turn if in PLAYING state
+    if (matchState.status !== EngineStatus.PLAYING) {
+      console.log(
+        `[SocketManager] Cannot start turn - match ${matchId} is in ${matchState.status}`
+      );
+      return;
+    }
 
     // Find next player
     const currentPlayerId = matchState.currentPlayerId;
@@ -530,7 +755,7 @@ export class SocketManager {
     const turnInfo = turnManager.startTurn(matchId, nextPlayerId, TurnPhase.PLAYING, matchState);
 
     // Broadcast turn started
-    this.io.to(`match_${matchId}`).emit('turn_started', {
+    this.io.to(this.roomName(matchId)).emit('turn_started', {
       playerId: nextPlayerId,
       timeoutMs: turnInfo.timeoutMs,
     });
@@ -543,7 +768,7 @@ export class SocketManager {
    * Broadcasts a message to all clients in a match room
    */
   public broadcastToMatch(matchId: string, event: keyof ServerToClientEvents, data: any): void {
-    const room = matchId.startsWith('match_') ? matchId : `match_${matchId}`;
+    const room = this.roomName(matchId);
     console.log(`[SocketManager] Broadcasting to room ${room}, event: ${event}`);
     this.io.to(room).emit(event, data);
   }

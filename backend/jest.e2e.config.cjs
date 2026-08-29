@@ -27,4 +27,6 @@ module.exports = {
   moduleNameMapper: {
     '^(\\.{1,2}/.*)\\.js$': '$1',
   },
+  // 🆕 افزایش timeout برای تست‌های طولانی E2E
+  testTimeout: 30000,
 };

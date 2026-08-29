@@ -10,34 +10,38 @@
  * Last Updated: 2026-07-07
  */
 
+import { useNavigate } from 'react-router-dom';
 import React, { useState } from 'react';
 
 import { useAuth } from '../context/AuthContext';
 
 const Login: React.FC = () => {
-  const { login, guestLogin, isLoading } = useAuth();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const navigate = useNavigate();
+  const { guestLogin, googleLogin, isLoading } = useAuth();
   const [error, setError] = useState<string | null>(null);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError(null);
-    try {
-      await login(email, password);
-    } catch (error) {
-      console.error('Login failed:', error);
-      setError('Invalid email or password');
-    }
-  };
 
   const handleGuestLogin = async () => {
     setError(null);
     try {
       await guestLogin();
-    } catch (error) {
-      console.error('Guest login failed:', error);
-      setError('Failed to login as guest');
+      navigate('/lobby');
+    } catch (err) {
+      console.error('Guest login failed:', err);
+      setError('Failed to login as guest. Please try again.');
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    setError(null);
+    try {
+      // TODO: Integrate Google Identity Services (GIS) token acquisition.
+      // For now, this calls the backend /auth/google endpoint with a placeholder token.
+      const placeholderToken = `placeholder-google-id-token-${Date.now()}`;
+      await googleLogin(placeholderToken);
+      navigate('/lobby');
+    } catch (err) {
+      console.error('Google login failed:', err);
+      setError('Google sign-in is not configured yet. Please try Guest mode.');
     }
   };
 
@@ -45,55 +49,19 @@ const Login: React.FC = () => {
     <div className="login-container">
       <div className="login-card">
         <h1>CardVerse</h1>
-        <h2>Welcome Back</h2>
-        
+        <h2>Welcome</h2>
+
         {error && <div className="error-message">{error}</div>}
-        
-        <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label htmlFor="email">Email</label>
-            <input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Enter your email"
-              required
-              disabled={isLoading}
-            />
-          </div>
-          
-          <div className="form-group">
-            <label htmlFor="password">Password</label>
-            <input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Enter your password"
-              required
-              disabled={isLoading}
-            />
-          </div>
-          
-          <button type="submit" disabled={isLoading}>
-            {isLoading ? 'Loading...' : 'Login'}
-          </button>
-        </form>
-        
-        <div className="divider">or</div>
-        
-        <button 
-          className="guest-button" 
-          onClick={handleGuestLogin}
-          disabled={isLoading}
-        >
-          Continue as Guest
+
+        <button className="guest-button" onClick={handleGuestLogin} disabled={isLoading}>
+          {isLoading ? 'Signing in...' : 'Continue as Guest'}
         </button>
-        
-        <p className="register-link">
-          Don't have an account? <a href="/register">Register</a>
-        </p>
+
+        <div className="divider">or</div>
+
+        <button className="google-button" onClick={handleGoogleLogin} disabled={isLoading}>
+          Sign in with Google
+        </button>
       </div>
     </div>
   );

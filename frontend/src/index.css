@@ -150,6 +150,17 @@ button:disabled {
   background: #1a252f;
 }
 
+.google-button {
+  background: #fff;
+  color: #333;
+  border: 1px solid var(--border-color);
+  margin-top: 8px;
+}
+
+.google-button:hover:not(:disabled) {
+  background: #f7f7f7;
+}
+
 /* Divider */
 .divider {
   text-align: center;
@@ -189,7 +200,6 @@ button:disabled {
 }
 
 /* Links */
-.register-link,
 .login-link {
   text-align: center;
   margin-top: 16px;
@@ -197,14 +207,12 @@ button:disabled {
   color: #666;
 }
 
-.register-link a,
 .login-link a {
   color: var(--primary-color);
   text-decoration: none;
   font-weight: 500;
 }
 
-.register-link a:hover,
 .login-link a:hover {
   text-decoration: underline;
 }

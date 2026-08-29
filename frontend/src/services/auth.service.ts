@@ -5,7 +5,7 @@
  * Version: 0.1.0
  * Status: Development
  * Classification: Technical
- * Owner: Mostafa & ChatGPT
+ * Owner: Mostafa
  * Created: 2026-07-07
  * Last Updated: 2026-07-07
  */
@@ -21,20 +21,12 @@ export interface AuthResponse {
       email?: string;
       isGuest: boolean;
     };
-    token: string;
+    tokens: {
+      accessToken: string;
+      refreshToken?: string;
+      expiresIn?: number;
+    };
   };
-}
-
-export interface LoginCredentials {
-  email?: string;
-  password?: string;
-  isGuest?: boolean;
-}
-
-export interface RegisterData {
-  username: string;
-  email: string;
-  password: string;
 }
 
 class AuthService {
@@ -42,30 +34,20 @@ class AuthService {
 
   constructor() {
     this.api = axios.create({
-      baseURL: import.meta.env.VITE_API_URL || 'http://localhost:3000/api/v1',
+      baseURL: import.meta.env.VITE_API_URL || 'http://127.0.0.1:3000/api/v1',
       headers: {
         'Content-Type': 'application/json',
       },
     });
   }
 
-  async guestLogin(): Promise<AuthResponse> {
-    const response = await this.api.post<AuthResponse>('/auth/guest');
+  async guestLogin(deviceId: string): Promise<AuthResponse> {
+    const response = await this.api.post<AuthResponse>('/auth/guest', { deviceId });
     return response.data;
   }
 
-  async googleLogin(token: string): Promise<AuthResponse> {
-    const response = await this.api.post<AuthResponse>('/auth/google', { token });
-    return response.data;
-  }
-
-  async register(data: RegisterData): Promise<AuthResponse> {
-    const response = await this.api.post<AuthResponse>('/auth/register', data);
-    return response.data;
-  }
-
-  async login(credentials: LoginCredentials): Promise<AuthResponse> {
-    const response = await this.api.post<AuthResponse>('/auth/login', credentials);
+  async googleLogin(idToken: string): Promise<AuthResponse> {
+    const response = await this.api.post<AuthResponse>('/auth/google', { idToken });
     return response.data;
   }
 

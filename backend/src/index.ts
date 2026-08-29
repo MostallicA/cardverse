@@ -16,6 +16,8 @@ import { initSocketIO } from './socket/index.js';
 
 const app: Express = express();
 const server = createServer(app);
+server.keepAliveTimeout = 65000;
+server.headersTimeout = 66000;
 const logger = console;
 
 // Socket.IO initialization

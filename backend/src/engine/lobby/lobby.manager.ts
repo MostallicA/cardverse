@@ -32,13 +32,65 @@ export class LobbyManager {
   private lobbies: Map<string, Lobby> = new Map();
   private config: LobbyConfig;
   private onLobbyStartCallbacks: Array<(matchId: string) => void> = [];
+  // Bot-fill timers: lobbyId -> NodeJS.Timeout
+  private botFillTimers: Map<string, NodeJS.Timeout> = new Map();
+  // Callbacks invoked when a lobby needs to be auto-filled with bots after timeout.
+  private onRequestBotFillCallbacks: Array<(matchId: string) => void> = [];
 
   constructor(config: LobbyConfig) {
     this.config = config;
   }
 
   /**
-   * Register a callback invoked when a lobby starts. Callback receives matchId.
+   * Register a callback invoked when a lobby needs bots to fill empty seats.
+   * Used by the matchmaking integration service to create invisible bots
+   * (per RULEBOOK §13.4: bots are invisible — no label/avatar).
+   */
+  onRequestBotFill(callback: (matchId: string) => void): void {
+    this.onRequestBotFillCallbacks.push(callback);
+  }
+
+  /**
+   * Schedules a bot-fill timeout for an incomplete lobby.
+   * After `timeoutMs`, if the lobby is still waiting and not full, it will ask
+   * the registered callback to fill remaining seats with bots so the match
+   * can progress (per RULEBOOK §13 — bot scenarios 0-3 bots).
+   */
+  scheduleBotFill(lobbyId: string, timeoutMs: number = this.config.readyTimeoutMs): void {
+    this.cancelBotFill(lobbyId);
+
+    const timer = setTimeout(() => {
+      this.botFillTimers.delete(lobbyId);
+      const lobby = this.lobbies.get(lobbyId);
+      if (!lobby || lobby.status !== 'waiting') return;
+      if (this.isLobbyFull(lobby)) return;
+
+      console.log(`[LobbyManager] Lobby ${lobbyId} not full after timeout; requesting bot fill`);
+      for (const callback of this.onRequestBotFillCallbacks) {
+        try {
+          callback(lobby.matchId);
+        } catch (error) {
+          console.error('[LobbyManager] Error in bot-fill callback:', error);
+        }
+      }
+    }, timeoutMs);
+
+    this.botFillTimers.set(lobbyId, timer);
+  }
+
+  /**
+   * Cancels a pending bot-fill timer for a lobby.
+   */
+  cancelBotFill(lobbyId: string): void {
+    const existing = this.botFillTimers.get(lobbyId);
+    if (existing) {
+      clearTimeout(existing);
+      this.botFillTimers.delete(lobbyId);
+    }
+  }
+
+  /**
+   * Registers a callback invoked when a lobby starts. Callback receives matchId.
    */
   onLobbyStart(callback: (matchId: string) => void): void {
     this.onLobbyStartCallbacks.push(callback);
@@ -117,6 +169,11 @@ export class LobbyManager {
 
     lobby.players.push(newPlayer);
     this.lobbies.set(lobbyId, lobby);
+
+    // If lobby is now full, no need for bot-fill anymore.
+    if (this.isLobbyFull(lobby)) {
+      this.cancelBotFill(lobbyId);
+    }
 
     console.log(
       `[LobbyManager] Player ${player.username} joined lobby ${lobbyId} (seat ${seatIndex})`
@@ -213,6 +270,7 @@ export class LobbyManager {
     lobby.status = 'starting';
     lobby.startedAt = new Date();
     this.lobbies.set(lobbyId, lobby);
+    this.cancelBotFill(lobbyId);
 
     console.log(`[LobbyManager] Lobby ${lobbyId} starting with ${lobby.players.length} players`);
 
@@ -232,6 +290,7 @@ export class LobbyManager {
    * Closes a lobby (after match starts or is cancelled)
    */
   closeLobby(lobbyId: string): void {
+    this.cancelBotFill(lobbyId);
     const lobby = this.lobbies.get(lobbyId);
     if (lobby) {
       lobby.status = 'closed';

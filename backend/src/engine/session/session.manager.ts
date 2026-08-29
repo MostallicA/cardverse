@@ -22,6 +22,57 @@ export interface Session {
 
 export class SessionManager {
   private sessions: Map<string, Session> = new Map();
+  // Tracks which USER (by userId) is currently bound to which ACTIVE match.
+  // Security: enforces "one active match per user" (SERVER-AUTHORITATIVE fair play).
+  private playerActiveMatch: Map<string, string> = new Map(); // userId -> matchId
+
+  /**
+   * REGISTERS a user as bound to a match.
+   * Returns `false` (and does nothing) if the user is ALREADY bound to a different
+   * active match — prevents multi-account / multi-tab match stuffing.
+   */
+  bindPlayerToMatch(userId: string, matchId: string): boolean {
+    const active = this.playerActiveMatch.get(userId);
+    if (active === matchId) {
+      return true; // same match → idempotent
+    }
+    if (active) {
+      const session = this.sessions.get(`session_${active}`);
+      if (session && session.status === 'active') {
+        console.warn(
+          `[SessionManager] Rejected bind: user ${userId} is already in active match ${active}`
+        );
+        return false;
+      }
+      // The previous session is not active anymore → allow bind and clear old.
+      this.playerActiveMatch.delete(userId);
+    }
+    this.playerActiveMatch.set(userId, matchId);
+    return true;
+  }
+
+  /**
+   * Returns the matchId a user is currently bound to, or null.
+   */
+  getActiveMatchForUser(userId: string): string | null {
+    const matchId = this.playerActiveMatch.get(userId);
+    if (!matchId) return null;
+    const session = this.sessions.get(`session_${matchId}`);
+    if (session && session.status !== 'active') {
+      this.playerActiveMatch.delete(userId); // lazily clean stale
+      return null;
+    }
+    return matchId;
+  }
+
+  /**
+   * Removes a user→match binding (on match completion/cleanup).
+   */
+  unbindPlayerFromMatch(userId: string, matchId: string): void {
+    if (this.playerActiveMatch.get(userId) === matchId) {
+      this.playerActiveMatch.delete(userId);
+    }
+  }
 
   /**
    * Creates a new session for a match
@@ -37,6 +88,12 @@ export class SessionManager {
     };
 
     this.sessions.set(session.id, session);
+    // Bind each real (non-bot) player's userId to this match (fair-play enforcement).
+    for (const player of players) {
+      if (!player.isBot) {
+        this.playerActiveMatch.set(player.userId, matchId);
+      }
+    }
     console.log(`[SessionManager] Session created for match ${matchId}`);
     return session;
   }
@@ -55,9 +112,12 @@ export class SessionManager {
     session.status = 'active';
     session.startedAt = new Date();
 
-    // Initialize match state in engine
+    // Initialize match state in engine ONLY when the match hasn't been
+    // started yet. In the matchmaking flow, engineService.startMatch() is
+    // already invoked before startSession(), so re-starting here would throw
+    // ("Match is not in INITIALIZING state") and abort the whole start.
     const matchState = engineService.getMatchState(matchId);
-    if (matchState) {
+    if (matchState && matchState.status === EngineStatus.INITIALIZING) {
       matchState.status = EngineStatus.PLAYING;
       engineService.startMatch(matchId);
     }
@@ -88,6 +148,13 @@ export class SessionManager {
     // Clean up turn manager timers
     turnManager['clearTimer'](matchId);
 
+    // Release user→match bindings so users can join a new match.
+    for (const player of session.players) {
+      if (!player.isBot) {
+        this.playerActiveMatch.delete(player.userId);
+      }
+    }
+
     this.sessions.set(session.id, session);
     console.log(`[SessionManager] Session completed for match ${matchId}`);
     return session;
@@ -107,6 +174,13 @@ export class SessionManager {
     turnManager['clearTimer'](matchId);
     roomManager.removeRoom(matchId);
     lobbyManager.closeLobby(matchId);
+
+    // Release user→match bindings.
+    for (const player of session.players) {
+      if (!player.isBot) {
+        this.playerActiveMatch.delete(player.userId);
+      }
+    }
 
     this.sessions.set(session.id, session);
     console.log(`[SessionManager] Session aborted for match ${matchId}`);

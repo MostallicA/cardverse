@@ -5,28 +5,38 @@ import { Card, Suit, Rank, GameMode, SpecialOutcome } from '../../engine/engine.
 export class RuleExecutor {
   /**
    * Determines if a card is a valid play based on follow-suit rules
+   * Per RULEBOOK.md Section 8
    */
   isValidPlay(
     card: Card,
     hand: Card[],
     leadSuit: Suit | undefined,
-
-    _gameMode: GameMode,
-
-    _trumpSuit?: Suit
+    gameMode: GameMode,
+    trumpSuit?: Suit
   ): boolean {
-    // If no lead suit (first card of trick), any card is valid
+    // ✅ 1. Card ownership validation
+    if (!hand.some((c) => c.id === card.id)) {
+      return false; // Card is not in player's hand
+    }
+
+    // ✅ 2. If no lead suit (first card of trick), any card is valid
     if (!leadSuit) return true;
 
-    // If player has the lead suit, they must play it
+    // ✅ 3. Follow suit validation
     const hasLeadSuit = hand.some((c) => c.suit === leadSuit);
     if (hasLeadSuit) {
       return card.suit === leadSuit;
     }
 
-    // Player doesn't have lead suit - can play any card
+    // ✅ 4. Player doesn't have lead suit
     // In classic Hokm with trump, they may cut with trump
-    // In non-trump modes (Saras/Nars/Tak Nars), they can discard anything
+    if (gameMode === GameMode.HOKM && trumpSuit) {
+      // Can play any card (trump or discard)
+      return true;
+    }
+
+    // ✅ 5. In non-trump modes (Saras, Naras, Tak Naras)
+    // Can discard any card since no follow suit possible
     return true;
   }
 

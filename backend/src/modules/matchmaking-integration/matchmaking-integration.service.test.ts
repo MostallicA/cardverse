@@ -20,6 +20,7 @@ describe('MatchmakingIntegrationService', () => {
       defaultTotalSetsToWin: 7,
       defaultTurnTimeoutMs: 8000,
       defaultDeclarationTimeoutMs: 20000,
+      defaultReadyTimeoutMs: 30000,
       botReplacementEnabled: true,
       coinPenaltyAmount: 0,
     });

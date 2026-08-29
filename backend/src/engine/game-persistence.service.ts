@@ -92,7 +92,13 @@ export class GamePersistenceService {
       });
 
       // Upsert match players
+      // NOTE: we persist ONLY real human players. Bot players have a synthetic
+      // `userId` (e.g. `bot_match_...`) that does NOT exist in the `users` table,
+      // so persisting them would violate `MatchPlayer.userId -> User.id` FK.
       for (const player of matchState.players) {
+        if (player.isBot) {
+          continue; // bots have no real account — skip to avoid FK violation
+        }
         await prisma.matchPlayer.upsert({
           where: {
             matchId_userId: {

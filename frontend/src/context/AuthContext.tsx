@@ -13,6 +13,7 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
 import authService, { AuthResponse } from '../services/auth.service';
+import { getOrCreateDeviceId } from '../utils/deviceId';
 
 interface User {
   id: string;
@@ -25,10 +26,8 @@ interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  login: (_email: string, _password: string) => Promise<void>;
   guestLogin: () => Promise<void>;
   googleLogin: (_token: string) => Promise<void>;
-  register: (_username: string, _email: string, _password: string) => Promise<void>;
   logout: () => void;
 }
 
@@ -62,25 +61,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }, []);
 
   const handleAuthResponse = (response: AuthResponse) => {
-    const { user, token } = response.data;
+    const { user, tokens } = response.data;
+    const token = tokens?.accessToken;
     authService.setAuthToken(token);
     setUser(user);
-  };
-
-  const login = async (_email: string, _password: string) => {
-    setIsLoading(true);
-    try {
-      const response = await authService.login({ email: _email, password: _password });
-      handleAuthResponse(response);
-    } finally {
-      setIsLoading(false);
-    }
   };
 
   const guestLogin = async () => {
     setIsLoading(true);
     try {
-      const response = await authService.guestLogin();
+      const response = await authService.guestLogin(getOrCreateDeviceId());
       handleAuthResponse(response);
     } finally {
       setIsLoading(false);
@@ -97,16 +87,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
-  const register = async (_username: string, _email: string, _password: string) => {
-    setIsLoading(true);
-    try {
-      const response = await authService.register({ username: _username, email: _email, password: _password });
-      handleAuthResponse(response);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   const logout = () => {
     authService.clearAuthToken();
     setUser(null);
@@ -116,10 +96,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     user,
     isAuthenticated: !!user,
     isLoading,
-    login,
     guestLogin,
     googleLogin,
-    register,
     logout,
   };
 

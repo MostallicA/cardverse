@@ -17,6 +17,147 @@ describe('RuleExecutor', () => {
     id: `${rank}_${suit}`,
   });
 
+  // ============================================================
+  // NEW: isValidPlay tests (S12 - Game Integrity Audit)
+  // ============================================================
+  describe('isValidPlay - Card ownership validation', () => {
+    it('should return false when card is not in hand', () => {
+      const hand: Card[] = [card(Suit.KHESHT, Rank.ACE), card(Suit.PIK, Rank.KING)];
+      const cardNotInHand: Card = card(Suit.DEL, Rank.QUEEN);
+
+      const result = ruleExecutor.isValidPlay(
+        cardNotInHand,
+        hand,
+        Suit.KHESHT,
+        GameMode.HOKM,
+        Suit.DEL
+      );
+
+      expect(result).toBe(false);
+    });
+  });
+
+  describe('isValidPlay - Follow suit with trump', () => {
+    it('should require playing lead suit when player has it (HOKM with trump)', () => {
+      const hand: Card[] = [
+        card(Suit.KHESHT, Rank.ACE),
+        card(Suit.KHESHT, Rank.KING),
+        card(Suit.DEL, Rank.QUEEN),
+      ];
+      const leadSuit = Suit.KHESHT;
+      const trumpSuit = Suit.DEL;
+
+      // Playing a non-lead suit when player has lead suit should be invalid
+      const invalidCard: Card = card(Suit.DEL, Rank.QUEEN);
+      const result = ruleExecutor.isValidPlay(
+        invalidCard,
+        hand,
+        leadSuit,
+        GameMode.HOKM,
+        trumpSuit
+      );
+      expect(result).toBe(false);
+
+      // Playing a lead suit card should be valid
+      const validCard: Card = card(Suit.KHESHT, Rank.ACE);
+      const result2 = ruleExecutor.isValidPlay(validCard, hand, leadSuit, GameMode.HOKM, trumpSuit);
+      expect(result2).toBe(true);
+    });
+  });
+
+  describe('isValidPlay - Cut with trump', () => {
+    it('should allow playing trump when player does not have lead suit (HOKM with trump)', () => {
+      const hand: Card[] = [card(Suit.DEL, Rank.ACE), card(Suit.DEL, Rank.KING)];
+      const leadSuit = Suit.KHESHT;
+      const trumpSuit = Suit.DEL;
+
+      // Player doesn't have lead suit, can play trump
+      const trumpCard: Card = card(Suit.DEL, Rank.ACE);
+      const result = ruleExecutor.isValidPlay(trumpCard, hand, leadSuit, GameMode.HOKM, trumpSuit);
+      expect(result).toBe(true);
+    });
+
+    it('should allow discard when player does not have lead suit (HOKM with trump)', () => {
+      const hand: Card[] = [card(Suit.DEL, Rank.ACE), card(Suit.KHAJ, Rank.KING)];
+      const leadSuit = Suit.KHESHT;
+      const trumpSuit = Suit.DEL;
+
+      // Player doesn't have lead suit, can discard any card
+      const discardCard: Card = card(Suit.KHAJ, Rank.KING);
+      const result = ruleExecutor.isValidPlay(
+        discardCard,
+        hand,
+        leadSuit,
+        GameMode.HOKM,
+        trumpSuit
+      );
+      expect(result).toBe(true);
+    });
+  });
+
+  describe('isValidPlay - Discard in non-trump modes', () => {
+    it('should allow any card when player does not have lead suit (SARAS)', () => {
+      const hand: Card[] = [card(Suit.DEL, Rank.ACE), card(Suit.KHAJ, Rank.KING)];
+      const leadSuit = Suit.KHESHT;
+
+      // Player doesn't have lead suit, can play any card
+      const discardCard: Card = card(Suit.DEL, Rank.ACE);
+      const result = ruleExecutor.isValidPlay(discardCard, hand, leadSuit, GameMode.SARAS);
+      expect(result).toBe(true);
+    });
+
+    it('should allow any card when player does not have lead suit (NARAS)', () => {
+      const hand: Card[] = [card(Suit.DEL, Rank.TWO), card(Suit.KHAJ, Rank.THREE)];
+      const leadSuit = Suit.KHESHT;
+
+      const discardCard: Card = card(Suit.DEL, Rank.TWO);
+      const result = ruleExecutor.isValidPlay(discardCard, hand, leadSuit, GameMode.NARAS);
+      expect(result).toBe(true);
+    });
+
+    it('should allow any card when player does not have lead suit (TAK_NARAS)', () => {
+      const hand: Card[] = [card(Suit.DEL, Rank.ACE), card(Suit.KHAJ, Rank.TWO)];
+      const leadSuit = Suit.KHESHT;
+
+      const discardCard: Card = card(Suit.DEL, Rank.ACE);
+      const result = ruleExecutor.isValidPlay(discardCard, hand, leadSuit, GameMode.TAK_NARAS);
+      expect(result).toBe(true);
+    });
+  });
+
+  describe('isValidPlay - First card of trick (no lead suit)', () => {
+    it('should allow any card when no lead suit is set (all modes)', () => {
+      const hand: Card[] = [
+        card(Suit.KHESHT, Rank.ACE),
+        card(Suit.PIK, Rank.KING),
+        card(Suit.DEL, Rank.QUEEN),
+        card(Suit.KHAJ, Rank.JACK),
+      ];
+
+      // Any card should be valid when leadSuit is undefined
+      const result1 = ruleExecutor.isValidPlay(
+        card(Suit.KHESHT, Rank.ACE),
+        hand,
+        undefined,
+        GameMode.HOKM,
+        Suit.DEL
+      );
+      expect(result1).toBe(true);
+
+      const result2 = ruleExecutor.isValidPlay(
+        card(Suit.DEL, Rank.QUEEN),
+        hand,
+        undefined,
+        GameMode.SARAS
+      );
+      expect(result2).toBe(true);
+    });
+  });
+
+  // ============================================================
+  // Original tests
+  // ============================================================
+
   describe('getTrickWinner', () => {
     it('awards the trick to the highest card of the led suit', () => {
       const cards = [

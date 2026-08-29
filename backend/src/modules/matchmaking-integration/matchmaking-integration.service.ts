@@ -40,6 +40,53 @@ export class MatchmakingIntegrationService {
       console.log(`[MatchmakingIntegration] Lobby ${matchId} started; launching match`);
       this.startMatch(matchId);
     });
+
+    // Wire bot-fill: when a lobby isn't full after timeout, fill remaining seats
+    // with invisible bots so the match can start (per RULEBOOK §13).
+    lobbyManager.onRequestBotFill((matchId: string) => {
+      this.fillLobbyWithBots(matchId);
+    });
+  }
+
+  /**
+   * Fills a lobby's empty seats with invisible bots so the match can start
+   * even when fewer than 4 humans are present (RULEBOOK §13 — bot scenarios).
+   * Bots inherit the team/seat of the seat they fill and are NOT marked visually.
+   */
+  fillLobbyWithBots(matchId: string): void {
+    const lobby = lobbyManager.getLobbyByMatch(matchId);
+    if (!lobby || lobby.status !== 'waiting') return;
+    if (!this.config.botReplacementEnabled) return;
+    if (lobbyManager.isLobbyFull(lobby)) return;
+
+    const usedSeats = new Set(lobby.players.map((p) => p.seatIndex));
+    const maxPlayers = 4; // Hokm fixed 4 seats
+    for (let seat = 0; seat < maxPlayers; seat++) {
+      if (lobby.players.length >= maxPlayers) break;
+      if (usedSeats.has(seat)) continue;
+
+      const botUsername = `Player${seat + 1}`;
+      const botId = `bot_${matchId}_${seat}`;
+      const bot: Player = {
+        id: botId,
+        userId: botId,
+        username: botUsername,
+        seatIndex: seat,
+        teamId: seat % 2 === 0 ? 0 : 1,
+        isActive: true,
+        isBot: true,
+        consecutiveMisses: 0,
+      };
+
+      lobbyManager.addPlayer(matchId, bot);
+      usedSeats.add(seat);
+      // Bots are always ready (RULEBOOK §13): they must not block the match
+      // from starting when every human is ready.
+      lobbyManager.setPlayerReady(matchId, botId, true);
+      console.log(
+        `[MatchmakingIntegration] Bot ${botId} added to lobby ${matchId} (seat ${seat}), ready`
+      );
+    }
   }
 
   /**
@@ -56,6 +103,29 @@ export class MatchmakingIntegrationService {
           matchId: '',
           success: false,
           error: 'Hokm requires exactly 4 players',
+        };
+      }
+
+      // SECURITY: reject match creation if any player is already in an active match
+      // (prevents one user from joining two matches simultaneously / multi-tab stuffing).
+      for (const player of players) {
+        if (sessionManager.getActiveMatchForUser(player.userId)) {
+          return {
+            matchId: '',
+            success: false,
+            error: `Player ${player.userId} is already in an active match`,
+          };
+        }
+      }
+
+      // SECURITY: reject duplicate userIds within the SAME match request
+      // (prevents one user from filling multiple seats of the same match).
+      const uniqueIds = new Set(players.map((p) => p.userId));
+      if (uniqueIds.size !== players.length) {
+        return {
+          matchId: '',
+          success: false,
+          error: 'Duplicate player detected in match request',
         };
       }
 
@@ -88,12 +158,22 @@ export class MatchmakingIntegrationService {
       // Create match via Engine Service
       const matchState = engineService.createMatch(matchId, enginePlayers, matchConfig);
 
+      // Create session for this match (required for lifecycle + reconnection)
+      sessionManager.createSession(matchId, enginePlayers, matchConfig);
+
       // Create lobby (host is the first player)
       lobbyManager.createLobby(matchId, matchId, enginePlayers[0].id, enginePlayers[0].username);
 
       // Add remaining players to lobby (skip the host)
       for (let i = 1; i < enginePlayers.length; i++) {
         lobbyManager.addPlayer(matchId, enginePlayers[i]);
+      }
+
+      // If the lobby isn't full (fewer than 4 humans), schedule a bot-fill
+      // after the ready-timeout so the match can still start (RULEBOOK §13).
+      const lobby = lobbyManager.getLobbyByMatch(matchId);
+      if (lobby && !lobbyManager.isLobbyFull(lobby)) {
+        lobbyManager.scheduleBotFill(matchId, this.config.defaultReadyTimeoutMs || 30000);
       }
 
       // Create room
@@ -144,11 +224,8 @@ export class MatchmakingIntegrationService {
       // Start session
       sessionManager.startSession(matchId);
 
-      // Deal cards
+      // Deal cards (moves match to DECLARATION phase)
       engineService.dealCards(matchId);
-
-      // Start first turn
-      this.startTurn(matchId);
 
       // Notify via Socket.IO
       const socketManager = getSocketManager();
@@ -169,6 +246,19 @@ export class MatchmakingIntegrationService {
         console.log(`[MatchmakingIntegration] ✅ match_started broadcasted`);
       } else {
         console.error(`[MatchmakingIntegration] ❌ SocketManager is NULL!`);
+      }
+
+      // 🔁 START THE DECLARATION PHASE through the Socket layer (unified with the
+      // socket 'start_match' path). This broadcasts `declaration_started` and — if
+      // the Hakem is a bot — AUTO-DECLARES Hokm + has the bot lead the first card.
+      // (We must NOT call `this.startTurn()` here: the match is in DECLARATION,
+      // not PLAYING, so startTurn() would no-op with "not in PLAYING state".)
+      if (socketManager) {
+        socketManager.startDeclarationPhase(matchId);
+      } else {
+        console.error(
+          '[MatchmakingIntegration] ❌ Cannot start declaration - SocketManager is NULL'
+        );
       }
 
       console.log(`[MatchmakingIntegration] ✅ Match ${matchId} started successfully`);
@@ -383,8 +473,10 @@ export class MatchmakingIntegrationService {
 
   /**
    * Starts a turn (next player)
+   * Public so the Socket layer can kick off an automatic bot turn when the
+   * Hakem is a bot (bots auto-declare then auto-lead the first card).
    */
-  private startTurn(matchId: string): void {
+  startTurn(matchId: string): void {
     const matchState = engineService.getMatchState(matchId);
     if (!matchState) return;
 
@@ -423,6 +515,15 @@ export class MatchmakingIntegrationService {
         timeoutMs: turnInfo.timeoutMs,
       });
     }
+  }
+
+  /**
+   * Makes a BOT play a card immediately (public wrapper around botPlayCard).
+   * Used when a bot is the Hakem right after an auto-declaration, so the bot
+   * leads the first trick without waiting for a turn-start broadcast.
+   */
+  makeBotPlay(matchId: string, botId: string): void {
+    this.botPlayCard(matchId, botId);
   }
 
   /**
@@ -535,6 +636,7 @@ export const matchmakingIntegration = new MatchmakingIntegrationService({
   defaultTotalSetsToWin: 7,
   defaultTurnTimeoutMs: 8000,
   defaultDeclarationTimeoutMs: 20000,
+  defaultReadyTimeoutMs: 30000, // 30s lobby fill timeout before bot-fill
   botReplacementEnabled: true,
   coinPenaltyAmount: 0, // TBD per RULEBOOK.md Section 13
 });

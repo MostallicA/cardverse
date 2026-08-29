@@ -3,7 +3,12 @@
 export enum EngineStatus {
   INITIALIZING = 'initializing',
   LOBBY = 'lobby',
+  DEALING = 'dealing',
+  DECLARATION = 'declaration',
   PLAYING = 'playing',
+  TRICK_RESOLUTION = 'trick_resolution',
+  SET_RESOLUTION = 'set_resolution',
+  MATCH_RESOLUTION = 'match_resolution',
   COMPLETED = 'completed',
   TERMINATED = 'terminated',
 }
@@ -47,6 +52,12 @@ export interface Card {
 export interface Player {
   id: string;
   userId: string;
+  /**
+   * INVARIANT: must always be a non-empty string. Callers that construct a
+   * Player (including Bot players) MUST provide a username. Do not pass
+   * undefined/null — bots are built with `PlayerN` fallbacks, and the
+   * engine/socket layers also guard with a deterministic fallback.
+   */
   username: string;
   seatIndex: number; // 0-3
   teamId: number; // 0 or 1
@@ -103,6 +114,13 @@ export interface MatchState {
   isComplete: boolean;
   startedAt?: Date;
   completedAt?: Date;
+  declarationPhase?: {
+    isComplete: boolean;
+    declaredAt?: Date;
+    selectedMode?: GameMode;
+    selectedTrumpSuit?: Suit;
+  };
+  currentPhaseStartTime?: Date;
 }
 
 export enum SpecialOutcome {

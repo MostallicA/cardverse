@@ -1,10 +1,11 @@
 /**
  * CardVerse Frontend - Game Board Component
- * 
+ *
  * Main game board that displays the table, players, cards, and game state
  */
 
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
 import { MatchState, Card as CardType, GameMode, Suit } from '../../types/game.types';
 import { useGameSocket } from '../../hooks/useGameSocket';
@@ -32,10 +33,10 @@ export const GameBoard: React.FC<GameBoardProps> = ({ matchId, playerId }) => {
   } = useGameSocket({
     matchId,
     playerId,
-    onMatchUpdate: (state) => {
+    onMatchUpdate: state => {
       setMatchState(state);
     },
-    onError: (error) => {
+    onError: error => {
       console.error('[GameBoard] Error:', error);
       alert(`Error: ${error.message}`);
     },
@@ -48,6 +49,49 @@ export const GameBoard: React.FC<GameBoardProps> = ({ matchId, playerId }) => {
     }
   }, [socketMatchState]);
 
+  // Initial fetch: grab the authoritative match state from the REST API as soon
+  // as the board mounts. Socket events can race with navigation (Lobby -> Game)
+  // and be emitted before this component's listeners/state are ready, leaving
+  // matchState null forever. Fetching once on mount guarantees the board renders.
+  // A few retries are attempted to ride over race conditions / hot reload.
+  useEffect(() => {
+    let cancelled = false;
+
+    const load = async (attempt: number) => {
+      try {
+        // Vite proxies /api -> http://127.0.0.1:3000 (see vite.config.ts).
+        const { data } = await axios.get(`/api/v1/match-integration/state/${matchId}`);
+        console.log(
+          '[GameBoard] state fetch attempt',
+          attempt,
+          'matchId=',
+          matchId,
+          '| success=',
+          data?.success,
+          '| hasState=',
+          !!data?.state,
+          '| state.matchId=',
+          data?.state?.matchId
+        );
+        if (!cancelled && data?.success && data?.state?.matchId) {
+          setMatchState(data.state);
+          return;
+        }
+      } catch (err) {
+        console.error('[GameBoard] Failed to load initial match state:', err);
+      }
+      // Retry a few times (match may still be being created / proxy warming up).
+      if (!cancelled && attempt < 3) {
+        setTimeout(() => void load(attempt + 1), 800);
+      }
+    };
+
+    void load(1);
+    return () => {
+      cancelled = true;
+    };
+  }, [matchId]);
+
   if (!isConnected) {
     return (
       <div className="flex items-center justify-center h-screen">
@@ -59,7 +103,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({ matchId, playerId }) => {
     );
   }
 
-  if (!matchState) {
+  if (!matchState?.matchId) {
     return (
       <div className="flex items-center justify-center h-screen">
         <div className="text-center">
@@ -70,15 +114,18 @@ export const GameBoard: React.FC<GameBoardProps> = ({ matchId, playerId }) => {
     );
   }
 
-  const currentPlayer = matchState.players.find((p) => p.id === playerId);
+  const currentPlayer = matchState.players.find(p => p.id === playerId);
   const isCurrentTurn = matchState.currentPlayerId === playerId;
   const isHakem = matchState.hakemId === playerId;
 
   // Get player names map for table cards
-  const playerNames = matchState.players.reduce((acc, p) => {
-    acc[p.id] = p.username;
-    return acc;
-  }, {} as Record<string, string>);
+  const playerNames = matchState.players.reduce(
+    (acc, p) => {
+      acc[p.id] = p.username;
+      return acc;
+    },
+    {} as Record<string, string>
+  );
 
   const handleCardClick = (card: CardType) => {
     if (isCurrentTurn && matchState) {
@@ -109,7 +156,9 @@ export const GameBoard: React.FC<GameBoardProps> = ({ matchId, playerId }) => {
             <span className="font-bold">Set:</span> {matchState.currentSet + 1}
           </div>
           <div className="flex items-center gap-4">
-            <span className={`px-2 py-1 rounded text-sm ${isConnected ? 'bg-green-500' : 'bg-red-500'}`}>
+            <span
+              className={`px-2 py-1 rounded text-sm ${isConnected ? 'bg-green-500' : 'bg-red-500'}`}
+            >
               {isConnected ? '🟢 Connected' : '🔴 Disconnected'}
             </span>
           </div>
@@ -117,7 +166,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({ matchId, playerId }) => {
 
         {/* Scoreboard */}
         <div className="flex justify-center gap-8 mb-4 text-white">
-          {matchState.teams.map((team) => (
+          {matchState.teams.map(team => (
             <div key={team.id} className="bg-black/30 rounded-lg px-4 py-2">
               <span className="font-bold">Team {team.id + 1}:</span>
               <span className="ml-2">
@@ -149,10 +198,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({ matchId, playerId }) => {
             <div className="col-start-2 col-span-2 row-start-2 row-span-2 flex flex-col items-center justify-center">
               {/* Declare Hokm UI */}
               {matchState.status === 'playing' && isHakem && (
-                <DeclareHokm
-                  isHakem={isHakem}
-                  onDeclare={handleDeclareHokm}
-                />
+                <DeclareHokm isHakem={isHakem} onDeclare={handleDeclareHokm} />
               )}
 
               {/* Table cards */}
@@ -166,9 +212,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({ matchId, playerId }) => {
               {/* Game status */}
               <div className="mt-2 text-white text-sm bg-black/30 px-3 py-1 rounded">
                 {matchState.status === 'playing' && (
-                  <span>
-                    {isCurrentTurn ? '🎯 Your turn!' : '⏳ Waiting for opponent...'}
-                  </span>
+                  <span>{isCurrentTurn ? '🎯 Your turn!' : '⏳ Waiting for opponent...'}</span>
                 )}
                 {matchState.status === 'completed' && (
                   <span className="text-yellow-300 font-bold">🏆 Match Complete!</span>
